@@ -10,7 +10,7 @@ A modern, beautiful Home Assistant Lovelace card for controlling Dreame robot va
 - CleanGenius and Custom cleaning mode configuration
 - Real-time vacuum status and battery level
 - **Customizable Theming**: Light, dark, and fully customizable themes
-- **Internationalization (i18n)**: English and German translations
+- **Internationalization (i18n)**: Multiple language support (English, German, Russian, Polish, Italian, Dutch, Spanish, Chinese)
 
 <div style="display: flex; gap: 10px;">
     <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/light-main.png" alt="Main Screen Light" style="width: 33%;">
@@ -93,7 +93,7 @@ default_room_view: map # Optional, 'map' (default) or 'list'
 | `map_entity`        | string | Optional     | Camera entity for the vacuum map (defaults to `camera.${ENTITY_NAME}_map`) |
 | `theme`             | string | `light`      | Theme mode: `light`, `dark`, or `custom`                                   |
 | `custom_theme`      | object | Optional     | Custom theme configuration (see [Theming](#theming))                       |
-| `language`          | string | `en`         | Language: `en`, `de`, `ru`, or `pl`                                        |
+| `language`          | string | `en`         | Language: `en`, `de`, `ru`, `pl`, `it`, `nl`, `es`, `zh`                   |
 | `default_mode`      | string | `all`        | Default tab to display: `all`, `room`, or `zone`                           |
 | `default_room_view` | string | `map`        | Default room selection view: `map` (interactive) or `list` (scrollable)    |
 
@@ -208,6 +208,10 @@ The card supports multiple languages. Currently available:
 - **German (de)** - Deutsch
 - **Russian (ru)** - Русский
 - **Polish (pl)** - Polski
+- **Italian (it)** - Italiano
+- **Dutch (nl)** - Nederlands
+- **Spanish (es)** - Español
+- **Chinese (zh)** - 中文
 
 Set the language in your configuration:
 
