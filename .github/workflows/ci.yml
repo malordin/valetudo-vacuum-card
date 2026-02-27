@@ -33,6 +33,9 @@ jobs:
       - name: Lint SCSS
         run: npm run lint:scss
 
+      - name: Validate translations
+        run: npm run validate:translations
+
       - name: TypeScript type check
         run: npx tsc --noEmit
 
