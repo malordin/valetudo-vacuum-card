@@ -38,10 +38,10 @@ const STATE_LABELS: Record<string, string> = {
 
 // Typical Dreame D9 consumable lifetimes in minutes
 const CONSUMABLE_MAX: Record<string, number> = {
-  mainBrush: 18000,      // 300 h
-  rightBrush: 12000,     // 200 h
-  mainFilter: 9000,      // 150 h
-  sensorCleaning: 1800,  // 30 h
+  mainBrush: 18000, // 300 h
+  rightBrush: 12000, // 200 h
+  mainFilter: 9000, // 150 h
+  sensorCleaning: 1800, // 30 h
 };
 
 function formatMinutesRemaining(mins: number): string {
@@ -81,10 +81,13 @@ function ConsumableRow({ label, entity, maxKey, onReset }: ConsumableRowProps) {
   const isDepleted = mins !== null && mins <= 0;
 
   const barColor =
-    pct === null ? 'var(--accent-color, #007aff)' :
-    pct > 50 ? 'var(--accent-color, #007aff)' :
-    pct > 20 ? 'var(--warning-color, #ff9500)' :
-    'var(--error-color, #ff3b30)';
+    pct === null
+      ? 'var(--accent-color, #007aff)'
+      : pct > 50
+        ? 'var(--accent-color, #007aff)'
+        : pct > 20
+          ? 'var(--warning-color, #ff9500)'
+          : 'var(--error-color, #ff3b30)';
 
   return (
     <div className="consumable-row">
@@ -92,7 +95,7 @@ function ConsumableRow({ label, entity, maxKey, onReset }: ConsumableRowProps) {
         <span className="consumable-row__label">{label}</span>
         <span
           className={`consumable-row__value${isDepleted ? ' consumable-row__value--depleted' : ''}`}
-          title={mins !== null ? formatMinutesRemaining(mins) + ' осталось' : ''}
+          title={mins === null ? '' : isDepleted ? 'Требует замены' : `Осталось: ${formatMinutesRemaining(mins)}`}
         >
           {pct !== null ? (isDepleted ? 'Заменить' : `${pct}%`) : '—'}
         </span>
@@ -108,10 +111,7 @@ function ConsumableRow({ label, entity, maxKey, onReset }: ConsumableRowProps) {
       </div>
       {pct !== null && (
         <div className="consumable-progress">
-          <div
-            className="consumable-progress__fill"
-            style={{ width: `${pct}%`, background: barColor }}
-          />
+          <div className="consumable-progress__fill" style={{ width: `${pct}%`, background: barColor }} />
         </div>
       )}
     </div>
@@ -147,8 +147,8 @@ export function ValetudoSettingsPanel({
   const wifiAttrs = wifiEntity?.attributes as Record<string, unknown> | undefined;
   const wifiSsid = (wifiAttrs?.ssid as string | undefined) ?? '—';
   const wifiIp = (wifiAttrs?.ips as string[] | undefined)?.[0] ?? '—';
-  const wifiRssi = wifiEntity?.state && !['unavailable', 'unknown'].includes(wifiEntity.state)
-    ? `${wifiEntity.state} дБм` : '—';
+  const wifiRssi =
+    wifiEntity?.state && !['unavailable', 'unknown'].includes(wifiEntity.state) ? `${wifiEntity.state} дБм` : '—';
 
   // Total statistics (area in cm², time in s, count unitless)
   const totalAreaRaw = totalStatsAreaEntity?.state;
@@ -191,9 +191,7 @@ export function ValetudoSettingsPanel({
             <div className="valetudo-settings-section">
               {[
                 { label: 'Состояние', value: stateLabel },
-                batteryLevel !== null && !isNaN(batteryLevel)
-                  ? { label: 'Батарея', value: `${batteryLevel}%` }
-                  : null,
+                batteryLevel !== null && !isNaN(batteryLevel) ? { label: 'Батарея', value: `${batteryLevel}%` } : null,
                 { label: 'Wi-Fi', value: wifiSsid },
                 { label: 'Сигнал', value: wifiRssi },
                 { label: 'IP-адрес', value: wifiIp },
@@ -259,9 +257,7 @@ export function ValetudoSettingsPanel({
                   <span className="valetudo-settings-section__value">{formatSeconds(totalTimeSec)}</span>
                 </div>
               )}
-              {(curAreaCm !== null || curTimeSec !== null) && (
-                <div className="valetudo-settings-section__divider" />
-              )}
+              {(curAreaCm !== null || curTimeSec !== null) && <div className="valetudo-settings-section__divider" />}
               {curAreaCm !== null && (
                 <div className="valetudo-settings-section__row">
                   <span className="valetudo-settings-section__label">Текущая уборка — площадь</span>
@@ -334,4 +330,3 @@ export function ValetudoSettingsPanel({
     </Modal>
   );
 }
-

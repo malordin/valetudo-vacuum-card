@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { RawMapData } from '../utils/ValetudoRawMapData';
 import type { VirtualWall, RestrictedZone, RestrictionsState, RestrictionTool } from '../types/valetudo';
 
@@ -53,6 +53,9 @@ interface UseRestrictionsOptions {
 }
 
 export function useRestrictions({ mapData, active }: UseRestrictionsOptions) {
+  // Snapshot of last successfully saved state — used to survive stale mapData (camera lag)
+  const savedSnapshotRef = useRef<{ walls: VirtualWall[]; zones: RestrictedZone[] } | null>(null);
+
   const [state, setState] = useState<RestrictionsState>({
     walls: [],
     zones: [],
@@ -64,18 +67,45 @@ export function useRestrictions({ mapData, active }: UseRestrictionsOptions) {
   // Load from mapData when entering restrictions mode (or when mapData updates while active)
   useEffect(() => {
     if (!active || !mapData) return;
-    const { walls, zones } = parseFromMapData(mapData);
+    const parsed = parseFromMapData(mapData);
     setState((prev) => {
       // Don't overwrite unsaved changes
       if (prev.dirty) return prev;
-      return { ...prev, walls, zones, selectedId: null, dirty: false };
+
+      // If we have a saved snapshot, check whether mapData already reflects the save.
+      // Compare by wall count and coordinates — mapData lags behind until HA refreshes camera.
+      const snap = savedSnapshotRef.current;
+      if (snap) {
+        const mapDataReflectsSave =
+          parsed.walls.length === snap.walls.length &&
+          snap.walls.every((sw) =>
+            parsed.walls.some(
+              (pw) => pw.pA.x === sw.pA.x && pw.pA.y === sw.pA.y && pw.pB.x === sw.pB.x && pw.pB.y === sw.pB.y
+            )
+          ) &&
+          parsed.zones.length === snap.zones.length &&
+          snap.zones.every((sz) =>
+            parsed.zones.some(
+              (pz) => pz.pA.x === sz.pA.x && pz.pA.y === sz.pA.y && pz.pC.x === sz.pC.x && pz.pC.y === sz.pC.y
+            )
+          );
+        if (mapDataReflectsSave) {
+          // Camera caught up — safe to clear snapshot
+          savedSnapshotRef.current = null;
+        } else {
+          // Camera still stale — keep showing saved snapshot
+          return { ...prev, walls: snap.walls, zones: snap.zones, selectedId: null, dirty: false };
+        }
+      }
+
+      return { ...prev, walls: parsed.walls, zones: parsed.zones, selectedId: null, dirty: false };
     });
   }, [active, mapData]);
 
-  // Reset when leaving mode
+  // Reset when leaving mode (but don't clear snapshot — keep it for re-entry)
   useEffect(() => {
     if (!active) {
-      setState({ walls: [], zones: [], selectedId: null, tool: 'wall', dirty: false });
+      setState({ walls: [], zones: [], selectedId: null, tool: 'wall', dirty: false }); // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, [active]);
 
@@ -92,36 +122,29 @@ export function useRestrictions({ mapData, active }: UseRestrictionsOptions) {
     }));
   }, []);
 
-  const addZone = useCallback(
-    (
-      type: 'regular' | 'mop',
-      pA: { x: number; y: number },
-      pC: { x: number; y: number }
-    ) => {
-      // pA = top-left, pC = bottom-right → derive all 4 corners
-      const minX = Math.min(pA.x, pC.x);
-      const maxX = Math.max(pA.x, pC.x);
-      const minY = Math.min(pA.y, pC.y);
-      const maxY = Math.max(pA.y, pC.y);
-      setState((prev) => ({
-        ...prev,
-        zones: [
-          ...prev.zones,
-          {
-            id: uid(),
-            type,
-            pA: { x: minX, y: minY },
-            pB: { x: maxX, y: minY },
-            pC: { x: maxX, y: maxY },
-            pD: { x: minX, y: maxY },
-          },
-        ],
-        dirty: true,
-        selectedId: null,
-      }));
-    },
-    []
-  );
+  const addZone = useCallback((type: 'regular' | 'mop', pA: { x: number; y: number }, pC: { x: number; y: number }) => {
+    // pA = top-left, pC = bottom-right → derive all 4 corners
+    const minX = Math.min(pA.x, pC.x);
+    const maxX = Math.max(pA.x, pC.x);
+    const minY = Math.min(pA.y, pC.y);
+    const maxY = Math.max(pA.y, pC.y);
+    setState((prev) => ({
+      ...prev,
+      zones: [
+        ...prev.zones,
+        {
+          id: uid(),
+          type,
+          pA: { x: minX, y: minY },
+          pB: { x: maxX, y: minY },
+          pC: { x: maxX, y: maxY },
+          pD: { x: minX, y: maxY },
+        },
+      ],
+      dirty: true,
+      selectedId: null,
+    }));
+  }, []);
 
   const selectItem = useCallback((id: string | null) => {
     setState((prev) => ({ ...prev, selectedId: id }));
@@ -141,7 +164,11 @@ export function useRestrictions({ mapData, active }: UseRestrictionsOptions) {
   }, []);
 
   const markSaved = useCallback(() => {
-    setState((prev) => ({ ...prev, dirty: false }));
+    setState((prev) => {
+      // Store snapshot so re-entry into edit mode shows saved state even if camera is stale
+      savedSnapshotRef.current = { walls: prev.walls, zones: prev.zones };
+      return { ...prev, dirty: false };
+    });
   }, []);
 
   return {

@@ -86,50 +86,17 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
 
   const { toast, showToast, hideToast } = useToast();
 
-  const {
-    handlePause,
-    handleStop,
-    handleDock,
-    handleResume,
-    handleSetFanSpeed,
-    handleSetWater,
-    handleClean,
-  } = useValetudoServices({
-    hass,
-    entityIds,
-    onSuccess: showToast,
-    language,
-  });
+  const { handlePause, handleStop, handleDock, handleResume, handleSetFanSpeed, handleSetWater, handleClean } =
+    useValetudoServices({
+      hass,
+      entityIds,
+      onSuccess: showToast,
+      language,
+    });
 
   const state = vacuumEntity?.state ?? 'docked';
-  const { mapData, error: mapError } = useValetudoMap(hass, entityIds.map, state);
-
-  if (!vacuumEntity) {
-    return (
-      <div className="valetudo-vacuum-card__error">
-        Entity not found: {entityIds.vacuum}
-      </div>
-    );
-  }
-
-  const isRunning = ['cleaning', 'returning'].includes(state);
-  const isPaused = state === 'paused';
-  const isDocked = state === 'docked';
-
-  const deviceName =
-    config.title ??
-    (vacuumEntity.attributes.friendly_name as string | undefined) ??
-    'Valetudo Robot';
-
-  const rooms: RoomPosition[] = segmentsEntity
-    ? parseSegments(segmentsEntity.attributes)
-    : [];
-
-  const handleRoomToggleWithToast = (roomId: number, roomName: string) => {
-    const wasSelected = selectedRooms.has(roomId);
-    handleRoomToggle(roomId, roomName);
-    showToast(wasSelected ? `Deselected: ${roomName}` : `Selected: ${roomName}`);
-  };
+  const { mapData, error: mapError, refetch: refetchMap } = useValetudoMap(hass, entityIds.map, state);
+  const [cleanIterations, setCleanIterations] = useState(1);
 
   // When robot finishes and returns to dock — reset zone/mode so map is pannable
   useEffect(() => {
@@ -139,20 +106,12 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
     }
   }, [state]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleCleanAction = () => {
-    handleClean(selectedMode, selectedRooms, selectedZone);
-    setSelectedMode('all');
-    setSelectedZone(null);
-  };
-
   const isRestrictionsMode = selectedMode === 'restrictions';
-  const handleRestrictionsToggle = () => {
-    setSelectedMode(isRestrictionsMode ? 'all' : 'restrictions');
-    setSelectedZone(null);
-  };
 
-  const { restrictions, setTool, addWall, addZone, selectItem, deleteSelected, markSaved } =
-    useRestrictions({ mapData, active: isRestrictionsMode });
+  const { restrictions, setTool, addWall, addZone, selectItem, deleteSelected, markSaved } = useRestrictions({
+    mapData,
+    active: isRestrictionsMode,
+  });
 
   const [restrictionsSaving, setRestrictionsSaving] = useState(false);
 
@@ -165,7 +124,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         addZone(zoneType, p1, p2);
       }
     },
-    [addWall, addZone, restrictions.tool],
+    [addWall, addZone, restrictions.tool]
   );
 
   const handleSaveRestrictions = useCallback(async () => {
@@ -178,23 +137,17 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
       // 1. Direct REST via valetudo_url from config (works from HTTP pages)
       const robotUrl = config.valetudo_url?.replace(/\/$/, '');
       if (robotUrl) {
-        const res = await fetch(
-          `${robotUrl}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`,
-          { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
-        );
+        const res = await fetch(`${robotUrl}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
         if (!res.ok) throw new Error(`REST ${res.status}: ${await res.text()}`);
         console.log('[valetudo] Saved via direct REST');
         saved = true;
       }
 
       // 2. HA rest_command (proxied on HA server — bypasses CORS/mixed-content)
-      // Requires in configuration.yaml:
-      //   rest_command:
-      //     valetudo_set_restrictions:
-      //       url: "http://ROBOT_IP/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability"
-      //       method: PUT
-      //       content_type: application/json
-      //       payload: "{{ payload }}"
       if (!saved) {
         try {
           await hass.callService('rest_command', 'valetudo_set_restrictions', {
@@ -204,11 +157,12 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
           saved = true;
         } catch (restCmdErr: unknown) {
           const msg = String(restCmdErr);
-          // "Service not found" means rest_command not configured — not an error
-          if (!msg.includes('not found') && !msg.includes('unknown')) {
+          console.warn('[valetudo] rest_command error:', msg);
+          if (msg.includes('not_found') || msg.includes('Service not found') || msg.includes('Service rest_command')) {
+            console.log('[valetudo] rest_command not configured, trying next method');
+          } else {
             throw restCmdErr;
           }
-          console.log('[valetudo] rest_command not configured, trying next method');
         }
       }
 
@@ -228,21 +182,48 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
 
       markSaved();
       showToast('Ограничения сохранены');
+      setTimeout(refetchMap, 800);
     } catch (err) {
       console.error('[valetudo] Save failed:', err);
       showToast(`Ошибка: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setRestrictionsSaving(false);
     }
-  }, [config.valetudo_url, restrictions, hass, markSaved, showToast]);
+  }, [config.valetudo_url, restrictions, hass, markSaved, showToast, refetchMap]);
+
+  if (!vacuumEntity) {
+    return <div className="valetudo-vacuum-card__error">Entity not found: {entityIds.vacuum}</div>;
+  }
+
+  const isRunning = ['cleaning', 'returning'].includes(state);
+  const isPaused = state === 'paused';
+  const isDocked = state === 'docked';
+
+  const deviceName = config.title ?? (vacuumEntity.attributes.friendly_name as string | undefined) ?? 'Valetudo Robot';
+
+  const rooms: RoomPosition[] = segmentsEntity ? parseSegments(segmentsEntity.attributes) : [];
+
+  const handleRoomToggleWithToast = (roomId: number, roomName: string) => {
+    const wasSelected = selectedRooms.has(roomId);
+    handleRoomToggle(roomId, roomName);
+    showToast(wasSelected ? `Deselected: ${roomName}` : `Selected: ${roomName}`);
+  };
+
+  const handleCleanAction = () => {
+    handleClean(selectedMode, selectedRooms, selectedZone, cleanIterations);
+    setSelectedMode('all');
+    setSelectedZone(null);
+  };
+
+  const handleRestrictionsToggle = () => {
+    setSelectedMode(isRestrictionsMode ? 'all' : 'restrictions');
+    setSelectedZone(null);
+  };
 
   const controlsDisabled = isRunning;
 
   return (
-    <div
-      ref={containerRef}
-      className={`dreame-vacuum-card dreame-vacuum-card--${theme.name} valetudo-vacuum-card`}
-    >
+    <div ref={containerRef} className={`dreame-vacuum-card dreame-vacuum-card--${theme.name} valetudo-vacuum-card`}>
       <div className="dreame-vacuum-card__container">
         <ValetudoHeader
           vacuumEntity={vacuumEntity}
@@ -265,12 +246,13 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
             restrictions={isRestrictionsMode ? restrictions : undefined}
             onRestrictionDrawn={isRestrictionsMode ? handleRestrictionDrawn : undefined}
             onRestrictionSelect={isRestrictionsMode ? selectItem : undefined}
-            onSegmentClick={selectedMode === 'room'
-              ? (segId) => {
-                  const room = rooms.find((r) => r.id === segId);
-                  handleRoomToggleWithToast(segId, room?.name ?? String(segId));
-                }
-              : undefined
+            onSegmentClick={
+              selectedMode === 'room'
+                ? (segId) => {
+                    const room = rooms.find((r) => r.id === segId);
+                    handleRoomToggleWithToast(segId, room?.name ?? String(segId));
+                  }
+                : undefined
             }
           />
         ) : (
@@ -289,25 +271,23 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
               saving={restrictionsSaving}
             />
           ) : (
-          <button
-            className={`cleaning-mode-button${controlsDisabled ? ' cleaning-mode-button--disabled' : ''}`}
-            onClick={() => setCleaningModalOpen(true)}
-            disabled={controlsDisabled}
-            type="button"
-          >
-            <div className="cleaning-mode-button__content">
-              <span className="cleaning-mode-button__icon">{VACUUM_MOP_ICON_SVG}</span>
-              <span className="cleaning-mode-button__text">
-                Настроить уборку
-                {fanEntity?.state || waterEntity?.state
-                  ? `: ${fanEntity?.state ?? ''}${
-                      waterEntity?.state ? ` · ${waterEntity.state}` : ''
-                    }`
-                  : ''}
-              </span>
-            </div>
-            <span className="cleaning-mode-button__arrow">›</span>
-          </button>
+            <button
+              className={`cleaning-mode-button${controlsDisabled ? ' cleaning-mode-button--disabled' : ''}`}
+              onClick={() => setCleaningModalOpen(true)}
+              disabled={controlsDisabled}
+              type="button"
+            >
+              <div className="cleaning-mode-button__content">
+                <span className="cleaning-mode-button__icon">{VACUUM_MOP_ICON_SVG}</span>
+                <span className="cleaning-mode-button__text">
+                  Настроить уборку
+                  {fanEntity?.state || waterEntity?.state
+                    ? `: ${fanEntity?.state ?? ''}${waterEntity?.state ? ` · ${waterEntity.state}` : ''}`
+                    : ''}
+                </span>
+              </div>
+              <span className="cleaning-mode-button__arrow">›</span>
+            </button>
           )}
         </div>
 
@@ -315,9 +295,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
           {!isRestrictionsMode && selectedMode === 'room' && selectedRooms.size > 0 && (
             <div className="valetudo-selected-rooms">
               <span className="valetudo-selected-rooms__label">Выбрано:</span>
-              <span className="valetudo-selected-rooms__names">
-                {Array.from(selectedRooms.values()).join(', ')}
-              </span>
+              <span className="valetudo-selected-rooms__names">{Array.from(selectedRooms.values()).join(', ')}</span>
             </div>
           )}
 
@@ -353,6 +331,8 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         waterEntity={waterEntity}
         onFanChange={handleSetFanSpeed}
         onWaterChange={handleSetWater}
+        iterations={cleanIterations}
+        onIterationsChange={setCleanIterations}
         disabled={controlsDisabled}
       />
 
@@ -380,11 +360,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
       />
 
       {toast && <Toast message={toast} onClose={hideToast} />}
-      {!mapEntity && (
-        <div className="valetudo-vacuum-card__warning">
-          Map entity not found: {entityIds.map}
-        </div>
-      )}
+      {!mapEntity && <div className="valetudo-vacuum-card__warning">Map entity not found: {entityIds.map}</div>}
     </div>
   );
 }

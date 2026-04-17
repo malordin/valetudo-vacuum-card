@@ -1,336 +1,238 @@
-# Dreame Vacuum Map Card
+# Valetudo Vacuum Card
 
-A modern, beautiful Home Assistant Lovelace card for controlling Dreame robot vacuums. Built with React, TypeScript, and SCSS.
+A Home Assistant Lovelace card for Valetudo-flashed robot vacuums. Works **fully local** — no cloud, no Xiaomi/Dreame account required. Built with React, TypeScript, and SCSS.
+
+> Fork of [dreame-vacuum-map-card](https://github.com/noambergauz/dreame-vacuum-map-card), rewritten to work with [Valetudo](https://valetudo.cloud/) instead of the Dreame cloud integration.
 
 ## Features
 
-- (Almost) complete feature parity with the original Dreame application
-- Support for **Room**, **All**, and **Zone** cleaning modes
-- Interactive map with room and zone selection
-- CleanGenius and Custom cleaning mode configuration
+- Interactive live map (via Valetudo MQTT + HA camera entity)
+- **Room**, **All**, and **Zone** cleaning modes
+- **Virtual restrictions editor** — draw/delete walls and no-mop zones directly on the map, save via HA `rest_command`
+- **Cleaning passes** — choose 1×, 2×, 3×, or 4× per session
+- **Fan speed and water level** controls
 - Real-time vacuum status and battery level
+- Consumable monitoring with remaining time tooltips
 - **Customizable Theming**: Light, dark, and fully customizable themes
-- **Internationalization (i18n)**: Multiple language support (English, German, Russian, Polish, Italian, Dutch, Spanish, Chinese)
+- **Internationalization (i18n)**: English, German, Russian, Polish, Italian, Dutch, Spanish, Chinese
 
-<div style="display: flex; gap: 10px;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/light-main.png" alt="Main Screen Light" style="width: 33%;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/dark-main.png" alt="Main Screen Dark" style="width: 33%;">
-</div>
+## Requirements
 
-<div style="display: flex; gap: 10px;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/light-genius.png" alt="CleanGenius Light" style="width: 33%;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/dark-genius.png" alt="CleanGenius Dark" style="width: 33%;">
-</div>
-
-<div style="display: flex; gap: 10px;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/light-custom.png" alt="Custom Cleaning Light" style="width: 33%;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/dark-custom.png" alt="Custom Cleaning Dark" style="width: 33%;">
-</div>
-
-<div style="display: flex; gap: 10px;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/room-cleaning.png" alt="Room Cleaning Light" style="width: 33%;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/dark-room-cleaning.png" alt="Room Cleaning Dark" style="width: 33%;">
-</div>
-
-<div style="display: flex; gap: 10px;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/zone-cleaning.png" alt="Zone Cleaning Light" style="width: 33%;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/dark-zone-cleaning.png" alt="Zone Cleaning Dark" style="width: 33%;">
-</div>
-
-<div style="display: flex; gap: 10px;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/light-settings.png" alt="Settings Light" style="width: 33%;">
-    <img src="https://github.com/noambergauz/dreame-vacuum-map-card/raw/master/screenshots/dark-settings.png" alt="Settings Dark" style="width: 33%;">
-</div>
+- Home Assistant with [Valetudo](https://valetudo.cloud/) integration via MQTT
+- HACS (for easy install) or manual copy
 
 ## Installation
 
-### Via [HACS](https://hacs.xyz/)
+### Via [HACS](https://hacs.xyz/) (Custom Repository)
 
-<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=noambergauz&repository=dreame-vacuum-map-card&category=integration" target="_blank"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store." /></a>
+1. In HACS → Custom repositories → add `malordin/valetudo-vacuum-card` (type: Dashboard)
+2. Install **Valetudo Vacuum Card**
+3. Clear browser cache and reload HA
 
-### Manual:
+Or use the button below (after adding the custom repo):
 
-#### 1. Download the card
+<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=malordin&repository=valetudo-vacuum-card&category=dashboard" target="_blank"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store." /></a>
 
-Download `dreame-vacuum-map-card.js` from the releases page
+### Manual
 
-#### 2. Add to Home Assistant
-
-Copy the file to your Home Assistant config directory:
-
-```
-/config/www/dreame-vacuum-map-card/dreame-vacuum-map-card.js
-```
-
-#### 3. Add resource to Lovelace
-
-Go to Settings → Dashboards → Resources → Add Resource:
-
-- URL: `/local/dreame-vacuum-map-card/dreame-vacuum-map-card.js`
-- Resource type: JavaScript Module
+1. Download `dreame-vacuum-map-card.js` from the [Releases](../../releases) page
+2. Copy to `/config/www/valetudo-vacuum-map-card/valetudo-vacuum-map-card.js`
+3. In HA → Settings → Dashboards → Resources → Add:
+   - URL: `/local/valetudo-vacuum-map-card/valetudo-vacuum-map-card.js`
+   - Type: JavaScript Module
 
 ## Usage
 
-### 4. Add card to dashboard
+### Add card to dashboard
 
 ```yaml
 type: custom:dreame-vacuum-map-card
-entity: vacuum.dreame_vacuum_entity
-title: Dreame Vacuum
-map_entity: camera.dreame_vacuum_entity # Optional, defaults to camera.${ENTITY_NAME}_map
-theme: light # Optional, 'light' (default), 'dark', or 'custom'
-language: en # Optional, 'en' (default) or 'de'
-default_mode: all # Optional, 'all' (default), 'room', or 'zone'
-default_room_view: map # Optional, 'map' (default) or 'list'
+entity: vacuum.valetudo_yourrobot
+valetudo_identifier: YourRobotIdentifier  # MQTT identifier (see Valetudo settings)
+valetudo_url: http://192.168.0.xxx        # Robot IP — required for virtual restrictions
+title: Vacuum
+language: ru                              # Optional: en (default), de, ru, pl, it, nl, es, zh
+theme: light                              # Optional: light (default), dark, custom
+default_mode: all                         # Optional: all (default), room, zone
+```
+
+## Required Home Assistant configuration
+
+### 1. `configuration.yaml` — REST command for virtual restrictions
+
+Virtual restrictions (walls, no-mop zones) are saved directly to the robot via a proxied REST command. Add this to your `configuration.yaml`:
+
+```yaml
+rest_command:
+  valetudo_set_restrictions:
+    url: "http://192.168.0.xxx/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability"
+    method: PUT
+    content_type: application/json
+    payload: "{{ payload }}"
+```
+
+Replace `192.168.0.xxx` with your robot's IP. **Restart HA** after adding this (reload is not enough).
+
+### 2. `automations.yaml` — Notifications (optional but recommended)
+
+Add the following automations for vacuum event notifications. Replace `valetudo_harshsillypigeon` with your robot's entity prefix.
+
+```yaml
+- id: 'vacuum_cleaning_started'
+  alias: "Vacuum: cleaning started"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Vacuum: started cleaning"
+        message: "Cleaning has started"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Vacuum: cleaning finished"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Vacuum: done"
+        message: >
+          Cleaned {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} m²
+          in {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} min
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Vacuum: error"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Vacuum: error"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Vacuum: mop still attached"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Vacuum: remove the mop!"
+        message: "Robot is docked but the mop is still attached"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Vacuum: consumable low"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Vacuum: consumable low"
+        message: "{{ trigger.entity_id }} is almost depleted ({{ trigger.to_state.state }} min left)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Vacuum: consumable depleted"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Vacuum: replace consumable!"
+        message: "{{ trigger.entity_id }} needs replacement"
+  mode: parallel
 ```
 
 ## Configuration
 
-| Name                | Type   | Default      | Description                                                                |
-| ------------------- | ------ | ------------ | -------------------------------------------------------------------------- |
-| `entity`            | string | **Required** | Entity ID of your Dreame vacuum                                            |
-| `title`             | string | Optional     | Custom title for the card                                                  |
-| `map_entity`        | string | Optional     | Camera entity for the vacuum map (defaults to `camera.${ENTITY_NAME}_map`) |
-| `theme`             | string | `light`      | Theme mode: `light`, `dark`, or `custom`                                   |
-| `custom_theme`      | object | Optional     | Custom theme configuration (see [Theming](#theming))                       |
-| `language`          | string | `en`         | Language: `en`, `de`, `ru`, `pl`, `it`, `nl`, `es`, `zh`                   |
-| `default_mode`      | string | `all`        | Default tab to display: `all`, `room`, or `zone`                           |
-| `default_room_view` | string | `map`        | Default room selection view: `map` (interactive) or `list` (scrollable)    |
+| Name                  | Type   | Default  | Description                                                        |
+|-----------------------|--------|----------|--------------------------------------------------------------------|
+| `entity`              | string | Required | Entity ID of your vacuum (`vacuum.valetudo_xxx`)                   |
+| `valetudo_identifier` | string | Required | MQTT identifier from Valetudo settings (for room/zone cleaning)    |
+| `valetudo_url`        | string | Optional | Robot's local URL (e.g. `http://192.168.0.xxx`) — enables direct REST save for restrictions |
+| `title`               | string | Optional | Custom card title                                                  |
+| `map_entity`          | string | Optional | Camera entity for the map (auto-detected if omitted)               |
+| `theme`               | string | `light`  | `light`, `dark`, or `custom`                                       |
+| `custom_theme`        | object | Optional | Custom theme overrides (see Theming section)                       |
+| `language`            | string | `en`     | `en`, `de`, `ru`, `pl`, `it`, `nl`, `es`, `zh`                    |
+| `default_mode`        | string | `all`    | Default cleaning mode: `all`, `room`, `zone`                       |
+| `default_room_view`   | string | `map`    | Room selector view: `map` or `list`                                |
 
 ## Theming
 
-The card features a comprehensive theming system with built-in and custom theme support.
-
-### Built-in Themes
-
-#### Light Theme (Default)
+### Built-in themes
 
 ```yaml
-type: custom:dreame-vacuum-map-card
-entity: vacuum.dreame_vacuum_entity
-theme: light
+theme: light   # or dark
 ```
 
-#### Dark Theme
-
-```yaml
-type: custom:dreame-vacuum-map-card
-entity: vacuum.dreame_vacuum_entity
-theme: dark
-```
-
-### Custom Themes
-
-Create fully customized themes by extending either the light or dark theme:
-
-```yaml
-type: custom:dreame-vacuum-map-card
-entity: vacuum.dreame_vacuum_entity
-theme: custom
-custom_theme:
-  base: dark # Extend 'dark' or 'light' theme
-  accentColor: '#ff6b6b'
-  accentColorHover: '#ff5252'
-  accentBg: 'rgba(255, 107, 107, 0.2)'
-```
-
-#### Available Theme Properties
-
-You can customize any of the following colors:
-
-**Background Colors:**
-
-- `cardBg`, `surfaceBg`, `surfaceSecondary`, `surfaceTertiary`, `surfaceBgHover`
-
-**Text Colors:**
-
-- `textPrimary`, `textPrimaryInvert`, `textSecondary`, `textTertiary`
-
-**Accent Colors:**
-
-- `accentColor`, `accentColorHover`, `accentBg`, `accentBgHover`, `accentBgSecondary`, `accentBgSecondaryHover`, `accentBgTransparent`, `accentShadow`, `accentColorShadowColor`
-
-**State Colors:**
-
-- `warningColor`, `warningShadow`, `errorColor`, `errorColorHover`, `errorShadow`
-
-**UI Elements:**
-
-- `borderColor`, `overlayBg`, `cardShadow`, `cardShadowHover`, `handleShadow`, `handleBg`, `backdropBg`
-
-**Toggle Specific:**
-
-- `toggleActive`, `toggleActiveBorder`, `toggleActiveShadowColor`
-
-### Example Custom Themes
-
-#### Ocean Blue
+### Custom theme
 
 ```yaml
 theme: custom
 custom_theme:
   base: dark
+  accentColor: '#29b6f6'
   cardBg: '#0a1929'
   surfaceBg: '#132f4c'
-  accentColor: '#29b6f6'
-  toggleActiveBorder: '#29b6f6'
 ```
 
-#### Warm Sunset
-
-```yaml
-theme: custom
-custom_theme:
-  base: light
-  cardBg: '#fff8e1'
-  accentColor: '#ff6f00'
-  accentBg: '#ffe0b2'
-```
-
-#### Forest Green
-
-```yaml
-theme: custom
-custom_theme:
-  base: light
-  cardBg: '#f1f8e9'
-  accentColor: '#2e7d32'
-  accentBg: '#c8e6c9'
-```
-
-For more examples and complete theming documentation, see [THEMING.md](THEMING.md).
-
-## Internationalization (i18n)
-
-The card supports multiple languages. Currently available:
-
-- **English (en)** - Default
-- **German (de)** - Deutsch
-- **Russian (ru)** - Русский
-- **Polish (pl)** - Polski
-- **Italian (it)** - Italiano
-- **Dutch (nl)** - Nederlands
-- **Spanish (es)** - Español
-- **Chinese (zh)** - 中文
-
-Set the language in your configuration:
-
-```yaml
-type: custom:dreame-vacuum-map-card
-entity: vacuum.dreame_vacuum_entity
-language: de
-```
-
-All user-facing text is translated, including:
-
-- Room selection and cleaning modes
-- Action buttons (Clean, Pause, Resume, Stop, Dock)
-- Toast notifications
-- Map overlays and instructions
-- Error messages
-
-### Adding New Languages
-
-To add support for additional languages:
-
-1. Create a new translation file in `src/i18n/locales/` (e.g., `fr.ts` for French)
-2. Import the `Translation` type and provide translations for all keys
-3. Add the new locale to `src/i18n/locales/index.ts`
-4. Update the `HassConfig` type in `src/types/homeassistant.ts`
-
-Example structure:
-
-```typescript
-import type { Translation } from './en';
-
-export const fr: Translation = {
-  room_selector: {
-    title: 'Sélectionner les pièces',
-    // ... more translations
-  },
-  // ... all other sections
-};
-```
+Available properties: `cardBg`, `surfaceBg`, `surfaceSecondary`, `surfaceTertiary`, `textPrimary`, `textSecondary`, `textTertiary`, `accentColor`, `accentColorHover`, `accentBg`, `borderColor`, `warningColor`, `errorColor`, and more. See [THEMING.md](THEMING.md).
 
 ## Development
 
-### Prerequisites
-
-- Node.js 20+
-- npm or yarn
-
-### Setup
-
 ```bash
 npm install
+npm run dev    # dev server at http://localhost:5173
+npm run build  # outputs dist/dreame-vacuum-map-card.js
 ```
-
-### Development Mode
-
-Run the development server with mock data:
-
-```bash
-npm run dev
-```
-
-The app will start at http://localhost:5173 with mock vacuum data automatically loaded.
-
-#### Development with Mock API Server
-
-If you need to test API endpoints, run the mock server separately:
-
-**Terminal 1 - Mock Server:**
-
-```bash
-npm run mock
-```
-
-**Terminal 2 - Dev Server:**
-
-```bash
-npm run dev
-```
-
-Or run both together:
-
-```bash
-npm run dev:mock
-```
-
-#### Environment Configuration
-
-Copy `.env.example` to `.env` and customize as needed:
-
-```bash
-cp .env.example .env
-```
-
-### Build
-
-```bash
-npm run build
-```
-
-The built file will be in `dist/dreame-vacuum-map-card.js`
-
-## Tech Stack
-
-- **React 19.2.0**
-- **Lucide React Icons**
-- **TypeScript 5.9.3**
-- **Vite 7.2.4**
-- **SASS**
-
-## Requirements
-
-- Home Assistant with the [Dreame Vacuum](https://github.com/Tasshack/dreame-vacuum) integration installed
-- A supported Dreame robot vacuum
 
 ## Credits
 
-- Original inspiration from [xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card)
-- [Dreame Vacuum](https://github.com/Tasshack/dreame-vacuum) integration by Tasshack
+- Based on [dreame-vacuum-map-card](https://github.com/noambergauz/dreame-vacuum-map-card) by noambergauz
+- [Valetudo](https://valetudo.cloud/) by Hypfer
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details
+MIT License — see [LICENSE](LICENSE) for details
+

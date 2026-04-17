@@ -17,13 +17,10 @@ const POLL_INTERVALS: Record<string, number> = {
 interface UseValetudoMapResult {
   mapData: RawMapData | null;
   error: string | null;
+  refetch: () => void;
 }
 
-export function useValetudoMap(
-  hass: Hass,
-  mapEntityId: string,
-  vacuumState: string
-): UseValetudoMapResult {
+export function useValetudoMap(hass: Hass, mapEntityId: string, vacuumState: string): UseValetudoMapResult {
   const [mapData, setMapData] = useState<RawMapData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const isFetching = useRef(false);
@@ -46,9 +43,7 @@ export function useValetudoMap(
       }
 
       const buffer = await response.arrayBuffer();
-      const chunks = extractZtxtPngChunks(new Uint8Array(buffer)).filter(
-        (c) => c.keyword === 'ValetudoMap'
-      );
+      const chunks = extractZtxtPngChunks(new Uint8Array(buffer)).filter((c) => c.keyword === 'ValetudoMap');
 
       if (chunks.length === 0) {
         throw new Error('No ValetudoMap ZTXT chunk in PNG');
@@ -81,5 +76,5 @@ export function useValetudoMap(
     };
   }, [fetchMap, pollInterval]);
 
-  return { mapData, error };
+  return { mapData, error, refetch: fetchMap };
 }

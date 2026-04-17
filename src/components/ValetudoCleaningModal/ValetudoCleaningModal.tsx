@@ -19,22 +19,14 @@ interface ValetudoCleaningModalProps {
   waterEntity?: HassEntity;
   onFanChange: (value: string) => void;
   onWaterChange: (value: string) => void;
+  iterations: number;
+  onIterationsChange: (value: number) => void;
   disabled?: boolean;
 }
 
-const FAN_ICONS = [
-  SUCTION_QUIET_ICON_SVG,
-  SUCTION_STANDARD_ICON_SVG,
-  SUCTION_STRONG_ICON_SVG,
-  SUCTION_TURBO_ICON_SVG,
-];
+const FAN_ICONS = [SUCTION_QUIET_ICON_SVG, SUCTION_STANDARD_ICON_SVG, SUCTION_STRONG_ICON_SVG, SUCTION_TURBO_ICON_SVG];
 
-const WATER_ICONS = [
-  <Droplet size={20} />,
-  <Droplets size={20} />,
-  <GlassWater size={20} />,
-  <GlassWater size={20} />,
-];
+const WATER_ICONS = [<Droplet size={20} />, <Droplets size={20} />, <GlassWater size={20} />, <GlassWater size={20} />];
 
 function cap(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -49,6 +41,8 @@ export function ValetudoCleaningModal({
   waterEntity,
   onFanChange,
   onWaterChange,
+  iterations,
+  onIterationsChange,
   disabled,
 }: ValetudoCleaningModalProps) {
   const fanOptions = (fanEntity?.attributes?.options as string[] | undefined) ?? [];
@@ -64,10 +58,10 @@ export function ValetudoCleaningModal({
   const inferredMode: UiMode = !hasWater
     ? 'dry'
     : currentWater === noWaterOption
-    ? 'dry'
-    : fanOptions.indexOf(currentFan) <= 1
-    ? 'wet'
-    : 'both';
+      ? 'dry'
+      : fanOptions.indexOf(currentFan) <= 1
+        ? 'wet'
+        : 'both';
 
   const [uiMode, setUiMode] = useState<UiMode>(inferredMode);
 
@@ -178,6 +172,24 @@ export function ValetudoCleaningModal({
                 </div>
               </section>
             )}
+
+            {/* Iterations — number of cleaning passes */}
+            <section className="cleaning-mode-modal__section">
+              <h3 className="cleaning-mode-modal__section-title">🔁 Количество проходов</h3>
+              <div className="cleaning-mode-modal__power-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                {[1, 2, 3, 4].map((n) => (
+                  <div key={n} className="cleaning-mode-modal__power-option">
+                    <CircularButton
+                      size="small"
+                      selected={iterations === n}
+                      onClick={() => !disabled && onIterationsChange(n)}
+                      icon={<span style={{ fontSize: '13px', fontWeight: 600 }}>{n}×</span>}
+                    />
+                    <span className="cleaning-mode-modal__power-label">{n}×</span>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
       </div>
