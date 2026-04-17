@@ -73,7 +73,22 @@ rest_command:
 
 Replace `192.168.0.xxx` with your robot's IP. **Restart HA** after adding this (reload is not enough).
 
-### 2. `automations.yaml` — Notifications (optional but recommended)
+### 2. `configuration.yaml` — REST command for Mapping (remote URL fallback)
+
+Mapping start first tries direct REST via `valetudo_url`. If your HA frontend cannot reach the robot directly (HTTPS/mixed-content/CORS), add this `rest_command` fallback:
+
+```yaml
+rest_command:
+  valetudo_start_mapping:
+    url: "http://192.168.0.xxx/api/v2/robot/capabilities/MappingPassCapability"
+    method: PUT
+    content_type: application/json
+    payload: '{"action": "start_mapping"}'
+```
+
+Replace `192.168.0.xxx` with your robot's IP. **Restart HA** after adding this (reload is not enough).
+
+### 3. `automations.yaml` — Notifications (optional but recommended)
 
 Add the following automations for vacuum event notifications. Replace `valetudo_harshsillypigeon` with your robot's entity prefix.
 
@@ -189,7 +204,7 @@ Add the following automations for vacuum event notifications. Replace `valetudo_
 |-----------------------|--------|----------|--------------------------------------------------------------------|
 | `entity`              | string | Required | Entity ID of your vacuum (`vacuum.valetudo_xxx`)                   |
 | `valetudo_identifier` | string | Required | MQTT identifier from Valetudo settings (for room/zone cleaning)    |
-| `valetudo_url`        | string | Optional | Robot's local URL (e.g. `http://192.168.0.xxx`) — enables direct REST save for restrictions |
+| `valetudo_url`        | string | Optional | Robot's local URL (e.g. `http://192.168.0.xxx`) — enables direct REST save for restrictions and direct mapping start |
 | `title`               | string | Optional | Custom card title                                                  |
 | `map_entity`          | string | Optional | Camera entity for the map (auto-detected if omitted)               |
 | `theme`               | string | `light`  | `light`, `dark`, or `custom`                                       |
