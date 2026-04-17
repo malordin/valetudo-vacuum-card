@@ -6,24 +6,9 @@ import {
   BATTERY_MEDIUM_ICON_SVG,
   BATTERY_FULL_ICON_SVG,
 } from '../../constants/icons';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { SupportedLanguage } from '../../i18n/locales';
 import '../Header/Header.scss';
-
-const STATE_LABELS: Record<string, string> = {
-  docked: 'Docked',
-  cleaning: 'Cleaning',
-  paused: 'Paused',
-  returning: 'Returning to dock',
-  idle: 'Idle',
-  error: 'Error',
-};
-
-function formatCurrentTime(seconds: number): string {
-  const totalMin = Math.floor(seconds / 60);
-  const hours = Math.floor(totalMin / 60);
-  const mins = totalMin % 60;
-  if (hours > 0) return `${hours}ч ${mins}м`;
-  return `${totalMin}м`;
-}
 
 function formatCurrentArea(cm2: number): string {
   const m2 = cm2 / 10000;
@@ -39,6 +24,7 @@ interface ValetudoHeaderProps {
   restrictionsMode?: boolean;
   onRestrictionsToggle?: () => void;
   onSettingsClick?: () => void;
+  language?: SupportedLanguage;
 }
 
 export function ValetudoHeader({
@@ -50,9 +36,28 @@ export function ValetudoHeader({
   restrictionsMode,
   onRestrictionsToggle,
   onSettingsClick,
+  language,
 }: ValetudoHeaderProps) {
+  const { t } = useTranslation(language);
+  const stateLabels: Record<string, string> = {
+    docked: t('valetudo.status.docked'),
+    cleaning: t('valetudo.status.cleaning'),
+    paused: t('valetudo.status.paused'),
+    returning: t('valetudo.status.returning'),
+    idle: t('valetudo.status.idle'),
+    error: t('valetudo.status.error'),
+  };
+
+  const formatCurrentTime = (seconds: number): string => {
+    const totalMin = Math.floor(seconds / 60);
+    const hours = Math.floor(totalMin / 60);
+    const mins = totalMin % 60;
+    if (hours > 0) return t('valetudo.time.hours_minutes', { h: String(hours), m: String(mins) });
+    return t('valetudo.time.minutes', { m: String(totalMin) });
+  };
+
   const batteryLevel = batteryEntity ? Number(batteryEntity.state) : null;
-  const statusText = STATE_LABELS[vacuumEntity.state] ?? vacuumEntity.state;
+  const statusText = stateLabels[vacuumEntity.state] ?? vacuumEntity.state;
 
   const isActive = ['cleaning', 'paused', 'returning'].includes(vacuumEntity.state);
   const currentAreaCm = currentStatsAreaEntity ? Number(currentStatsAreaEntity.state) : NaN;
@@ -75,8 +80,8 @@ export function ValetudoHeader({
             className={`header__restrictions-btn${restrictionsMode ? ' header__restrictions-btn--active' : ''}`}
             onClick={onRestrictionsToggle}
             type="button"
-            aria-label="Virtual restrictions"
-            title="Виртуальные ограничения"
+            aria-label={t('valetudo.restrictions')}
+            title={t('valetudo.restrictions')}
           >
             <ShieldAlert size={20} />
           </button>

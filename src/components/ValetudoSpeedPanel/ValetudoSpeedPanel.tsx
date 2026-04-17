@@ -1,4 +1,6 @@
 import type { HassEntity } from '../../types/homeassistant';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { SupportedLanguage } from '../../i18n/locales';
 import './ValetudoSpeedPanel.scss';
 
 interface SpeedRowProps {
@@ -40,6 +42,7 @@ interface ValetudoSpeedPanelProps {
   onFanChange: (option: string) => void;
   onWaterChange: (option: string) => void;
   disabled?: boolean;
+  language?: SupportedLanguage;
 }
 
 export function ValetudoSpeedPanel({
@@ -48,7 +51,9 @@ export function ValetudoSpeedPanel({
   onFanChange,
   onWaterChange,
   disabled = false,
+  language,
 }: ValetudoSpeedPanelProps) {
+  const { t } = useTranslation(language);
   const fanOptions = (fanEntity?.attributes?.options as string[] | undefined) ?? [];
   const waterOptions = (waterEntity?.attributes?.options as string[] | undefined) ?? [];
 
@@ -59,7 +64,7 @@ export function ValetudoSpeedPanel({
       {fanEntity && fanOptions.length > 0 && (
         <SpeedRow
           icon="💨"
-          label="Мощность всасывания"
+          label={t('valetudo.cleaning.suction_power')}
           options={fanOptions}
           current={fanEntity.state}
           onChange={onFanChange}
@@ -69,7 +74,7 @@ export function ValetudoSpeedPanel({
       {waterEntity && waterOptions.length > 0 && (
         <SpeedRow
           icon="💧"
-          label="Уровень воды"
+          label={t('valetudo.cleaning.water_level')}
           options={waterOptions}
           current={waterEntity.state}
           onChange={onWaterChange}

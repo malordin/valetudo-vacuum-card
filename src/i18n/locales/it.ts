@@ -152,6 +152,37 @@ export const it: Translation = {
     failed_to_load: "Impossibile caricare i dati dell'entità",
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'In base',
+      cleaning: 'In pulizia',
+      paused: 'In pausa',
+      returning: 'Ritorno alla base',
+      idle: 'In attesa',
+      error: 'Errore',
+    },
+    restrictions: 'Restrizioni virtuali',
+    cleaning: {
+      configure: 'Configura pulizia',
+      mode_title: 'Modalità pulizia',
+      dry: 'Solo aspirazione',
+      wet: 'Solo lavaggio',
+      both: 'Aspira e lava',
+      suction_power: 'Potenza di aspirazione',
+      water_level: 'Livello acqua',
+      iterations: 'Passate di pulizia',
+    },
+    map: {
+      loading: 'Caricamento mappa…',
+      error: 'Errore mappa: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}h {{m}}m',
+      minutes: '{{m}}m',
+    },
+  },
+
   // Settings Panel
   settings: {
     title: 'Impostazioni',

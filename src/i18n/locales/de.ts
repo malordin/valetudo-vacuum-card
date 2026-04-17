@@ -153,6 +153,37 @@ export const de: Translation = {
     failed_to_load: 'Entitätsdaten konnten nicht geladen werden',
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'Auf der Basis',
+      cleaning: 'Reinigung',
+      paused: 'Pause',
+      returning: 'Rückkehr zur Basis',
+      idle: 'Bereit',
+      error: 'Fehler',
+    },
+    restrictions: 'Virtuelle Einschränkungen',
+    cleaning: {
+      configure: 'Reinigung konfigurieren',
+      mode_title: 'Reinigungsmodus',
+      dry: 'Nur Saugen',
+      wet: 'Nur Wischen',
+      both: 'Saugen & Wischen',
+      suction_power: 'Saugstärke',
+      water_level: 'Wasserstand',
+      iterations: 'Reinigungsdurchläufe',
+    },
+    map: {
+      loading: 'Karte lädt…',
+      error: 'Kartenfehler: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}h {{m}}min',
+      minutes: '{{m}}min',
+    },
+  },
+
   // Settings Panel
   settings: {
     title: 'Einstellungen',

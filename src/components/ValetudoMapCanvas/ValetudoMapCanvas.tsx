@@ -3,6 +3,8 @@ import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import type { RawMapData, RawMapLayer } from '../../utils/ValetudoRawMapData';
 import type { CleaningMode, Zone } from '../../types/homeassistant';
 import type { RestrictionsState, VirtualWall, RestrictedZone } from '../../types/valetudo';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { SupportedLanguage } from '../../i18n/locales';
 import './ValetudoMapCanvas.scss';
 
 // Segment color palette (4-color theorem friendly)
@@ -85,6 +87,7 @@ interface ValetudoMapCanvasProps {
   // Iterations cycling
   iterations?: number;
   onIterationsChange?: (value: number) => void;
+  language?: SupportedLanguage;
 }
 
 // Stored state for coordinate conversion (filled during render)
@@ -105,7 +108,9 @@ export function ValetudoMapCanvas({
   onRestrictionSelect,
   iterations = 1,
   onIterationsChange,
+  language,
 }: ValetudoMapCanvasProps) {
+  const { t } = useTranslation(language);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const geoRef = useRef<MapGeometry>({ bb: { minX: 0, minY: 0 }, pixelSize: 50 });
@@ -889,7 +894,7 @@ export function ValetudoMapCanvas({
           <button
             type="button"
             className="valetudo-map-canvas__iterations-btn"
-            title="Количество проходов"
+            title={t('valetudo.cleaning.iterations')}
             onClick={(e) => {
               e.stopPropagation();
               onIterationsChange(iterations >= 4 ? 1 : iterations + 1);

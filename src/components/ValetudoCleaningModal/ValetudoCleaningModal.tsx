@@ -11,6 +11,8 @@ import {
   SUCTION_TURBO_ICON_SVG,
 } from '../../constants';
 import type { HassEntity } from '../../types/homeassistant';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { SupportedLanguage } from '../../i18n/locales';
 
 interface ValetudoCleaningModalProps {
   opened: boolean;
@@ -20,6 +22,7 @@ interface ValetudoCleaningModalProps {
   onFanChange: (value: string) => void;
   onWaterChange: (value: string) => void;
   disabled?: boolean;
+  language?: SupportedLanguage;
 }
 
 const FAN_ICONS = [SUCTION_QUIET_ICON_SVG, SUCTION_STANDARD_ICON_SVG, SUCTION_STRONG_ICON_SVG, SUCTION_TURBO_ICON_SVG];
@@ -40,7 +43,9 @@ export function ValetudoCleaningModal({
   onFanChange,
   onWaterChange,
   disabled,
+  language,
 }: ValetudoCleaningModalProps) {
+  const { t } = useTranslation(language);
   const fanOptions = (fanEntity?.attributes?.options as string[] | undefined) ?? [];
   const waterOptions = (waterEntity?.attributes?.options as string[] | undefined) ?? [];
   const currentFan = fanEntity?.state ?? '';
@@ -82,11 +87,11 @@ export function ValetudoCleaningModal({
   };
 
   const modes: { key: UiMode; label: string; icon: React.ReactNode }[] = [
-    { key: 'dry', label: 'Только сухая', icon: VACUUM_ICON_SVG },
+    { key: 'dry', label: t('valetudo.cleaning.dry'), icon: VACUUM_ICON_SVG },
     ...(hasWater
       ? [
-          { key: 'both' as UiMode, label: 'Сухая и влажная', icon: VACUUM_MOP_ICON_SVG },
-          { key: 'wet' as UiMode, label: 'Только влажная', icon: MOP_ICON_SVG },
+          { key: 'both' as UiMode, label: t('valetudo.cleaning.both'), icon: VACUUM_MOP_ICON_SVG },
+          { key: 'wet' as UiMode, label: t('valetudo.cleaning.wet'), icon: MOP_ICON_SVG },
         ]
       : []),
   ];
@@ -98,7 +103,7 @@ export function ValetudoCleaningModal({
           <div className="cleaning-mode-modal__content">
             {/* Mode selector */}
             <section className="cleaning-mode-modal__section">
-              <h3 className="cleaning-mode-modal__section-title">Режим уборки</h3>
+              <h3 className="cleaning-mode-modal__section-title">{t('valetudo.cleaning.mode_title')}</h3>
               <div className="cleaning-mode-modal__mode-grid">
                 {modes.map((m) => (
                   <div
@@ -126,7 +131,7 @@ export function ValetudoCleaningModal({
             {/* Fan speed — shown for dry and both */}
             {showFan && fanOptions.length > 0 && (
               <section className="cleaning-mode-modal__section">
-                <h3 className="cleaning-mode-modal__section-title">💨 Мощность всасывания</h3>
+                <h3 className="cleaning-mode-modal__section-title">💨 {t('valetudo.cleaning.suction_power')}</h3>
                 <div
                   className="cleaning-mode-modal__power-grid"
                   style={{ gridTemplateColumns: `repeat(${fanOptions.length}, 1fr)` }}
@@ -149,7 +154,7 @@ export function ValetudoCleaningModal({
             {/* Water level — shown for wet and both */}
             {showWater && waterOptions.length > 0 && (
               <section className="cleaning-mode-modal__section">
-                <h3 className="cleaning-mode-modal__section-title">💧 Уровень воды</h3>
+                <h3 className="cleaning-mode-modal__section-title">💧 {t('valetudo.cleaning.water_level')}</h3>
                 <div
                   className="cleaning-mode-modal__power-grid"
                   style={{ gridTemplateColumns: `repeat(${waterOptions.length}, 1fr)` }}

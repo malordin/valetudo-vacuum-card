@@ -152,6 +152,37 @@ export const nl: Translation = {
   },
 
   // Instellingenpaneel
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'Op basis',
+      cleaning: 'Aan het reinigen',
+      paused: 'Gepauzeerd',
+      returning: 'Terug naar basis',
+      idle: 'Inactief',
+      error: 'Fout',
+    },
+    restrictions: 'Virtuele beperkingen',
+    cleaning: {
+      configure: 'Reiniging instellen',
+      mode_title: 'Reinigingsmodus',
+      dry: 'Alleen stofzuigen',
+      wet: 'Alleen dweilen',
+      both: 'Stofzuigen & dweilen',
+      suction_power: 'Zuigkracht',
+      water_level: 'Waterniveau',
+      iterations: 'Reinigingspassen',
+    },
+    map: {
+      loading: 'Kaart laden…',
+      error: 'Kaartfout: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}u {{m}}m',
+      minutes: '{{m}}m',
+    },
+  },
+
   settings: {
     title: 'Instellingen',
     consumables: {

@@ -3,6 +3,8 @@ import { Info, Wrench, BarChart2, Settings2, MapPin, Cpu } from 'lucide-react';
 import type { HassEntity } from '../../types/homeassistant';
 import type { Hass } from '../../types/homeassistant';
 import type { ValetudoEntityIds } from '../../types/valetudo';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { SupportedLanguage } from '../../i18n/locales';
 
 interface ValetudoSettingsPanelProps {
   opened: boolean;
@@ -25,18 +27,9 @@ interface ValetudoSettingsPanelProps {
   currentStatsTimeEntity?: HassEntity;
   carpetModeEntity?: HassEntity;
   entityIds: ValetudoEntityIds;
+  language?: SupportedLanguage;
 }
 
-const STATE_LABELS: Record<string, string> = {
-  docked: 'Заряжается',
-  cleaning: 'Уборка',
-  paused: 'Пауза',
-  returning: 'Возврат на базу',
-  idle: 'Ожидание',
-  error: 'Ошибка',
-};
-
-// Typical Dreame D9 consumable lifetimes in minutes
 const CONSUMABLE_MAX: Record<string, number> = {
   mainBrush: 18000, // 300 h
   rightBrush: 12000, // 200 h
@@ -139,8 +132,20 @@ export function ValetudoSettingsPanel({
   currentStatsTimeEntity,
   carpetModeEntity,
   entityIds,
+  language,
 }: ValetudoSettingsPanelProps) {
-  const stateLabel = STATE_LABELS[vacuumEntity.state] ?? vacuumEntity.state;
+  const { t } = useTranslation(language);
+  const stateLabel =
+    (
+      {
+        docked: t('valetudo.status.docked'),
+        cleaning: t('valetudo.status.cleaning'),
+        paused: t('valetudo.status.paused'),
+        returning: t('valetudo.status.returning'),
+        idle: t('valetudo.status.idle'),
+        error: t('valetudo.status.error'),
+      } as Record<string, string>
+    )[vacuumEntity.state] ?? vacuumEntity.state;
   const batteryLevel = batteryEntity ? Number(batteryEntity.state) : null;
 
   // Wi-Fi
@@ -291,11 +296,11 @@ export function ValetudoSettingsPanel({
                 </div>
               )}
               <div className="valetudo-settings-section__row">
-                <span className="valetudo-settings-section__label">Мощность всасывания</span>
+                <span className="valetudo-settings-section__label">{t('valetudo.cleaning.suction_power')}</span>
                 <span className="valetudo-settings-section__value">{fanEntity?.state ?? '—'}</span>
               </div>
               <div className="valetudo-settings-section__row">
-                <span className="valetudo-settings-section__label">Уровень воды</span>
+                <span className="valetudo-settings-section__label">{t('valetudo.cleaning.water_level')}</span>
                 <span className="valetudo-settings-section__value">{waterEntity?.state ?? '—'}</span>
               </div>
             </div>

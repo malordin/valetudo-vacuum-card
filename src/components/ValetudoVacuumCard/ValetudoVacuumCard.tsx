@@ -13,6 +13,7 @@ import { useValetudoServices } from '../../hooks/useValetudoServices';
 import { useValetudoMap } from '../../hooks/useValetudoMap';
 import { useRestrictions, buildRestrictionsPayload } from '../../hooks/useRestrictions';
 import { deriveValetudoEntityIds } from '../../types/valetudo';
+import { useTranslation } from '../../hooks/useTranslation';
 import type { Hass, RoomPosition } from '../../types/homeassistant';
 import type { ValetudoHassConfig } from '../../types/valetudo';
 import './ValetudoVacuumCard.scss';
@@ -39,7 +40,8 @@ function parseSegments(attributes: Record<string, unknown>): RoomPosition[] {
 
 export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
   const entityIds = deriveValetudoEntityIds(config);
-  const language = config.language ?? 'en';
+  const language = (config.language ?? 'en') as Parameters<typeof useTranslation>[0];
+  const { t } = useTranslation(language);
   const themeType = config.theme ?? 'light';
 
   const vacuumEntity = hass.states[entityIds.vacuum];
@@ -234,6 +236,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
           restrictionsMode={isRestrictionsMode}
           onRestrictionsToggle={handleRestrictionsToggle}
           onSettingsClick={() => setSettingsOpen(true)}
+          language={language}
         />
 
         {mapData ? (
@@ -248,6 +251,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
             onRestrictionSelect={isRestrictionsMode ? selectItem : undefined}
             iterations={cleanIterations}
             onIterationsChange={setCleanIterations}
+            language={language}
             onSegmentClick={
               selectedMode === 'room'
                 ? (segId) => {
@@ -259,7 +263,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
           />
         ) : (
           <div className="valetudo-vacuum-card__map-placeholder">
-            {mapError ? `Map error: ${mapError}` : 'Loading map…'}
+            {mapError ? t('valetudo.map.error', { message: mapError }) : t('valetudo.map.loading')}
           </div>
         )}
 
@@ -282,7 +286,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
               <div className="cleaning-mode-button__content">
                 <span className="cleaning-mode-button__icon">{VACUUM_MOP_ICON_SVG}</span>
                 <span className="cleaning-mode-button__text">
-                  Настроить уборку
+                  {t('valetudo.cleaning.configure')}
                   {fanEntity?.state || waterEntity?.state
                     ? `: ${fanEntity?.state ?? ''}${waterEntity?.state ? ` · ${waterEntity.state}` : ''}`
                     : ''}
@@ -296,7 +300,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         <div className="dreame-vacuum-card__controls">
           {!isRestrictionsMode && selectedMode === 'room' && selectedRooms.size > 0 && (
             <div className="valetudo-selected-rooms">
-              <span className="valetudo-selected-rooms__label">Выбрано:</span>
+              <span className="valetudo-selected-rooms__label">{t('room_display.selected_label')}</span>
               <span className="valetudo-selected-rooms__names">{Array.from(selectedRooms.values()).join(', ')}</span>
             </div>
           )}
@@ -334,6 +338,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         onFanChange={handleSetFanSpeed}
         onWaterChange={handleSetWater}
         disabled={controlsDisabled}
+        language={language}
       />
 
       <ValetudoSettingsPanel
@@ -357,6 +362,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         currentStatsTimeEntity={currentStatsTimeEntity}
         carpetModeEntity={carpetModeEntity}
         entityIds={entityIds}
+        language={language}
       />
 
       {toast && <Toast message={toast} onClose={hideToast} />}

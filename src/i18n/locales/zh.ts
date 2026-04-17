@@ -151,6 +151,37 @@ export const zh: Translation = {
     failed_to_load: '实体数据加载失败',
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: '已归位',
+      cleaning: '清洁中',
+      paused: '已暂停',
+      returning: '返回基站',
+      idle: '待机',
+      error: '错误',
+    },
+    restrictions: '虚拟限制',
+    cleaning: {
+      configure: '配置清洁',
+      mode_title: '清洁模式',
+      dry: '仅吸尘',
+      wet: '仅拖地',
+      both: '吸尘+拖地',
+      suction_power: '吸力',
+      water_level: '水量',
+      iterations: '清洁遍数',
+    },
+    map: {
+      loading: '地图加载中…',
+      error: '地图错误: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}时{{m}}分',
+      minutes: '{{m}}分',
+    },
+  },
+
   // Settings Panel (设置面板)
   settings: {
     title: '设置',

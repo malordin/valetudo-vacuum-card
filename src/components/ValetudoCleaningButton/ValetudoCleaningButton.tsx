@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Modal } from '../common';
 import type { HassEntity } from '../../types/homeassistant';
+import { useTranslation } from '../../hooks/useTranslation';
+import type { SupportedLanguage } from '../../i18n/locales';
 import './ValetudoCleaningButton.scss';
 
 interface ValetudoCleaningButtonProps {
@@ -9,6 +11,7 @@ interface ValetudoCleaningButtonProps {
   onFanChange: (option: string) => void;
   onWaterChange: (option: string) => void;
   disabled?: boolean;
+  language?: SupportedLanguage;
 }
 
 export function ValetudoCleaningButton({
@@ -17,7 +20,9 @@ export function ValetudoCleaningButton({
   onFanChange,
   onWaterChange,
   disabled = false,
+  language,
 }: ValetudoCleaningButtonProps) {
+  const { t } = useTranslation(language);
   const [open, setOpen] = useState(false);
 
   const fanOptions = (fanEntity?.attributes?.options as string[] | undefined) ?? [];
@@ -51,7 +56,7 @@ export function ValetudoCleaningButton({
               />
             </svg>
             <span className="valetudo-cleaning-button__text">
-              <span className="valetudo-cleaning-button__title">Настроить уборку</span>
+              <span className="valetudo-cleaning-button__title">{t('valetudo.cleaning.configure')}</span>
               <span className="valetudo-cleaning-button__subtitle">{label}</span>
             </span>
           </span>
@@ -72,7 +77,7 @@ export function ValetudoCleaningButton({
           {fanEntity && fanOptions.length > 0 && (
             <div className="valetudo-cleaning-modal__section">
               <div className="valetudo-cleaning-modal__section-title">
-                <span>💨</span> Мощность всасывания
+                <span>💨</span> {t('valetudo.cleaning.suction_power')}
               </div>
               <div className="valetudo-cleaning-modal__pills">
                 {fanOptions.map((opt) => (
@@ -94,7 +99,7 @@ export function ValetudoCleaningButton({
           {waterEntity && waterOptions.length > 0 && (
             <div className="valetudo-cleaning-modal__section">
               <div className="valetudo-cleaning-modal__section-title">
-                <span>💧</span> Уровень воды
+                <span>💧</span> {t('valetudo.cleaning.water_level')}
               </div>
               <div className="valetudo-cleaning-modal__pills">
                 {waterOptions.map((opt) => (

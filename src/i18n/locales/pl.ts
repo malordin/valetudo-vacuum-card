@@ -149,6 +149,37 @@ export const pl = {
     failed_to_load: 'Błąd ładowania danych encji',
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'Na stacji',
+      cleaning: 'Sprzątanie',
+      paused: 'Wstrzymane',
+      returning: 'Powrót do stacji',
+      idle: 'Gotowy',
+      error: 'Błąd',
+    },
+    restrictions: 'Wirtualne ograniczenia',
+    cleaning: {
+      configure: 'Skonfiguruj sprzątanie',
+      mode_title: 'Tryb sprzątania',
+      dry: 'Tylko odkurzanie',
+      wet: 'Tylko mycie',
+      both: 'Odkurzanie i mycie',
+      suction_power: 'Siła ssania',
+      water_level: 'Poziom wody',
+      iterations: 'Przebiegi sprzątania',
+    },
+    map: {
+      loading: 'Ładowanie mapy…',
+      error: 'Błąd mapy: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}h {{m}}m',
+      minutes: '{{m}}m',
+    },
+  },
+
   // Settings Panel
   settings: {
     title: 'Ustawienia',

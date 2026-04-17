@@ -149,6 +149,37 @@ export const en = {
     failed_to_load: 'Failed to load entity data',
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'Docked',
+      cleaning: 'Cleaning',
+      paused: 'Paused',
+      returning: 'Returning to dock',
+      idle: 'Idle',
+      error: 'Error',
+    },
+    restrictions: 'Virtual restrictions',
+    cleaning: {
+      configure: 'Configure cleaning',
+      mode_title: 'Cleaning mode',
+      dry: 'Vacuum only',
+      wet: 'Mop only',
+      both: 'Vacuum & Mop',
+      suction_power: 'Suction power',
+      water_level: 'Water level',
+      iterations: 'Cleaning passes',
+    },
+    map: {
+      loading: 'Loading map\u2026',
+      error: 'Map error: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}h {{m}}m',
+      minutes: '{{m}}m',
+    },
+  },
+
   // Settings Panel
   settings: {
     title: 'Settings',

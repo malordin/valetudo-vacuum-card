@@ -152,6 +152,37 @@ export const es: Translation = {
     failed_to_load: 'Error al cargar los datos de la entidad',
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'En base',
+      cleaning: 'Limpiando',
+      paused: 'Pausado',
+      returning: 'Volviendo a la base',
+      idle: 'En espera',
+      error: 'Error',
+    },
+    restrictions: 'Restricciones virtuales',
+    cleaning: {
+      configure: 'Configurar limpieza',
+      mode_title: 'Modo de limpieza',
+      dry: 'Solo aspirar',
+      wet: 'Solo fregar',
+      both: 'Aspirar y fregar',
+      suction_power: 'Potencia de succión',
+      water_level: 'Nivel de agua',
+      iterations: 'Pasadas de limpieza',
+    },
+    map: {
+      loading: 'Cargando mapa…',
+      error: 'Error de mapa: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}h {{m}}m',
+      minutes: '{{m}}m',
+    },
+  },
+
   // Settings Panel
   settings: {
     title: 'Ajustes',

@@ -152,6 +152,37 @@ export const ru: Translation = {
     failed_to_load: 'Не удалось получить данные сущности',
   },
 
+  // Valetudo-specific
+  valetudo: {
+    status: {
+      docked: 'На базе',
+      cleaning: 'Уборка',
+      paused: 'Пауза',
+      returning: 'Возврат на базу',
+      idle: 'Ожидание',
+      error: 'Ошибка',
+    },
+    restrictions: 'Виртуальные ограничения',
+    cleaning: {
+      configure: 'Настроить уборку',
+      mode_title: 'Режим уборки',
+      dry: 'Только сухая',
+      wet: 'Только влажная',
+      both: 'Сухая и влажная',
+      suction_power: 'Мощность всасывания',
+      water_level: 'Уровень воды',
+      iterations: 'Количество проходов',
+    },
+    map: {
+      loading: 'Загрузка карты…',
+      error: 'Ошибка карты: {{message}}',
+    },
+    time: {
+      hours_minutes: '{{h}}ч {{m}}м',
+      minutes: '{{m}}м',
+    },
+  },
+
   // Settings Panel
   settings: {
     title: 'Настройки',
