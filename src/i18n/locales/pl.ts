@@ -76,6 +76,7 @@ export const pl = {
     mop_after_vac: 'Mopowanie po odkurzaniu',
     vacuum: 'Odkurzanie',
     mop: 'Mopowanie',
+    mapping: 'Mapowanie',
   },
 
   // Cleaning Mode Modal
@@ -179,6 +180,8 @@ export const pl = {
       remaining: 'Pozostało: {{time}}',
       reset: 'Resetuj',
       dbm: 'dBm',
+      valetudo_ui: 'Valetudo UI',
+      open: 'Otwórz',
     },
     restrictions: {
       select: 'Wybierz',

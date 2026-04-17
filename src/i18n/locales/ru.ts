@@ -78,6 +78,7 @@ export const ru: Translation = {
     mop_after_vac: 'Влажная после сухой',
     vacuum: 'Сухая уборка',
     mop: 'Влажная уборка',
+    mapping: 'Картографир.',
   },
 
   // Cleaning Mode Modal
@@ -182,6 +183,8 @@ export const ru: Translation = {
       remaining: 'Осталось: {{time}}',
       reset: 'Сбросить',
       dbm: 'дБм',
+      valetudo_ui: 'Valetudo UI',
+      open: 'Открыть',
     },
     restrictions: {
       select: 'Выбрать',

@@ -63,6 +63,7 @@ export const CLEANING_MODE = {
   MOPPING: 'Mopping',
   SWEEPING_AND_MOPPING: 'Sweeping and mopping',
   MOPPING_AFTER_SWEEPING: 'Mopping after sweeping',
+  MAPPING: 'Mapping',
 } as const;
 
 // CleanGenius modes
@@ -85,6 +86,7 @@ export const SERVICE_VALUE = {
     MOPPING: 'mopping',
     SWEEPING_AND_MOPPING: 'sweeping_and_mopping',
     MOPPING_AFTER_SWEEPING: 'mopping_after_sweeping',
+    MAPPING: 'mapping',
   },
   CLEANGENIUS_MODE: {
     VACUUM_AND_MOP: 'vacuum_and_mop',

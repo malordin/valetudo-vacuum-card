@@ -78,6 +78,7 @@ export const es: Translation = {
     mop_after_vac: 'Trapear después de aspirar',
     vacuum: 'Aspirar',
     mop: 'Trapear',
+    mapping: 'Mapeo',
   },
 
   // Cleaning Mode Modal
@@ -182,6 +183,8 @@ export const es: Translation = {
       remaining: 'Restante: {{time}}',
       reset: 'Restablecer',
       dbm: 'dBm',
+      valetudo_ui: 'Valetudo UI',
+      open: 'Abrir',
     },
     restrictions: {
       select: 'Seleccionar',

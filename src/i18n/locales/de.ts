@@ -79,6 +79,7 @@ export const de: Translation = {
     mop_after_vac: 'Wischen nach Saugen',
     vacuum: 'Saugen',
     mop: 'Wischen',
+    mapping: 'Kartierung',
   },
 
   // Cleaning Mode Modal
@@ -183,6 +184,8 @@ export const de: Translation = {
       remaining: 'Verbleibend: {{time}}',
       reset: 'Zurücksetzen',
       dbm: 'dBm',
+      valetudo_ui: 'Valetudo UI',
+      open: 'Öffnen',
     },
     restrictions: {
       select: 'Auswählen',

@@ -10,6 +10,7 @@ import {
   CLEANING_ROUTE,
   SELF_CLEAN_FREQUENCY,
   VACUUM_ICON_SVG,
+  MAPPING_ICON_SVG,
   MOP_ICON_SVG,
   VACUUM_MOP_ICON_SVG,
   MOP_AFTER_VACUUM_ICON_SVG,
@@ -38,6 +39,8 @@ export function getCleaningModeIcon(mode: CleaningMode): ReactElement | string {
       return VACUUM_MOP_ICON_SVG;
     case CLEANING_MODE.MOPPING_AFTER_SWEEPING:
       return MOP_AFTER_VACUUM_ICON_SVG;
+    case CLEANING_MODE.MAPPING:
+      return MAPPING_ICON_SVG;
     default:
       return '';
   }

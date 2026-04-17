@@ -78,6 +78,7 @@ export const nl: Translation = {
     mop_after_vac: 'Dweilen na Stofzuigen',
     vacuum: 'Stofzuigen',
     mop: 'Dweilen',
+    mapping: 'Kartering',
   },
 
   // Schoonmaakmodus Modal
@@ -182,6 +183,8 @@ export const nl: Translation = {
       remaining: 'Resterend: {{time}}',
       reset: 'Resetten',
       dbm: 'dBm',
+      valetudo_ui: 'Valetudo UI',
+      open: 'Openen',
     },
     restrictions: {
       select: 'Selecteren',

@@ -1,19 +1,12 @@
 .cleaning-mode-modal {
-  height: 100%;
-
   &__header {
     margin-bottom: 1.5rem;
   }
 
   &__content-wrapper {
-    height: calc(100% - 4rem);
-    overflow-y: auto;
     width: 100%;
     overflow-x: hidden;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    padding-bottom: 1rem;
   }
 
   &__section {

@@ -31,6 +31,7 @@ import {
   Pause,
   StepForward,
   OctagonX,
+  Map,
 } from 'lucide-react';
 
 // Header
@@ -69,6 +70,8 @@ export const SHORTCUT_START_CLEANING_ICON_SVG = <CirclePlay />;
 
 // Vacuum and mop icons
 export const VACUUM_ICON_SVG = <BrushCleaning />;
+
+export const MAPPING_ICON_SVG = <Map />;
 
 export const MOP_ICON_SVG = <Droplet />;
 

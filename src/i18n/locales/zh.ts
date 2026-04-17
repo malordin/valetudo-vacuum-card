@@ -78,6 +78,7 @@ export const zh: Translation = {
     mop_after_vac: '先扫后拖',
     vacuum: '单扫',
     mop: '单拖',
+    mapping: '建图',
   },
 
   // Cleaning Mode Modal (清洁模式弹窗)
@@ -181,6 +182,8 @@ export const zh: Translation = {
       remaining: '剩余: {{time}}',
       reset: '重置',
       dbm: 'dBm',
+      valetudo_ui: 'Valetudo 界面',
+      open: '打开',
     },
     restrictions: {
       select: '选择',

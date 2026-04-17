@@ -1,5 +1,5 @@
 import { Modal, Accordion } from '../common';
-import { Info, Wrench, BarChart2, Settings2, MapPin, Cpu } from 'lucide-react';
+import { Info, Wrench, BarChart2, Settings2, MapPin, Cpu, ExternalLink } from 'lucide-react';
 import type { HassEntity } from '../../types/homeassistant';
 import type { Hass } from '../../types/homeassistant';
 import type { ValetudoEntityIds } from '../../types/valetudo';
@@ -27,6 +27,7 @@ interface ValetudoSettingsPanelProps {
   currentStatsTimeEntity?: HassEntity;
   carpetModeEntity?: HassEntity;
   entityIds: ValetudoEntityIds;
+  valetudoUrl?: string;
   language?: SupportedLanguage;
 }
 
@@ -140,6 +141,7 @@ export function ValetudoSettingsPanel({
   currentStatsTimeEntity,
   carpetModeEntity,
   entityIds,
+  valetudoUrl,
   language,
 }: ValetudoSettingsPanelProps) {
   const { t } = useTranslation(language);
@@ -220,6 +222,20 @@ export function ValetudoSettingsPanel({
                     <span className="valetudo-settings-section__value">{item!.value}</span>
                   </div>
                 ))}
+              {valetudoUrl && (
+                <div className="valetudo-settings-section__row valetudo-settings-section__row--link">
+                  <span className="valetudo-settings-section__label">{t('valetudo.panel.valetudo_ui')}</span>
+                  <a
+                    className="valetudo-settings-section__link"
+                    href={valetudoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink size={14} />
+                    <span>{t('valetudo.panel.open')}</span>
+                  </a>
+                </div>
+              )}
             </div>
           </Accordion>
 

@@ -363,6 +363,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         currentStatsTimeEntity={currentStatsTimeEntity}
         carpetModeEntity={carpetModeEntity}
         entityIds={entityIds}
+        valetudoUrl={config.valetudo_url}
         language={language}
       />
 
