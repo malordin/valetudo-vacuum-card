@@ -173,9 +173,11 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
     console.log('[valetudo] Saving restrictions:', JSON.stringify(payload));
     setRestrictionsSaving(true);
     try {
+      let saved = false;
+
+      // 1. Direct REST via valetudo_url (works if HTTP page or Valetudo behind HTTPS)
       const robotUrl = config.valetudo_url?.replace(/\/$/, '');
       if (robotUrl) {
-        // Prefer direct REST API (reliable, no MQTT dependency)
         const res = await fetch(
           `${robotUrl}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`,
           {
@@ -184,29 +186,58 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
             body: JSON.stringify(payload),
           }
         );
-        if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-        console.log('[valetudo] Restrictions saved via REST');
-      } else {
-        // Fallback to MQTT
+        if (!res.ok) throw new Error(`REST error ${res.status}: ${await res.text()}`);
+        console.log('[valetudo] Saved via REST');
+        saved = true;
+      }
+
+      // 2. HA Supervisor ingress (if Valetudo is an HA addon — no CORS/mixed-content issues)
+      if (!saved) {
+        try {
+          const addonsRes = await hass.fetchWithAuth('/api/hassio/addons');
+          if (addonsRes.ok) {
+            const addonsJson = await addonsRes.json() as { data?: { addons?: Array<{ slug: string; name: string }> } };
+            const addon = addonsJson?.data?.addons?.find(
+              (a) => a.name.toLowerCase().includes('valetudo') || a.slug.toLowerCase().includes('valetudo')
+            );
+            if (addon) {
+              const res = await hass.fetchWithAuth(
+                `/api/hassio_ingress/${addon.slug}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`,
+                { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+              );
+              if (!res.ok) throw new Error(`Ingress error ${res.status}`);
+              console.log('[valetudo] Saved via HA Supervisor ingress (addon:', addon.slug, ')');
+              saved = true;
+            }
+          }
+        } catch (supervisorErr) {
+          console.warn('[valetudo] Supervisor ingress failed:', supervisorErr);
+        }
+      }
+
+      // 3. MQTT fallback
+      if (!saved) {
         const identifier = entityIds.mqttIdentifier;
         if (!identifier) {
           showToast('⚠️ Добавь valetudo_url или valetudo_identifier в конфиг');
           return;
         }
         const topic = `valetudo/${identifier}/CombinedVirtualRestrictionsCapability/set`;
-        console.log('[valetudo] Publishing to MQTT topic:', topic);
+        console.log('[valetudo] Trying MQTT topic:', topic);
         await hass.callService('mqtt', 'publish', {
           topic,
           payload: JSON.stringify(payload),
           retain: false,
         });
-        console.log('[valetudo] MQTT publish done');
+        console.log('[valetudo] MQTT publish done (no confirmation available)');
+        saved = true;
       }
+
       markSaved();
       showToast('Ограничения сохранены');
     } catch (err) {
       console.error('[valetudo] Save restrictions failed:', err);
-      showToast(`Ошибка сохранения: ${err instanceof Error ? err.message : String(err)}`);
+      showToast(`Ошибка: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setRestrictionsSaving(false);
     }

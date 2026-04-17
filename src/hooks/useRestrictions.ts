@@ -36,9 +36,11 @@ function parseFromMapData(mapData: RawMapData): { walls: VirtualWall[]; zones: R
 export function buildRestrictionsPayload(walls: VirtualWall[], zones: RestrictedZone[]) {
   return {
     virtualWalls: walls.map((w) => ({
+      __class: 'ValetudoVirtualWall',
       points: { pA: w.pA, pB: w.pB },
     })),
     restrictedZones: zones.map((z) => ({
+      __class: z.type === 'mop' ? 'ValetudoNoMopZone' : 'ValetudoRestrictedZone',
       type: z.type,
       points: { pA: z.pA, pB: z.pB, pC: z.pC, pD: z.pD },
     })),
