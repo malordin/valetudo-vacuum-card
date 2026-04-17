@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — Notifiche (Italiano)
+# Sostituire "valetudo_yourrobot" con il prefisso entità del proprio robot.
+# Aggiungere ad automations.yaml o importare tramite l'interfaccia HA.
+
+- id: 'vacuum_cleaning_started'
+  alias: "Aspirapolvere: pulizia avviata"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Aspirapolvere: pulizia avviata"
+        message: "La pulizia è iniziata"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Aspirapolvere: pulizia completata"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Aspirapolvere: pulizia completata"
+        message: >
+          Puliti {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} m²
+          in {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} min
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "Aspirapolvere: tornato alla base"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 Aspirapolvere: agganciato"
+        message: "Il robot è tornato alla stazione di ricarica"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Aspirapolvere: errore"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Aspirapolvere: errore"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Aspirapolvere: panno ancora attaccato"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Aspirapolvere: rimuovere il panno!"
+        message: "Il robot è agganciato ma il panno è ancora attaccato"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Aspirapolvere: consumabile quasi esaurito"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Aspirapolvere: consumabile quasi esaurito"
+        message: "{{ trigger.entity_id }} è quasi esaurito ({{ trigger.to_state.state }} min rimasti)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Aspirapolvere: consumabile esaurito"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Aspirapolvere: sostituire il consumabile!"
+        message: "{{ trigger.entity_id }} necessita di sostituzione"
+  mode: parallel

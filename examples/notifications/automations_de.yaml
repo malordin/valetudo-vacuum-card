@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — Benachrichtigungen (Deutsch)
+# Ersetzen Sie "valetudo_yourrobot" durch das Entity-Präfix Ihres Roboters.
+# Fügen Sie es in automations.yaml ein oder importieren Sie es über die HA-Oberfläche.
+
+- id: 'vacuum_cleaning_started'
+  alias: "Staubsauger: Reinigung gestartet"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Staubsauger: Reinigung gestartet"
+        message: "Die Reinigung hat begonnen"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Staubsauger: Reinigung abgeschlossen"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Staubsauger: fertig"
+        message: >
+          {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} m²
+          in {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} Min gereinigt
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "Staubsauger: zurück auf der Basis"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 Staubsauger: angedockt"
+        message: "Der Roboter ist zur Ladestation zurückgekehrt"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Staubsauger: Fehler"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Staubsauger: Fehler"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Staubsauger: Wischmopp noch befestigt"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Staubsauger: Wischmopp entfernen!"
+        message: "Roboter ist angedockt, aber der Wischmopp ist noch befestigt"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Staubsauger: Verbrauchsmaterial fast leer"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Staubsauger: Verbrauchsmaterial fast leer"
+        message: "{{ trigger.entity_id }} ist fast verbraucht (noch {{ trigger.to_state.state }} Min)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Staubsauger: Verbrauchsmaterial leer"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Staubsauger: Verbrauchsmaterial ersetzen!"
+        message: "{{ trigger.entity_id }} muss ersetzt werden"
+  mode: parallel

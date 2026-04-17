@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — Notification Automations (English)
+# Replace "valetudo_yourrobot" with your robot's entity prefix.
+# Add to your automations.yaml or import via the HA UI.
+
+- id: 'vacuum_cleaning_started'
+  alias: "Vacuum: cleaning started"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Vacuum: started cleaning"
+        message: "Cleaning has started"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Vacuum: cleaning finished"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Vacuum: done"
+        message: >
+          Cleaned {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} m²
+          in {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} min
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "Vacuum: returned to dock"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 Vacuum: docked"
+        message: "Robot has returned to the dock"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Vacuum: error"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Vacuum: error"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Vacuum: mop still attached"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Vacuum: remove the mop!"
+        message: "Robot is docked but the mop is still attached"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Vacuum: consumable low"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Vacuum: consumable low"
+        message: "{{ trigger.entity_id }} is almost depleted ({{ trigger.to_state.state }} min left)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Vacuum: consumable depleted"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Vacuum: replace consumable!"
+        message: "{{ trigger.entity_id }} needs replacement"
+  mode: parallel

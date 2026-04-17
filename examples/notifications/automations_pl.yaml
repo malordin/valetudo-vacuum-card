@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — Powiadomienia (Polski)
+# Zastąp "valetudo_yourrobot" prefiksem encji swojego robota.
+# Dodaj do automations.yaml lub zaimportuj przez interfejs HA.
+
+- id: 'vacuum_cleaning_started'
+  alias: "Odkurzacz: sprzątanie rozpoczęte"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Odkurzacz: sprzątanie rozpoczęte"
+        message: "Sprzątanie zostało rozpoczęte"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Odkurzacz: sprzątanie zakończone"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Odkurzacz: sprzątanie zakończone"
+        message: >
+          Posprzątano {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} m²
+          w {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} min
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "Odkurzacz: wrócił do stacji"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 Odkurzacz: zadokowany"
+        message: "Robot wrócił do stacji ładowania"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Odkurzacz: błąd"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Odkurzacz: błąd"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Odkurzacz: mop nadal zamontowany"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Odkurzacz: zdejmij mop!"
+        message: "Robot jest zadokowany, ale mop nadal jest zamontowany"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Odkurzacz: materiał eksploatacyjny na wyczerpaniu"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Odkurzacz: materiał eksploatacyjny na wyczerpaniu"
+        message: "{{ trigger.entity_id }} jest prawie wyczerpany (pozostało {{ trigger.to_state.state }} min)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Odkurzacz: materiał eksploatacyjny wyczerpany"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Odkurzacz: wymień materiał eksploatacyjny!"
+        message: "{{ trigger.entity_id }} wymaga wymiany"
+  mode: parallel

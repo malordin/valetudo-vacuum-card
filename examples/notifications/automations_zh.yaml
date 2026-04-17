@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — 通知 (中文)
+# 将 "valetudo_yourrobot" 替换为您机器人的实体前缀。
+# 添加到 automations.yaml 或通过 HA 界面导入。
+
+- id: 'vacuum_cleaning_started'
+  alias: "吸尘器：开始清洁"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 吸尘器：开始清洁"
+        message: "清洁已开始"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "吸尘器：清洁完成"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ 吸尘器：清洁完成"
+        message: >
+          已清洁 {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} 平方米，
+          用时 {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} 分钟
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "吸尘器：返回充电桩"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 吸尘器：已归位"
+        message: "机器人已返回充电桩"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "吸尘器：错误"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 吸尘器：发生错误"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "吸尘器：拖布未取下"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 吸尘器：请取下拖布！"
+        message: "机器人已归位，但拖布仍未取下"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "吸尘器：耗材即将耗尽"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ 吸尘器：耗材即将耗尽"
+        message: "{{ trigger.entity_id }} 即将耗尽（剩余 {{ trigger.to_state.state }} 分钟）"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "吸尘器：耗材已耗尽"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 吸尘器：请更换耗材！"
+        message: "{{ trigger.entity_id }} 需要更换"
+  mode: parallel

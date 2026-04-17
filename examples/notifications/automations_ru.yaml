@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — Уведомления (Русский)
+# Замените "valetudo_yourrobot" на префикс сущностей вашего робота.
+# Добавьте в automations.yaml или импортируйте через интерфейс HA.
+
+- id: 'vacuum_cleaning_started'
+  alias: "Пылесос: уборка начата"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Пылесос: начинает уборку"
+        message: "Уборка началась"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Пылесос: уборка завершена"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Пылесос: уборка завершена"
+        message: >
+          Убрано {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} м²
+          за {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} мин
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "Пылесос: вернулся на базу"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 Пылесос: на базе"
+        message: "Робот вернулся на зарядную станцию"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Пылесос: ошибка"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Пылесос: ошибка"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Пылесос: тряпка не снята"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Пылесос: снимите тряпку!"
+        message: "Робот припаркован, но тряпка всё ещё прикреплена"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Пылесос: расходник заканчивается"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Пылесос: расходник заканчивается"
+        message: "{{ trigger.entity_id }} почти исчерпан (осталось {{ trigger.to_state.state }} мин)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Пылесос: расходник исчерпан"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Пылесос: замените расходник!"
+        message: "{{ trigger.entity_id }} требует замены"
+  mode: parallel

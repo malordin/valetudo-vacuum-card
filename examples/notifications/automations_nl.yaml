@@ -1,0 +1,120 @@
+# Valetudo Vacuum Card — Meldingen (Nederlands)
+# Vervang "valetudo_yourrobot" door het entiteitprefix van uw robot.
+# Voeg toe aan automations.yaml of importeer via de HA-interface.
+
+- id: 'vacuum_cleaning_started'
+  alias: "Stofzuiger: schoonmaak gestart"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: cleaning
+  actions:
+    - service: notify.notify
+      data:
+        title: "🤖 Stofzuiger: schoonmaak gestart"
+        message: "De schoonmaak is begonnen"
+  mode: single
+
+- id: 'vacuum_cleaning_finished'
+  alias: "Stofzuiger: schoonmaak voltooid"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      from: returning
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "✅ Stofzuiger: klaar"
+        message: >
+          {{ states('sensor.valetudo_yourrobot_current_stats_area') | float(0) / 10000 | round(1) }} m²
+          schoongemaakt in {{ (states('sensor.valetudo_yourrobot_current_stats_time') | int(0) / 60) | round(0) | int }} min
+  mode: single
+
+- id: 'vacuum_returned_to_dock'
+  alias: "Stofzuiger: terug op basis"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  actions:
+    - service: notify.notify
+      data:
+        title: "🏠 Stofzuiger: gedockt"
+        message: "De robot is teruggekeerd naar het laadstation"
+  mode: single
+
+- id: 'vacuum_error'
+  alias: "Stofzuiger: fout"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: error
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Stofzuiger: fout"
+        message: "{{ state_attr('vacuum.valetudo_yourrobot', 'status') }}"
+  mode: single
+
+- id: 'vacuum_mop_still_attached'
+  alias: "Stofzuiger: dweil nog bevestigd"
+  triggers:
+    - platform: state
+      entity_id: vacuum.valetudo_yourrobot
+      to: docked
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.valetudo_yourrobot_mop_attachment
+      state: 'on'
+  actions:
+    - service: notify.notify
+      data:
+        title: "🧹 Stofzuiger: verwijder de dweil!"
+        message: "Robot is gedockt maar de dweil is nog bevestigd"
+  mode: single
+  max_exceeded: silent
+
+- id: 'vacuum_consumable_warning'
+  alias: "Stofzuiger: verbruiksartikel bijna op"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 540
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 360
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 270
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 54
+  actions:
+    - service: notify.notify
+      data:
+        title: "⚠️ Stofzuiger: verbruiksartikel bijna op"
+        message: "{{ trigger.entity_id }} is bijna op (nog {{ trigger.to_state.state }} min)"
+  mode: parallel
+
+- id: 'vacuum_consumable_depleted'
+  alias: "Stofzuiger: verbruiksartikel op"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_right_brush
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_main_filter
+      below: 1
+    - platform: numeric_state
+      entity_id: sensor.valetudo_yourrobot_sensor_cleaning
+      below: 1
+  actions:
+    - service: notify.notify
+      data:
+        title: "🚨 Stofzuiger: vervang verbruiksartikel!"
+        message: "{{ trigger.entity_id }} moet worden vervangen"
+  mode: parallel
