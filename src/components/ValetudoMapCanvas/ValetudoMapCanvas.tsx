@@ -882,17 +882,22 @@ export function ValetudoMapCanvas({
       {/* Zoom controls */}
       <div className="valetudo-map-canvas__zoom-controls">
         {onIterationsChange && (
-          <button
-            type="button"
-            className="valetudo-map-canvas__iterations-btn"
-            title="Количество проходов"
-            onClick={(e) => {
-              e.stopPropagation();
-              onIterationsChange(iterations >= 4 ? 1 : iterations + 1);
-            }}
-          >
-            {iterations}×
-          </button>
+          <div className="valetudo-map-canvas__iterations-controls" role="group" aria-label="Количество проходов">
+            {[1, 2, 3, 4].map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={`valetudo-map-canvas__iterations-btn${iterations === value ? ' valetudo-map-canvas__iterations-btn--active' : ''}`}
+                title={`Количество проходов: ${value}×`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onIterationsChange(value);
+                }}
+              >
+                {value}×
+              </button>
+            ))}
+          </div>
         )}
         <button
           type="button"

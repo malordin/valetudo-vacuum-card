@@ -246,6 +246,8 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
             restrictions={isRestrictionsMode ? restrictions : undefined}
             onRestrictionDrawn={isRestrictionsMode ? handleRestrictionDrawn : undefined}
             onRestrictionSelect={isRestrictionsMode ? selectItem : undefined}
+            iterations={cleanIterations}
+            onIterationsChange={setCleanIterations}
             onSegmentClick={
               selectedMode === 'room'
                 ? (segId) => {
@@ -331,8 +333,6 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         waterEntity={waterEntity}
         onFanChange={handleSetFanSpeed}
         onWaterChange={handleSetWater}
-        iterations={cleanIterations}
-        onIterationsChange={setCleanIterations}
         disabled={controlsDisabled}
       />
 

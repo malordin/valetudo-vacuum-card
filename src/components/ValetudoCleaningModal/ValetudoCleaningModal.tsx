@@ -19,8 +19,6 @@ interface ValetudoCleaningModalProps {
   waterEntity?: HassEntity;
   onFanChange: (value: string) => void;
   onWaterChange: (value: string) => void;
-  iterations: number;
-  onIterationsChange: (value: number) => void;
   disabled?: boolean;
 }
 
@@ -41,8 +39,6 @@ export function ValetudoCleaningModal({
   waterEntity,
   onFanChange,
   onWaterChange,
-  iterations,
-  onIterationsChange,
   disabled,
 }: ValetudoCleaningModalProps) {
   const fanOptions = (fanEntity?.attributes?.options as string[] | undefined) ?? [];
@@ -172,24 +168,6 @@ export function ValetudoCleaningModal({
                 </div>
               </section>
             )}
-
-            {/* Iterations — number of cleaning passes */}
-            <section className="cleaning-mode-modal__section">
-              <h3 className="cleaning-mode-modal__section-title">🔁 Количество проходов</h3>
-              <div className="cleaning-mode-modal__power-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-                {[1, 2, 3, 4].map((n) => (
-                  <div key={n} className="cleaning-mode-modal__power-option">
-                    <CircularButton
-                      size="small"
-                      selected={iterations === n}
-                      onClick={() => !disabled && onIterationsChange(n)}
-                      icon={<span style={{ fontSize: '13px', fontWeight: 600 }}>{n}×</span>}
-                    />
-                    <span className="cleaning-mode-modal__power-label">{n}×</span>
-                  </div>
-                ))}
-              </div>
-            </section>
           </div>
         </div>
       </div>
