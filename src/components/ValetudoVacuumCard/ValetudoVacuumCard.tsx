@@ -170,78 +170,71 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
 
   const handleSaveRestrictions = useCallback(async () => {
     const payload = buildRestrictionsPayload(restrictions.walls, restrictions.zones);
-    console.log('[valetudo] Saving restrictions:', JSON.stringify(payload));
+    console.log('[valetudo] Saving restrictions payload:', JSON.stringify(payload));
     setRestrictionsSaving(true);
     try {
       let saved = false;
 
-      // 1. Direct REST via valetudo_url (works if HTTP page or Valetudo behind HTTPS)
+      // 1. Direct REST via valetudo_url from config (works from HTTP pages)
       const robotUrl = config.valetudo_url?.replace(/\/$/, '');
       if (robotUrl) {
         const res = await fetch(
           `${robotUrl}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`,
-          {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          }
+          { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
         );
-        if (!res.ok) throw new Error(`REST error ${res.status}: ${await res.text()}`);
-        console.log('[valetudo] Saved via REST');
+        if (!res.ok) throw new Error(`REST ${res.status}: ${await res.text()}`);
+        console.log('[valetudo] Saved via direct REST');
         saved = true;
       }
 
-      // 2. HA Supervisor ingress (if Valetudo is an HA addon — no CORS/mixed-content issues)
+      // 2. HA rest_command (proxied on HA server — bypasses CORS/mixed-content)
+      // Requires in configuration.yaml:
+      //   rest_command:
+      //     valetudo_set_restrictions:
+      //       url: "http://ROBOT_IP/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability"
+      //       method: PUT
+      //       content_type: application/json
+      //       payload: "{{ payload }}"
       if (!saved) {
         try {
-          const addonsRes = await hass.fetchWithAuth('/api/hassio/addons');
-          if (addonsRes.ok) {
-            const addonsJson = await addonsRes.json() as { data?: { addons?: Array<{ slug: string; name: string }> } };
-            const addon = addonsJson?.data?.addons?.find(
-              (a) => a.name.toLowerCase().includes('valetudo') || a.slug.toLowerCase().includes('valetudo')
-            );
-            if (addon) {
-              const res = await hass.fetchWithAuth(
-                `/api/hassio_ingress/${addon.slug}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`,
-                { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
-              );
-              if (!res.ok) throw new Error(`Ingress error ${res.status}`);
-              console.log('[valetudo] Saved via HA Supervisor ingress (addon:', addon.slug, ')');
-              saved = true;
-            }
+          await hass.callService('rest_command', 'valetudo_set_restrictions', {
+            payload: JSON.stringify(payload),
+          });
+          console.log('[valetudo] Saved via HA rest_command');
+          saved = true;
+        } catch (restCmdErr: unknown) {
+          const msg = String(restCmdErr);
+          // "Service not found" means rest_command not configured — not an error
+          if (!msg.includes('not found') && !msg.includes('unknown')) {
+            throw restCmdErr;
           }
-        } catch (supervisorErr) {
-          console.warn('[valetudo] Supervisor ingress failed:', supervisorErr);
+          console.log('[valetudo] rest_command not configured, trying next method');
         }
       }
 
-      // 3. MQTT fallback
       if (!saved) {
-        const identifier = entityIds.mqttIdentifier;
-        if (!identifier) {
-          showToast('⚠️ Добавь valetudo_url или valetudo_identifier в конфиг');
-          return;
-        }
-        const topic = `valetudo/${identifier}/CombinedVirtualRestrictionsCapability/set`;
-        console.log('[valetudo] Trying MQTT topic:', topic);
-        await hass.callService('mqtt', 'publish', {
-          topic,
-          payload: JSON.stringify(payload),
-          retain: false,
-        });
-        console.log('[valetudo] MQTT publish done (no confirmation available)');
-        saved = true;
+        const configHint =
+          'Добавь в configuration.yaml:\n' +
+          'rest_command:\n' +
+          '  valetudo_set_restrictions:\n' +
+          '    url: "http://ROBOT_IP/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability"\n' +
+          '    method: PUT\n' +
+          '    content_type: application/json\n' +
+          '    payload: "{{ payload }}"';
+        console.warn('[valetudo] Could not save — no working method.\n' + configHint);
+        showToast('⚠️ Нужна настройка. Смотри консоль (F12).');
+        return;
       }
 
       markSaved();
       showToast('Ограничения сохранены');
     } catch (err) {
-      console.error('[valetudo] Save restrictions failed:', err);
+      console.error('[valetudo] Save failed:', err);
       showToast(`Ошибка: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setRestrictionsSaving(false);
     }
-  }, [config.valetudo_url, entityIds.mqttIdentifier, restrictions, hass, markSaved, showToast]);
+  }, [config.valetudo_url, restrictions, hass, markSaved, showToast]);
 
   const controlsDisabled = isRunning;
 
