@@ -879,64 +879,61 @@ export function ValetudoMapCanvas({
         )}
       </div>
 
-      {/* Zoom controls */}
-      <div className="valetudo-map-canvas__zoom-controls">
+      {/* Bottom-right controls: iterations + zoom */}
+      <div className="valetudo-map-canvas__bottom-controls">
         {onIterationsChange && (
-          <div className="valetudo-map-canvas__iterations-controls" role="group" aria-label="Количество проходов">
-            {[1, 2, 3, 4].map((value) => (
-              <button
-                key={value}
-                type="button"
-                className={`valetudo-map-canvas__iterations-btn${iterations === value ? ' valetudo-map-canvas__iterations-btn--active' : ''}`}
-                title={`Количество проходов: ${value}×`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onIterationsChange(value);
-                }}
-              >
-                {value}×
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            className="valetudo-map-canvas__iterations-btn"
+            title="Количество проходов"
+            onClick={(e) => {
+              e.stopPropagation();
+              onIterationsChange(iterations >= 4 ? 1 : iterations + 1);
+            }}
+          >
+            {iterations}×
+          </button>
         )}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setZoom((z) => Math.min(8, z * 1.5));
-          }}
-        >
-          +
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setZoom((prev) => {
-              const nz = Math.max(1, prev / 1.5);
-              if (nz <= 1) {
-                setPan({ x: 0, y: 0 });
-                return 1;
-              }
-              return nz;
-            });
-          }}
-        >
-          −
-        </button>
-        {zoom > 1 && (
+        <div className="valetudo-map-canvas__zoom-controls">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setZoom(1);
-              setPan({ x: 0, y: 0 });
+              setZoom((z) => Math.min(8, z * 1.5));
             }}
-            style={{ fontSize: '0.7rem' }}
           >
-            ✕
+            +
           </button>
-        )}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setZoom((prev) => {
+                const nz = Math.max(1, prev / 1.5);
+                if (nz <= 1) {
+                  setPan({ x: 0, y: 0 });
+                  return 1;
+                }
+                return nz;
+              });
+            }}
+          >
+            −
+          </button>
+          {zoom > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setZoom(1);
+                setPan({ x: 0, y: 0 });
+              }}
+              style={{ fontSize: '0.7rem' }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
