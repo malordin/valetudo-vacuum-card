@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs, react-hooks/exhaustive-deps */
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import type { RawMapData, RawMapLayer } from '../../utils/ValetudoRawMapData';
 import type { CleaningMode, Zone } from '../../types/homeassistant';
@@ -14,15 +15,18 @@ const SEGMENT_COLORS = [
   'rgba( 80, 185, 185, 0.85)',
 ];
 
-const FLOOR_COLOR   = 'rgba(120, 164, 193, 0.6)';
-const WALL_COLOR    = 'rgba( 50,  50,  50, 1)';
-const PATH_COLOR    = 'rgba(255, 255, 255, 0.85)';
+const FLOOR_COLOR = 'rgba(120, 164, 193, 0.6)';
+const WALL_COLOR = 'rgba( 50,  50,  50, 1)';
+const PATH_COLOR = 'rgba(255, 255, 255, 0.85)';
 const CHARGER_COLOR = '#4CAF50';
-const ROBOT_COLOR   = '#2196F3';
+const ROBOT_COLOR = '#2196F3';
 const SCALE = 2; // px per map pixel
 
 function getBoundingBox(mapData: RawMapData) {
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
 
   for (const layer of mapData.layers) {
     for (let i = 0; i < layer.pixels.length; i += 2) {
@@ -37,8 +41,10 @@ function getBoundingBox(mapData: RawMapData) {
 
   // Fallback to map size
   if (minX === Infinity) {
-    minX = 0; minY = 0;
-    maxX = mapData.size.x; maxY = mapData.size.y;
+    minX = 0;
+    minY = 0;
+    maxX = mapData.size.x;
+    maxY = mapData.size.y;
   }
 
   return { minX, minY, maxX, maxY };
@@ -47,12 +53,7 @@ function getBoundingBox(mapData: RawMapData) {
 function drawLayer(ctx: CanvasRenderingContext2D, layer: RawMapLayer, color: string, offsetX: number, offsetY: number) {
   ctx.fillStyle = color;
   for (let i = 0; i < layer.pixels.length; i += 2) {
-    ctx.fillRect(
-      (layer.pixels[i] - offsetX) * SCALE,
-      (layer.pixels[i + 1] - offsetY) * SCALE,
-      SCALE,
-      SCALE
-    );
+    ctx.fillRect((layer.pixels[i] - offsetX) * SCALE, (layer.pixels[i + 1] - offsetY) * SCALE, SCALE, SCALE);
   }
 }
 
@@ -81,6 +82,9 @@ interface ValetudoMapCanvasProps {
   restrictions?: RestrictionsState;
   onRestrictionDrawn?: (type: 'wall' | 'zone', p1: { x: number; y: number }, p2: { x: number; y: number }) => void;
   onRestrictionSelect?: (id: string | null) => void;
+  // Iterations cycling
+  iterations?: number;
+  onIterationsChange?: (value: number) => void;
 }
 
 // Stored state for coordinate conversion (filled during render)
@@ -89,7 +93,19 @@ interface MapGeometry {
   pixelSize: number;
 }
 
-export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneChange, onSegmentClick, restrictions, onRestrictionDrawn, onRestrictionSelect }: ValetudoMapCanvasProps) {
+export function ValetudoMapCanvas({
+  mapData,
+  mode,
+  selectedRooms,
+  zone,
+  onZoneChange,
+  onSegmentClick,
+  restrictions,
+  onRestrictionDrawn,
+  onRestrictionSelect,
+  iterations = 1,
+  onIterationsChange,
+}: ValetudoMapCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const geoRef = useRef<MapGeometry>({ bb: { minX: 0, minY: 0 }, pixelSize: 50 });
@@ -113,7 +129,11 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
   // ─── Widget zone state (mobile: movable rectangle) ────────────────────────
   // widgetZone: position/size in canvas px coords (before scale)
   const [widgetZone, setWidgetZone] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  const widgetDragRef = useRef<{ mode: 'move' | 'resize'; startPtr: { x: number; y: number }; startZone: { x: number; y: number; w: number; h: number } } | null>(null);
+  const widgetDragRef = useRef<{
+    mode: 'move' | 'resize';
+    startPtr: { x: number; y: number };
+    startZone: { x: number; y: number; w: number; h: number };
+  } | null>(null);
 
   const isTouchDevice = useMemo(() => window.matchMedia('(pointer: coarse)').matches, []);
 
@@ -134,20 +154,23 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
   }, []);
 
   // Convert screen point → canvas pixel (accounting for zoom/pan/css scale)
-  const screenToCanvas = useCallback((screenX: number, screenY: number): { x: number; y: number } => {
-    const container = containerRef.current;
-    const canvas = canvasRef.current;
-    if (!container || !canvas) return { x: 0, y: 0 };
-    const rect = container.getBoundingClientRect();
-    // Position relative to container center (pan pivot)
-    const cx = (screenX - rect.left - rect.width / 2 - pan.x) / zoom + rect.width / 2;
-    const cy = (screenY - rect.top - rect.height / 2 - pan.y) / zoom + rect.height / 2;
-    // canvas CSS width to canvas logical width ratio
-    const cssW = rect.width;
-    const logW = canvas.width;
-    const ratio = logW / cssW;
-    return { x: cx * ratio, y: cy * ratio };
-  }, [zoom, pan]);
+  const screenToCanvas = useCallback(
+    (screenX: number, screenY: number): { x: number; y: number } => {
+      const container = containerRef.current;
+      const canvas = canvasRef.current;
+      if (!container || !canvas) return { x: 0, y: 0 };
+      const rect = container.getBoundingClientRect();
+      // Position relative to container center (pan pivot)
+      const cx = (screenX - rect.left - rect.width / 2 - pan.x) / zoom + rect.width / 2;
+      const cy = (screenY - rect.top - rect.height / 2 - pan.y) / zoom + rect.height / 2;
+      // canvas CSS width to canvas logical width ratio
+      const cssW = rect.width;
+      const logW = canvas.width;
+      const ratio = logW / cssW;
+      return { x: cx * ratio, y: cy * ratio };
+    },
+    [zoom, pan]
+  );
 
   // Reset zoom/pan when mode changes
   useEffect(() => {
@@ -225,8 +248,8 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
       if (layer.type === 'segment') {
         const sid = layer.metaData.segmentId;
         const baseColor = sid ? (segColors.get(sid) ?? FLOOR_COLOR) : FLOOR_COLOR;
-        const isSelected = sid && selectedRooms && selectedRooms.size > 0
-          ? selectedRooms.has(segIdToNumber(sid)) : true;
+        const isSelected =
+          sid && selectedRooms && selectedRooms.size > 0 ? selectedRooms.has(segIdToNumber(sid)) : true;
         const color = isSelected ? baseColor : baseColor.replace(/[\d.]+\)$/, '0.35)');
         drawLayer(ctx, layer, color, bb.minX, bb.minY);
       }
@@ -244,7 +267,8 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
       for (let i = 0; i < entity.points.length; i += 2) {
         const x = (entity.points[i] / pixelSize - bb.minX) * SCALE;
         const y = (entity.points[i + 1] / pixelSize - bb.minY) * SCALE;
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
       ctx.stroke();
       ctx.setLineDash([]);
@@ -298,7 +322,8 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
       for (let i = 0; i < entity.points.length; i += 2) {
         const px = (entity.points[i] / pixelSize - bb.minX) * SCALE;
         const py = (entity.points[i + 1] / pixelSize - bb.minY) * SCALE;
-        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
       }
       ctx.closePath();
       ctx.fillStyle = 'rgba(255, 152, 0, 0.22)';
@@ -346,7 +371,10 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
         ctx.lineCap = 'butt';
         // Endpoint dots
         if (mode === 'restrictions') {
-          for (const [ex, ey] of [[x1, y1], [x2, y2]] as [number, number][]) {
+          for (const [ex, ey] of [
+            [x1, y1],
+            [x2, y2],
+          ] as [number, number][]) {
             ctx.beginPath();
             ctx.arc(ex, ey, SCALE * 1.5, 0, 2 * Math.PI);
             ctx.fillStyle = 'rgba(244, 67, 54, 0.9)';
@@ -360,14 +388,13 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
         const fillColor = isMop
           ? `rgba(33, 150, 243, ${mode === 'restrictions' ? 0.2 : 0.1})`
           : `rgba(244, 67, 54, ${mode === 'restrictions' ? 0.2 : 0.1})`;
-        const strokeColor = isMop
-          ? `rgba(33, 150, 243, ${alpha})`
-          : `rgba(244, 67, 54, ${alpha})`;
+        const strokeColor = isMop ? `rgba(33, 150, 243, ${alpha})` : `rgba(244, 67, 54, ${alpha})`;
         ctx.beginPath();
         for (let i = 0; i < entity.points.length; i += 2) {
           const px = (entity.points[i] / pixelSize - bb.minX) * SCALE;
           const py = (entity.points[i + 1] / pixelSize - bb.minY) * SCALE;
-          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
         }
         ctx.closePath();
         ctx.fillStyle = fillColor;
@@ -447,7 +474,7 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
       e.preventDefault();
       e.stopPropagation();
       const delta = e.deltaY < 0 ? 1.15 : 1 / 1.15;
-      setZoom(prev => {
+      setZoom((prev) => {
         const nz = Math.min(8, Math.max(1, prev * delta));
         if (nz <= 1) setPan({ x: 0, y: 0 });
         return nz;
@@ -458,182 +485,196 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
   }, []);
 
   // ─── Pointer events: pan + zone drawing ────────────────────────────────────
-  const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-    if (activePointers.current.size === 2) {
-      // Two fingers → pinch zoom, cancel any pan/drag
-      isDragging.current = false;
-      isPanning.current = false;
-      setDragStart(null);
-      setDragCurrent(null);
-      return;
-    }
+      if (activePointers.current.size === 2) {
+        // Two fingers → pinch zoom, cancel any pan/drag
+        isDragging.current = false;
+        isPanning.current = false;
+        setDragStart(null);
+        setDragCurrent(null);
+        return;
+      }
 
-    e.currentTarget.setPointerCapture(e.pointerId);
+      e.currentTarget.setPointerCapture(e.pointerId);
 
-    if (mode === 'zone' && !isTouchDevice) {
-      // Desktop drag-to-draw
-      isDragging.current = true;
-      const pt = screenToCanvas(e.clientX, e.clientY);
-      setDragStart(pt);
-      setDragCurrent(pt);
-      onZoneChange?.(null);
-      return;
-    }
-
-    if (mode === 'restrictions' && restrictions && !isTouchDevice) {
-      const tool = restrictions.tool;
-      if (tool === 'wall' || tool === 'no_go' || tool === 'no_mop') {
+      if (mode === 'zone' && !isTouchDevice) {
+        // Desktop drag-to-draw
         isDragging.current = true;
         const pt = screenToCanvas(e.clientX, e.clientY);
         setDragStart(pt);
         setDragCurrent(pt);
+        onZoneChange?.(null);
         return;
       }
-      // select tool — handled in click
-      return;
-    }
 
-    if (zoom > 1) {
-      // Pan
-      isPanning.current = true;
-      lastPanPos.current = { x: e.clientX, y: e.clientY };
-    }
-  }, [mode, isTouchDevice, zoom, screenToCanvas, onZoneChange]);
-
-  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-    // Pinch zoom
-    if (activePointers.current.size === 2) {
-      const pts = Array.from(activePointers.current.values());
-      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-      if (lastPinchDist.current !== null) {
-        const delta = dist / lastPinchDist.current;
-        setZoom(z => Math.min(8, Math.max(1, z * delta)));
+      if (mode === 'restrictions' && restrictions && !isTouchDevice) {
+        const tool = restrictions.tool;
+        if (tool === 'wall' || tool === 'no_go' || tool === 'no_mop') {
+          isDragging.current = true;
+          const pt = screenToCanvas(e.clientX, e.clientY);
+          setDragStart(pt);
+          setDragCurrent(pt);
+          return;
+        }
+        // select tool — handled in click
+        return;
       }
-      lastPinchDist.current = dist;
-      return;
-    }
-    lastPinchDist.current = null;
 
-    if (isDragging.current && mode === 'zone' && !isTouchDevice) {
-      setDragCurrent(screenToCanvas(e.clientX, e.clientY));
-      return;
-    }
-
-    if (isDragging.current && mode === 'restrictions' && !isTouchDevice) {
-      setDragCurrent(screenToCanvas(e.clientX, e.clientY));
-      return;
-    }
-
-    if (isPanning.current && lastPanPos.current) {
-      const dx = e.clientX - lastPanPos.current.x;
-      const dy = e.clientY - lastPanPos.current.y;
-      lastPanPos.current = { x: e.clientX, y: e.clientY };
-      const container = containerRef.current;
-      if (!container) return;
-      const maxPan = (zoom - 1) * container.getBoundingClientRect().width / 2;
-      setPan(p => ({
-        x: Math.max(-maxPan, Math.min(maxPan, p.x + dx)),
-        y: Math.max(-maxPan, Math.min(maxPan, p.y + dy)),
-      }));
-    }
-  }, [mode, isTouchDevice, zoom, screenToCanvas]);
-
-  const handlePointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    activePointers.current.delete(e.pointerId);
-    lastPinchDist.current = null;
-
-    if (isDragging.current && mode === 'zone' && !isTouchDevice) {
-      isDragging.current = false;
-      const end = screenToCanvas(e.clientX, e.clientY);
-      if (dragStart && (Math.abs(end.x - dragStart.x) > 8 || Math.abs(end.y - dragStart.y) > 8)) {
-        const mm1 = canvasToMm(dragStart.x, dragStart.y);
-        const mm2 = canvasToMm(end.x, end.y);
-        onZoneChange?.({
-          x1: Math.round(Math.min(mm1.x, mm2.x)),
-          y1: Math.round(Math.min(mm1.y, mm2.y)),
-          x2: Math.round(Math.max(mm1.x, mm2.x)),
-          y2: Math.round(Math.max(mm1.y, mm2.y)),
-        });
+      if (zoom > 1) {
+        // Pan
+        isPanning.current = true;
+        lastPanPos.current = { x: e.clientX, y: e.clientY };
       }
-      setDragStart(null);
-      setDragCurrent(null);
-      return;
-    }
+    },
+    [mode, isTouchDevice, zoom, screenToCanvas, onZoneChange]
+  );
 
-    if (isDragging.current && mode === 'restrictions' && restrictions && !isTouchDevice) {
-      isDragging.current = false;
-      const end = screenToCanvas(e.clientX, e.clientY);
-      if (dragStart && (Math.abs(end.x - dragStart.x) > 5 || Math.abs(end.y - dragStart.y) > 5)) {
-        const mm1 = canvasToMm(dragStart.x, dragStart.y);
-        const mm2 = canvasToMm(end.x, end.y);
-        const p1 = { x: Math.round(mm1.x), y: Math.round(mm1.y) };
-        const p2 = { x: Math.round(mm2.x), y: Math.round(mm2.y) };
-        const drawType = restrictions.tool === 'wall' ? 'wall' : 'zone';
-        onRestrictionDrawn?.(drawType, p1, p2);
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      activePointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      // Pinch zoom
+      if (activePointers.current.size === 2) {
+        const pts = Array.from(activePointers.current.values());
+        const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        if (lastPinchDist.current !== null) {
+          const delta = dist / lastPinchDist.current;
+          setZoom((z) => Math.min(8, Math.max(1, z * delta)));
+        }
+        lastPinchDist.current = dist;
+        return;
       }
-      setDragStart(null);
-      setDragCurrent(null);
-      return;
-    }
+      lastPinchDist.current = null;
 
-    isPanning.current = false;
-    lastPanPos.current = null;
-  }, [mode, isTouchDevice, dragStart, screenToCanvas, canvasToMm, onZoneChange, restrictions, onRestrictionDrawn]);
+      if (isDragging.current && mode === 'zone' && !isTouchDevice) {
+        setDragCurrent(screenToCanvas(e.clientX, e.clientY));
+        return;
+      }
+
+      if (isDragging.current && mode === 'restrictions' && !isTouchDevice) {
+        setDragCurrent(screenToCanvas(e.clientX, e.clientY));
+        return;
+      }
+
+      if (isPanning.current && lastPanPos.current) {
+        const dx = e.clientX - lastPanPos.current.x;
+        const dy = e.clientY - lastPanPos.current.y;
+        lastPanPos.current = { x: e.clientX, y: e.clientY };
+        const container = containerRef.current;
+        if (!container) return;
+        const maxPan = ((zoom - 1) * container.getBoundingClientRect().width) / 2;
+        setPan((p) => ({
+          x: Math.max(-maxPan, Math.min(maxPan, p.x + dx)),
+          y: Math.max(-maxPan, Math.min(maxPan, p.y + dy)),
+        }));
+      }
+    },
+    [mode, isTouchDevice, zoom, screenToCanvas]
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      activePointers.current.delete(e.pointerId);
+      lastPinchDist.current = null;
+
+      if (isDragging.current && mode === 'zone' && !isTouchDevice) {
+        isDragging.current = false;
+        const end = screenToCanvas(e.clientX, e.clientY);
+        if (dragStart && (Math.abs(end.x - dragStart.x) > 8 || Math.abs(end.y - dragStart.y) > 8)) {
+          const mm1 = canvasToMm(dragStart.x, dragStart.y);
+          const mm2 = canvasToMm(end.x, end.y);
+          onZoneChange?.({
+            x1: Math.round(Math.min(mm1.x, mm2.x)),
+            y1: Math.round(Math.min(mm1.y, mm2.y)),
+            x2: Math.round(Math.max(mm1.x, mm2.x)),
+            y2: Math.round(Math.max(mm1.y, mm2.y)),
+          });
+        }
+        setDragStart(null);
+        setDragCurrent(null);
+        return;
+      }
+
+      if (isDragging.current && mode === 'restrictions' && restrictions && !isTouchDevice) {
+        isDragging.current = false;
+        const end = screenToCanvas(e.clientX, e.clientY);
+        if (dragStart && (Math.abs(end.x - dragStart.x) > 5 || Math.abs(end.y - dragStart.y) > 5)) {
+          const mm1 = canvasToMm(dragStart.x, dragStart.y);
+          const mm2 = canvasToMm(end.x, end.y);
+          const p1 = { x: Math.round(mm1.x), y: Math.round(mm1.y) };
+          const p2 = { x: Math.round(mm2.x), y: Math.round(mm2.y) };
+          const drawType = restrictions.tool === 'wall' ? 'wall' : 'zone';
+          onRestrictionDrawn?.(drawType, p1, p2);
+        }
+        setDragStart(null);
+        setDragCurrent(null);
+        return;
+      }
+
+      isPanning.current = false;
+      lastPanPos.current = null;
+    },
+    [mode, isTouchDevice, dragStart, screenToCanvas, canvasToMm, onZoneChange, restrictions, onRestrictionDrawn]
+  );
 
   // Room click / restrictions select
-  const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (mode === 'restrictions' && restrictions && restrictions.tool === 'select' && onRestrictionSelect) {
-      const pt = screenToCanvas(e.clientX, e.clientY);
-      const { bb, pixelSize } = geoRef.current;
-      const toC = (mmX: number, mmY: number) => ({
-        x: (mmX / pixelSize - bb.minX) * SCALE,
-        y: (mmY / pixelSize - bb.minY) * SCALE,
-      });
-      // Hit-test walls (within SCALE*4 px)
-      const HIT_PX = SCALE * 5;
-      for (const w of [...restrictions.walls].reverse()) {
-        const p1 = toC(w.pA.x, w.pA.y);
-        const p2 = toC(w.pB.x, w.pB.y);
-        const dx = p2.x - p1.x; const dy = p2.y - p1.y;
-        const len2 = dx * dx + dy * dy;
-        let t = len2 > 0 ? ((pt.x - p1.x) * dx + (pt.y - p1.y) * dy) / len2 : 0;
-        t = Math.max(0, Math.min(1, t));
-        const nearX = p1.x + t * dx; const nearY = p1.y + t * dy;
-        if (Math.hypot(pt.x - nearX, pt.y - nearY) <= HIT_PX) {
-          onRestrictionSelect(w.id);
-          return;
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (mode === 'restrictions' && restrictions && restrictions.tool === 'select' && onRestrictionSelect) {
+        const pt = screenToCanvas(e.clientX, e.clientY);
+        const { bb, pixelSize } = geoRef.current;
+        const toC = (mmX: number, mmY: number) => ({
+          x: (mmX / pixelSize - bb.minX) * SCALE,
+          y: (mmY / pixelSize - bb.minY) * SCALE,
+        });
+        // Hit-test walls (within SCALE*4 px)
+        const HIT_PX = SCALE * 5;
+        for (const w of [...restrictions.walls].reverse()) {
+          const p1 = toC(w.pA.x, w.pA.y);
+          const p2 = toC(w.pB.x, w.pB.y);
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const len2 = dx * dx + dy * dy;
+          let t = len2 > 0 ? ((pt.x - p1.x) * dx + (pt.y - p1.y) * dy) / len2 : 0;
+          t = Math.max(0, Math.min(1, t));
+          const nearX = p1.x + t * dx;
+          const nearY = p1.y + t * dy;
+          if (Math.hypot(pt.x - nearX, pt.y - nearY) <= HIT_PX) {
+            onRestrictionSelect(w.id);
+            return;
+          }
         }
-      }
-      // Hit-test zones (point-in-rect)
-      for (const z of [...restrictions.zones].reverse()) {
-        const pts = [z.pA, z.pB, z.pC, z.pD].map((p) => toC(p.x, p.y));
-        const minX = Math.min(...pts.map((p) => p.x));
-        const maxX = Math.max(...pts.map((p) => p.x));
-        const minY = Math.min(...pts.map((p) => p.y));
-        const maxY = Math.max(...pts.map((p) => p.y));
-        if (pt.x >= minX - HIT_PX && pt.x <= maxX + HIT_PX && pt.y >= minY - HIT_PX && pt.y <= maxY + HIT_PX) {
-          onRestrictionSelect(z.id);
-          return;
+        // Hit-test zones (point-in-rect)
+        for (const z of [...restrictions.zones].reverse()) {
+          const pts = [z.pA, z.pB, z.pC, z.pD].map((p) => toC(p.x, p.y));
+          const minX = Math.min(...pts.map((p) => p.x));
+          const maxX = Math.max(...pts.map((p) => p.x));
+          const minY = Math.min(...pts.map((p) => p.y));
+          const maxY = Math.max(...pts.map((p) => p.y));
+          if (pt.x >= minX - HIT_PX && pt.x <= maxX + HIT_PX && pt.y >= minY - HIT_PX && pt.y <= maxY + HIT_PX) {
+            onRestrictionSelect(z.id);
+            return;
+          }
         }
+        onRestrictionSelect(null);
+        return;
       }
-      onRestrictionSelect(null);
-      return;
-    }
 
-    if (mode !== 'room' || !onSegmentClick) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const pt = screenToCanvas(e.clientX, e.clientY);
-    const { bb } = geoRef.current;
-    const mx = Math.floor(pt.x / SCALE) + bb.minX;
-    const my = Math.floor(pt.y / SCALE) + bb.minY;
-    const segId = segLookupRef.current.get(`${mx},${my}`);
-    if (segId !== undefined) onSegmentClick(segId);
-  }, [mode, onSegmentClick, screenToCanvas, restrictions, onRestrictionSelect]);
+      if (mode !== 'room' || !onSegmentClick) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const pt = screenToCanvas(e.clientX, e.clientY);
+      const { bb } = geoRef.current;
+      const mx = Math.floor(pt.x / SCALE) + bb.minX;
+      const my = Math.floor(pt.y / SCALE) + bb.minY;
+      const segId = segLookupRef.current.get(`${mx},${my}`);
+      if (segId !== undefined) onSegmentClick(segId);
+    },
+    [mode, onSegmentClick, screenToCanvas, restrictions, onRestrictionSelect]
+  );
 
   // ─── Widget zone drag handles ──────────────────────────────────────────────
   // widgetZone coords are in canvas logical px; on screen they appear scaled
@@ -644,57 +685,63 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
     const canvasCssW = canvas.width; // we'll use % of canvas logical
     const canvasCssH = canvas.height;
     return {
-      left:   `${widgetZone.x / canvasCssW * 100}%`,
-      top:    `${widgetZone.y / canvasCssH * 100}%`,
-      width:  `${widgetZone.w / canvasCssW * 100}%`,
-      height: `${widgetZone.h / canvasCssH * 100}%`,
+      left: `${(widgetZone.x / canvasCssW) * 100}%`,
+      top: `${(widgetZone.y / canvasCssH) * 100}%`,
+      width: `${(widgetZone.w / canvasCssW) * 100}%`,
+      height: `${(widgetZone.h / canvasCssH) * 100}%`,
     };
   }, [widgetZone]);
 
-  const handleWidgetPointerDown = useCallback((dragMode: 'move' | 'resize', e: React.PointerEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    e.currentTarget.setPointerCapture(e.pointerId);
-    if (!widgetZone) return;
-    widgetDragRef.current = {
-      mode: dragMode,
-      startPtr: { x: e.clientX, y: e.clientY },
-      startZone: { ...widgetZone },
-    };
-  }, [widgetZone]);
+  const handleWidgetPointerDown = useCallback(
+    (dragMode: 'move' | 'resize', e: React.PointerEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      if (!widgetZone) return;
+      widgetDragRef.current = {
+        mode: dragMode,
+        startPtr: { x: e.clientX, y: e.clientY },
+        startZone: { ...widgetZone },
+      };
+    },
+    [widgetZone]
+  );
 
-  const handleWidgetPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (!widgetDragRef.current || !canvasRef.current) return;
-    e.stopPropagation();
-    const { mode: dm, startPtr, startZone } = widgetDragRef.current;
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!container) return;
+  const handleWidgetPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!widgetDragRef.current || !canvasRef.current) return;
+      e.stopPropagation();
+      const { mode: dm, startPtr, startZone } = widgetDragRef.current;
+      const canvas = canvasRef.current;
+      const container = containerRef.current;
+      if (!container) return;
 
-    // screen delta → canvas px delta (accounting for zoom + canvas CSS scale)
-    const rect = container.getBoundingClientRect();
-    const cssToLogical = canvas.width / rect.width / zoom;
-    const dx = (e.clientX - startPtr.x) * cssToLogical;
-    const dy = (e.clientY - startPtr.y) * cssToLogical;
+      // screen delta → canvas px delta (accounting for zoom + canvas CSS scale)
+      const rect = container.getBoundingClientRect();
+      const cssToLogical = canvas.width / rect.width / zoom;
+      const dx = (e.clientX - startPtr.x) * cssToLogical;
+      const dy = (e.clientY - startPtr.y) * cssToLogical;
 
-    setWidgetZone(prev => {
-      if (!prev) return prev;
-      const cw = canvas.width;
-      const ch = canvas.height;
-      if (dm === 'move') {
-        return {
-          ...prev,
-          x: Math.max(0, Math.min(cw - startZone.w, startZone.x + dx)),
-          y: Math.max(0, Math.min(ch - startZone.h, startZone.y + dy)),
-        };
-      } else {
-        // resize: bottom-right corner
-        const minSize = 20;
-        const newW = Math.max(minSize, Math.min(cw - startZone.x, startZone.w + dx));
-        const newH = Math.max(minSize, Math.min(ch - startZone.y, startZone.h + dy));
-        return { ...prev, w: newW, h: newH };
-      }
-    });
-  }, [zoom]);
+      setWidgetZone((prev) => {
+        if (!prev) return prev;
+        const cw = canvas.width;
+        const ch = canvas.height;
+        if (dm === 'move') {
+          return {
+            ...prev,
+            x: Math.max(0, Math.min(cw - startZone.w, startZone.x + dx)),
+            y: Math.max(0, Math.min(ch - startZone.h, startZone.y + dy)),
+          };
+        } else {
+          // resize: bottom-right corner
+          const minSize = 20;
+          const newW = Math.max(minSize, Math.min(cw - startZone.x, startZone.w + dx));
+          const newH = Math.max(minSize, Math.min(ch - startZone.y, startZone.h + dy));
+          return { ...prev, w: newW, h: newH };
+        }
+      });
+    },
+    [zoom]
+  );
 
   const handleWidgetPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -709,19 +756,19 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
     const cw = canvasRef.current.width;
     const ch = canvasRef.current.height;
     if (mode === 'zone') {
-      const x = Math.min(dragStart.x, dragCurrent.x) / cw * 100;
-      const y = Math.min(dragStart.y, dragCurrent.y) / ch * 100;
-      const w = Math.abs(dragCurrent.x - dragStart.x) / cw * 100;
-      const h = Math.abs(dragCurrent.y - dragStart.y) / ch * 100;
+      const x = (Math.min(dragStart.x, dragCurrent.x) / cw) * 100;
+      const y = (Math.min(dragStart.y, dragCurrent.y) / ch) * 100;
+      const w = (Math.abs(dragCurrent.x - dragStart.x) / cw) * 100;
+      const h = (Math.abs(dragCurrent.y - dragStart.y) / ch) * 100;
       dragRect = { left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%` };
     } else if (mode === 'restrictions' && restrictions) {
       if (restrictions.tool === 'wall') {
         restrictionPreviewLine = { x1: dragStart.x, y1: dragStart.y, x2: dragCurrent.x, y2: dragCurrent.y, cw, ch };
       } else if (restrictions.tool === 'no_go' || restrictions.tool === 'no_mop') {
-        const x = Math.min(dragStart.x, dragCurrent.x) / cw * 100;
-        const y = Math.min(dragStart.y, dragCurrent.y) / ch * 100;
-        const w = Math.abs(dragCurrent.x - dragStart.x) / cw * 100;
-        const h = Math.abs(dragCurrent.y - dragStart.y) / ch * 100;
+        const x = (Math.min(dragStart.x, dragCurrent.x) / cw) * 100;
+        const y = (Math.min(dragStart.y, dragCurrent.y) / ch) * 100;
+        const w = (Math.abs(dragCurrent.x - dragStart.x) / cw) * 100;
+        const h = (Math.abs(dragCurrent.y - dragStart.y) / ch) * 100;
         restrictionPreviewRect = { left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%` };
       }
     }
@@ -749,9 +796,7 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
         <canvas ref={canvasRef} className="valetudo-map-canvas__canvas" />
 
         {/* Desktop drag-to-draw zone */}
-        {dragRect && (
-          <div className="valetudo-map-canvas__zone-drag" style={dragRect} />
-        )}
+        {dragRect && <div className="valetudo-map-canvas__zone-drag" style={dragRect} />}
 
         {/* Restrictions draw preview */}
         {restrictionPreviewRect && (
@@ -763,17 +808,38 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
         {restrictionPreviewLine && (
           <svg
             className="valetudo-map-canvas__restriction-preview-svg"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', overflow: 'visible' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              overflow: 'visible',
+            }}
             viewBox={`0 0 ${restrictionPreviewLine.cw} ${restrictionPreviewLine.ch}`}
             preserveAspectRatio="none"
           >
             <line
-              x1={restrictionPreviewLine.x1} y1={restrictionPreviewLine.y1}
-              x2={restrictionPreviewLine.x2} y2={restrictionPreviewLine.y2}
-              stroke="rgba(244,67,54,0.9)" strokeWidth={SCALE * 2} strokeLinecap="round"
+              x1={restrictionPreviewLine.x1}
+              y1={restrictionPreviewLine.y1}
+              x2={restrictionPreviewLine.x2}
+              y2={restrictionPreviewLine.y2}
+              stroke="rgba(244,67,54,0.9)"
+              strokeWidth={SCALE * 2}
+              strokeLinecap="round"
             />
-            <circle cx={restrictionPreviewLine.x1} cy={restrictionPreviewLine.y1} r={SCALE * 1.5} fill="rgba(244,67,54,0.9)" />
-            <circle cx={restrictionPreviewLine.x2} cy={restrictionPreviewLine.y2} r={SCALE * 1.5} fill="rgba(244,67,54,0.9)" />
+            <circle
+              cx={restrictionPreviewLine.x1}
+              cy={restrictionPreviewLine.y1}
+              r={SCALE * 1.5}
+              fill="rgba(244,67,54,0.9)"
+            />
+            <circle
+              cx={restrictionPreviewLine.x2}
+              cy={restrictionPreviewLine.y2}
+              r={SCALE * 1.5}
+              fill="rgba(244,67,54,0.9)"
+            />
           </svg>
         )}
 
@@ -800,18 +866,72 @@ export function ValetudoMapCanvas({ mapData, mode, selectedRooms, zone, onZoneCh
             <button
               className="valetudo-map-canvas__widget-zone-delete"
               onPointerDown={(e) => e.stopPropagation()}
-              onClick={(e) => { e.stopPropagation(); setWidgetZone(null); onZoneChange?.(null); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setWidgetZone(null);
+                onZoneChange?.(null);
+              }}
               type="button"
-            >×</button>
+            >
+              ×
+            </button>
           </div>
         )}
       </div>
 
       {/* Zoom controls */}
       <div className="valetudo-map-canvas__zoom-controls">
-        <button type="button" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(8, z * 1.5)); }}>+</button>
-        <button type="button" onClick={(e) => { e.stopPropagation(); setZoom(prev => { const nz = Math.max(1, prev / 1.5); if (nz <= 1) { setPan({ x: 0, y: 0 }); return 1; } return nz; }); }}>−</button>
-        {zoom > 1 && <button type="button" onClick={(e) => { e.stopPropagation(); setZoom(1); setPan({ x: 0, y: 0 }); }} style={{fontSize:'0.7rem'}}>✕</button>}
+        {onIterationsChange && (
+          <button
+            type="button"
+            className="valetudo-map-canvas__iterations-btn"
+            title="Количество проходов"
+            onClick={(e) => {
+              e.stopPropagation();
+              onIterationsChange(iterations >= 4 ? 1 : iterations + 1);
+            }}
+          >
+            {iterations}×
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setZoom((z) => Math.min(8, z * 1.5));
+          }}
+        >
+          +
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setZoom((prev) => {
+              const nz = Math.max(1, prev / 1.5);
+              if (nz <= 1) {
+                setPan({ x: 0, y: 0 });
+                return 1;
+              }
+              return nz;
+            });
+          }}
+        >
+          −
+        </button>
+        {zoom > 1 && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setZoom(1);
+              setPan({ x: 0, y: 0 });
+            }}
+            style={{ fontSize: '0.7rem' }}
+          >
+            ✕
+          </button>
+        )}
       </div>
     </div>
   );

@@ -55,6 +55,7 @@
     inset: 0;
     cursor: move;
     touch-action: none;
+
     // visual center grip
     &::after {
       content: '✥';
@@ -160,7 +161,7 @@
       height: 28px;
       background: rgba(0, 0, 0, 0.55);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 4px;
       font-size: 1.1rem;
       line-height: 1;
@@ -169,7 +170,16 @@
       align-items: center;
       justify-content: center;
       padding: 0;
-      &:active { background: rgba(255,255,255,0.2); }
+      &:active {
+        background: rgba(255, 255, 255, 0.2);
+      }
     }
+  }
+
+  &__iterations-btn {
+    font-size: 0.75rem !important;
+    background: rgba(var(--rgb-primary-color, 3, 169, 244), 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    font-weight: 600;
   }
 }

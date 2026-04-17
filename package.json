@@ -19,6 +19,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,scss}\"",
     "validate:translations": "npx tsx scripts/validate-translations.ts",
     "preview": "vite preview",
+    "release": "semantic-release",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -39,6 +40,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/node": "^24.10.1",
     "@types/pako": "^2.0.4",
     "@types/react": "^19.2.5",
@@ -55,6 +61,7 @@
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
     "sass": "^1.97.1",
+    "semantic-release": "^25.0.3",
     "stylelint": "^17.3.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "tsx": "^4.21.0",
