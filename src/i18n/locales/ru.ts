@@ -200,6 +200,8 @@ export const ru: Translation = {
       saved: 'Ограничения сохранены',
       error: 'Ошибка: {{message}}',
       config_needed: '⚠️ Нужна настройка. Смотри консоль (F12).',
+      mapping_started: 'Картирование запущено',
+      mapping_error: 'Не удалось запустить картирование',
     },
     status: {
       docked: 'На базе',
@@ -219,6 +221,7 @@ export const ru: Translation = {
       suction_power: 'Мощность всасывания',
       water_level: 'Уровень воды',
       iterations: 'Количество проходов',
+      mapping: 'Картирование',
     },
     map: {
       loading: 'Загрузка карты…',

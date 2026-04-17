@@ -88,6 +88,25 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
 
   const { toast, showToast, hideToast } = useToast();
 
+  const wifiAttrs = wifiEntity?.attributes as Record<string, unknown> | undefined;
+  const wifiIp = (wifiAttrs?.ips as string[] | undefined)?.[0];
+  const robotUrl = config.valetudo_url?.replace(/\/$/, '') || (wifiIp ? `http://${wifiIp}` : null);
+
+  const handleStartMapping = useCallback(async () => {
+    if (!robotUrl) return;
+    try {
+      const res = await fetch(`${robotUrl}/api/v2/robot/capabilities/MappingPassCapability`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'start_mapping' }),
+      });
+      if (!res.ok) throw new Error(`${res.status}`);
+      showToast(t('valetudo.toast.mapping_started'));
+    } catch {
+      showToast(t('valetudo.toast.mapping_error'));
+    }
+  }, [robotUrl, showToast, t]);
+
   const { handlePause, handleStop, handleDock, handleResume, handleSetFanSpeed, handleSetWater, handleClean } =
     useValetudoServices({
       hass,
@@ -340,6 +359,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
         onWaterChange={handleSetWater}
         disabled={controlsDisabled}
         language={language}
+        onStartMapping={robotUrl ? handleStartMapping : undefined}
       />
 
       <ValetudoSettingsPanel

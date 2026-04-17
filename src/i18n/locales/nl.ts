@@ -200,6 +200,8 @@ export const nl: Translation = {
       saved: 'Beperkingen opgeslagen',
       error: 'Fout: {{message}}',
       config_needed: '⚠️ Configuratie vereist. Zie console (F12).',
+      mapping_started: 'Kaartcyclus gestart',
+      mapping_error: 'Kaartcyclus starten mislukt',
     },
     status: {
       docked: 'Op basis',
@@ -219,6 +221,7 @@ export const nl: Translation = {
       suction_power: 'Zuigkracht',
       water_level: 'Waterniveau',
       iterations: 'Reinigingspassen',
+      mapping: 'Kartering',
     },
     map: {
       loading: 'Kaart laden…',

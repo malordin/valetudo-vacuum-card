@@ -197,6 +197,8 @@ export const pl = {
       saved: 'Ograniczenia zapisane',
       error: 'Błąd: {{message}}',
       config_needed: '⚠️ Wymagana konfiguracja. Sprawdź konsolę (F12).',
+      mapping_started: 'Mapowanie uruchomione',
+      mapping_error: 'Nie udało się uruchomić mapowania',
     },
     status: {
       docked: 'Na stacji',
@@ -216,6 +218,7 @@ export const pl = {
       suction_power: 'Siła ssania',
       water_level: 'Poziom wody',
       iterations: 'Przebiegi sprzątania',
+      mapping: 'Mapowanie',
     },
     map: {
       loading: 'Ładowanie mapy…',

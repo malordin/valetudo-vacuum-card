@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Droplet, Droplets, GlassWater } from 'lucide-react';
+import { Droplet, Droplets, GlassWater, Map } from 'lucide-react';
 import { Modal, CircularButton } from '../common';
 import {
   VACUUM_ICON_SVG,
@@ -23,6 +23,7 @@ interface ValetudoCleaningModalProps {
   onWaterChange: (value: string) => void;
   disabled?: boolean;
   language?: SupportedLanguage;
+  onStartMapping?: () => void;
 }
 
 const FAN_ICONS = [SUCTION_QUIET_ICON_SVG, SUCTION_STANDARD_ICON_SVG, SUCTION_STRONG_ICON_SVG, SUCTION_TURBO_ICON_SVG];
@@ -44,6 +45,7 @@ export function ValetudoCleaningModal({
   onWaterChange,
   disabled,
   language,
+  onStartMapping,
 }: ValetudoCleaningModalProps) {
   const { t } = useTranslation(language);
   const fanOptions = (fanEntity?.attributes?.options as string[] | undefined) ?? [];
@@ -96,6 +98,12 @@ export function ValetudoCleaningModal({
       : []),
   ];
 
+  const handleMappingClick = () => {
+    if (disabled || !onStartMapping) return;
+    onStartMapping();
+    onClose();
+  };
+
   return (
     <Modal opened={opened} onClose={onClose}>
       <div className="cleaning-mode-modal">
@@ -125,6 +133,20 @@ export function ValetudoCleaningModal({
                     )}
                   </div>
                 ))}
+                {onStartMapping && (
+                  <div
+                    className="cleaning-mode-modal__mode-card cleaning-mode-modal__mode-card--mapping"
+                    onClick={handleMappingClick}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === 'Enter' && handleMappingClick()}
+                  >
+                    <div className="cleaning-mode-modal__mode-icon">
+                      <Map size={24} />
+                    </div>
+                    <span className="cleaning-mode-modal__mode-label">{t('valetudo.cleaning.mapping')}</span>
+                  </div>
+                )}
               </div>
             </section>
 

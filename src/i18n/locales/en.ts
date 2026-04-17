@@ -197,6 +197,8 @@ export const en = {
       saved: 'Restrictions saved',
       error: 'Error: {{message}}',
       config_needed: '⚠️ Config needed. See console (F12).',
+      mapping_started: 'Mapping run started',
+      mapping_error: 'Failed to start mapping',
     },
     status: {
       docked: 'Docked',
@@ -216,6 +218,7 @@ export const en = {
       suction_power: 'Suction power',
       water_level: 'Water level',
       iterations: 'Cleaning passes',
+      mapping: 'Mapping run',
     },
     map: {
       loading: 'Loading map\u2026',

@@ -200,6 +200,8 @@ export const es: Translation = {
       saved: 'Restricciones guardadas',
       error: 'Error: {{message}}',
       config_needed: '⚠️ Configuración necesaria. Ver consola (F12).',
+      mapping_started: 'Mapeo iniciado',
+      mapping_error: 'Error al iniciar el mapeo',
     },
     status: {
       docked: 'En base',
@@ -219,6 +221,7 @@ export const es: Translation = {
       suction_power: 'Potencia de succión',
       water_level: 'Nivel de agua',
       iterations: 'Pasadas de limpieza',
+      mapping: 'Mapeo',
     },
     map: {
       loading: 'Cargando mapa…',

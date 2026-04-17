@@ -200,6 +200,8 @@ export const it: Translation = {
       saved: 'Restrizioni salvate',
       error: 'Errore: {{message}}',
       config_needed: '⚠️ Configurazione necessaria. Vedi console (F12).',
+      mapping_started: 'Mappatura avviata',
+      mapping_error: 'Impossibile avviare la mappatura',
     },
     status: {
       docked: 'In base',
@@ -219,6 +221,7 @@ export const it: Translation = {
       suction_power: 'Potenza di aspirazione',
       water_level: 'Livello acqua',
       iterations: 'Passate di pulizia',
+      mapping: 'Mappatura',
     },
     map: {
       loading: 'Caricamento mappa…',

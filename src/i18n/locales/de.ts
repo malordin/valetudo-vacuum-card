@@ -201,6 +201,8 @@ export const de: Translation = {
       saved: 'Einschränkungen gespeichert',
       error: 'Fehler: {{message}}',
       config_needed: '⚠️ Konfiguration erforderlich. Konsole öffnen (F12).',
+      mapping_started: 'Kartierung gestartet',
+      mapping_error: 'Kartierung konnte nicht gestartet werden',
     },
     status: {
       docked: 'Auf der Basis',
@@ -220,6 +222,7 @@ export const de: Translation = {
       suction_power: 'Saugstärke',
       water_level: 'Wasserstand',
       iterations: 'Reinigungsdurchläufe',
+      mapping: 'Kartierung',
     },
     map: {
       loading: 'Karte lädt…',

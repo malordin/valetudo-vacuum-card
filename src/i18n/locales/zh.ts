@@ -199,6 +199,8 @@ export const zh: Translation = {
       saved: '限制已保存',
       error: '错误: {{message}}',
       config_needed: '⚠️ 需要配置，请查看控制台 (F12)。',
+      mapping_started: '建图已启动',
+      mapping_error: '无法启动建图',
     },
     status: {
       docked: '已归位',
@@ -218,6 +220,7 @@ export const zh: Translation = {
       suction_power: '吸力',
       water_level: '水量',
       iterations: '清洁遍数',
+      mapping: '建图',
     },
     map: {
       loading: '地图加载中…',

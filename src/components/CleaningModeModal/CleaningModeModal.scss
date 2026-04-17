@@ -90,6 +90,16 @@
           0 0.25rem 0.75rem var(--card-shadow, rgba(0, 0, 0, 0.08));
       }
     }
+
+    &--mapping {
+      border-style: dashed;
+      border-color: var(--accent-color, #d4af37);
+      opacity: 0.85;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 
   &__mode-icon {
