@@ -267,6 +267,34 @@ class ValetudoVacuumMapCard extends HTMLElement {
           { name: 'segments_entity', selector: { entity: { domain: 'sensor' } } },
         ],
       },
+      {
+        type: 'expandable',
+        name: 'map_visuals',
+        flatten: true,
+        title: 'Map visuals',
+        schema: [
+          {
+            type: 'grid',
+            name: '',
+            flatten: true,
+            column_min_width: '160px',
+            schema: [
+              {
+                name: 'robot_size',
+                selector: { number: { min: 0.3, max: 3, step: 0.1, mode: 'slider' } },
+              },
+              {
+                name: 'charger_size',
+                selector: { number: { min: 0.3, max: 3, step: 0.1, mode: 'slider' } },
+              },
+              {
+                name: 'path_width',
+                selector: { number: { min: 0.1, max: 5, step: 0.1, mode: 'slider' } },
+              },
+            ],
+          },
+        ],
+      },
     ];
 
     const labels: Record<string, string> = {
@@ -281,6 +309,9 @@ class ValetudoVacuumMapCard extends HTMLElement {
       water_entity: 'Water grade entity (select.*)',
       battery_entity: 'Battery entity (sensor.*)',
       segments_entity: 'Segments entity (sensor.*)',
+      robot_size: 'Robot icon size',
+      charger_size: 'Charger icon size',
+      path_width: 'Path line width',
     };
 
     const helpers: Record<string, string> = {
@@ -288,6 +319,9 @@ class ValetudoVacuumMapCard extends HTMLElement {
         'Open Valetudo web UI → Robot Settings → Connectivity → MQTT → Identifier. Example: HarshSillyPigeon. Required for room and zone cleaning via MQTT.',
       valetudo_url:
         'Optional. Override the robot URL for direct REST calls (restrictions, mapping). If left empty, the card auto-detects the IP from the Wi-Fi sensor entity. Set this only if auto-detection fails (e.g. the robot IP changes or the Wi-Fi entity is unavailable).',
+      robot_size: 'Multiplier for the robot icon radius. Default: 1.0',
+      charger_size: 'Multiplier for the charger icon radius. Default: 1.0',
+      path_width: 'Multiplier for the robot travel path line width. Default: 1.0',
     };
 
     return {

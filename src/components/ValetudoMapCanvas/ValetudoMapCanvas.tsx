@@ -90,6 +90,10 @@ interface ValetudoMapCanvasProps {
   iterations?: number;
   onIterationsChange?: (value: number) => void;
   language?: SupportedLanguage;
+  /** Visual size multipliers (default 1.0) */
+  robotSize?: number;
+  chargerSize?: number;
+  pathWidth?: number;
 }
 
 // Stored state for coordinate conversion (filled during render)
@@ -112,6 +116,9 @@ export function ValetudoMapCanvas({
   iterations = 1,
   onIterationsChange,
   language,
+  robotSize = 1,
+  chargerSize = 1,
+  pathWidth = 1,
 }: ValetudoMapCanvasProps) {
   const { t } = useTranslation(language);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -297,7 +304,7 @@ export function ValetudoMapCanvas({
       if (entity.type !== 'path' && entity.type !== 'predicted_path') continue;
       ctx.beginPath();
       ctx.strokeStyle = entity.type === 'predicted_path' ? 'rgba(255,255,255,0.4)' : PATH_COLOR;
-      ctx.lineWidth = SCALE * 0.75;
+      ctx.lineWidth = SCALE * 0.75 * pathWidth;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.setLineDash(entity.type === 'predicted_path' ? [4, 3] : []);
@@ -317,7 +324,7 @@ export function ValetudoMapCanvas({
       if (entity.type !== 'charger_location' || entity.points.length < 2) continue;
       const cx = (entity.points[0] / pixelSize - bb.minX) * SCALE;
       const cy = (entity.points[1] / pixelSize - bb.minY) * SCALE;
-      const r = SCALE * 3.4;
+      const r = SCALE * 3.4 * chargerSize;
       ctx.save();
       ctx.shadowColor = 'rgba(0,0,0,0.5)';
       ctx.shadowBlur = SCALE * 2;
@@ -349,7 +356,7 @@ export function ValetudoMapCanvas({
       const rx = (entity.points[0] / pixelSize - bb.minX) * SCALE;
       const ry = (entity.points[1] / pixelSize - bb.minY) * SCALE;
       const angle = (entity.metaData.angle ?? 0) * (Math.PI / 180);
-      const r = SCALE * 3;
+      const r = SCALE * 3 * robotSize;
       ctx.save();
       ctx.translate(rx, ry);
       ctx.rotate(angle);
@@ -547,7 +554,19 @@ export function ValetudoMapCanvas({
       for (const w of restrictions.walls) drawWall(w, w.id === restrictions.selectedId);
       for (const z of restrictions.zones) drawZone(z, z.id === restrictions.selectedId);
     }
-  }, [mapData, selectedRooms, zone, mode, mmToCanvas, isTouchDevice, displayRestrictions, restrictions]);
+  }, [
+    mapData,
+    selectedRooms,
+    zone,
+    mode,
+    mmToCanvas,
+    isTouchDevice,
+    displayRestrictions,
+    restrictions,
+    robotSize,
+    chargerSize,
+    pathWidth,
+  ]);
 
   // Restrictions overlay is now drawn inside the main canvas effect above.
 

@@ -42,6 +42,10 @@ export interface ValetudoHassConfig {
   custom_theme?: CustomThemeConfig;
   language?: SupportedLanguage;
   default_mode?: CleaningMode;
+  /** Map visual settings */
+  robot_size?: number; // multiplier, default 1.0
+  charger_size?: number; // multiplier, default 1.0
+  path_width?: number; // multiplier, default 1.0
 }
 
 /** Resolved entity IDs after applying auto-derivation and overrides */
