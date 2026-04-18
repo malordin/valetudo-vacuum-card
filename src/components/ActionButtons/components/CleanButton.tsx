@@ -4,11 +4,12 @@ import '../ActionButtons.scss';
 interface CleanButtonProps {
   onClick?: () => void;
   text: string;
+  disabled?: boolean;
 }
 
-export function CleanButton({ onClick, text }: CleanButtonProps) {
+export function CleanButton({ onClick, text, disabled }: CleanButtonProps) {
   return (
-    <button onClick={onClick} className="action-buttons__clean">
+    <button onClick={onClick} className="action-buttons__clean" disabled={disabled}>
       <span className="action-buttons__icon">{START_CLEANING_ICON_SVG}</span>
       <span>{text}</span>
     </button>

@@ -118,9 +118,6 @@ export function ValetudoMapCanvas({
   const containerRef = useRef<HTMLDivElement>(null);
   const geoRef = useRef<MapGeometry>({ bb: { minX: 0, minY: 0 }, pixelSize: 50 });
   const segLookupRef = useRef<Map<string, number>>(new Map());
-  // Stores the current overlay draw fn; called at the end of the main effect to
-  // re-apply the restrictions overlay whenever mapData causes the canvas to be cleared.
-  const drawRestrictionsOverlayRef = useRef<(() => void) | null>(null);
 
   // ─── Zoom/Pan state ────────────────────────────────────────────────────────
   const [zoom, setZoom] = useState(1);
@@ -300,7 +297,9 @@ export function ValetudoMapCanvas({
       if (entity.type !== 'path' && entity.type !== 'predicted_path') continue;
       ctx.beginPath();
       ctx.strokeStyle = entity.type === 'predicted_path' ? 'rgba(255,255,255,0.4)' : PATH_COLOR;
-      ctx.lineWidth = SCALE * 0.6;
+      ctx.lineWidth = SCALE * 1.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.setLineDash(entity.type === 'predicted_path' ? [4, 3] : []);
       for (let i = 0; i < entity.points.length; i += 2) {
         const x = (entity.points[i] / pixelSize - bb.minX) * SCALE;
@@ -309,6 +308,8 @@ export function ValetudoMapCanvas({
         else ctx.lineTo(x, y);
       }
       ctx.stroke();
+      ctx.lineCap = 'butt';
+      ctx.lineJoin = 'miter';
       ctx.setLineDash([]);
     }
 
@@ -425,7 +426,7 @@ export function ValetudoMapCanvas({
         ctx.stroke();
         ctx.setLineDash([]);
       }
-    } else {
+    } else if (mode !== 'restrictions') {
       for (const entity of mapData.entities) {
         if (entity.type === 'virtual_wall' && entity.points.length >= 4) {
           const x1 = (entity.points[0] / pixelSize - bb.minX) * SCALE;
@@ -481,25 +482,15 @@ export function ValetudoMapCanvas({
         }
       }
     }
-    // Re-apply restrictions editor overlay after the base canvas is redrawn.
-    // This prevents pending walls from disappearing on every mapData poll.
-    drawRestrictionsOverlayRef.current?.();
-  }, [mapData, selectedRooms, zone, mode, mmToCanvas, isTouchDevice, displayRestrictions]);
-
-  // ─── Draw restrictions editor overlay (pending walls/zones, selection) ─────
-  // The draw function is stored in a ref so the main effect can re-apply it
-  // after every canvas clear triggered by a mapData poll.
-  useEffect(() => {
-    const fn = () => {
-      if (mode !== 'restrictions' || !restrictions) return;
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      const { bb, pixelSize } = geoRef.current;
+    // ─── Restrictions editor overlay ──────────────────────────────────────────
+    // Drawn here (inside the main effect) so every canvas clear re-draws the
+    // current local state. Adding `restrictions` to deps ensures the canvas
+    // also redraws whenever items are added, deleted, or selected.
+    if (mode === 'restrictions' && restrictions) {
+      const { bb: rBB, pixelSize: rPixelSize } = geoRef.current;
       const toC = (mmX: number, mmY: number) => ({
-        x: (mmX / pixelSize - bb.minX) * SCALE,
-        y: (mmY / pixelSize - bb.minY) * SCALE,
+        x: (mmX / rPixelSize - rBB.minX) * SCALE,
+        y: (mmY / rPixelSize - rBB.minY) * SCALE,
       });
 
       const drawWall = (w: VirtualWall, selected: boolean) => {
@@ -545,10 +536,10 @@ export function ValetudoMapCanvas({
 
       for (const w of restrictions.walls) drawWall(w, w.id === restrictions.selectedId);
       for (const z of restrictions.zones) drawZone(z, z.id === restrictions.selectedId);
-    };
-    drawRestrictionsOverlayRef.current = fn;
-    fn();
-  }, [restrictions, mode]);
+    }
+  }, [mapData, selectedRooms, zone, mode, mmToCanvas, isTouchDevice, displayRestrictions, restrictions]);
+
+  // Restrictions overlay is now drawn inside the main canvas effect above.
 
   // ─── Zoom: wheel ────────────────────────────────────────────────────────────
   useEffect(() => {

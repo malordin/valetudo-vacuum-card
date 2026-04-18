@@ -23,7 +23,9 @@
   &__seg-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
+    flex: 1;
     padding: 0 10px;
     height: 32px;
     border: none;

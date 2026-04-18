@@ -23,6 +23,12 @@
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     color: var(--text-primary);
 
+    &:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
     &--selected {
       transform: translateY(-0.125rem);
       border: 0.0625rem solid var(--toggle-active-border); // Your base color as the "frame"

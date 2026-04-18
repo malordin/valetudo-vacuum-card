@@ -391,6 +391,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
             onStop={handleStop}
             onDock={handleDock}
             language={language}
+            disabled={isRestrictionsMode}
           />
         </div>
       </div>

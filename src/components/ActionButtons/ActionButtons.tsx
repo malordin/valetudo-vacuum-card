@@ -16,6 +16,7 @@ interface ActionButtonsProps {
   onStop: () => void;
   onDock: () => void;
   language?: SupportedLanguage;
+  disabled?: boolean;
 }
 
 export function ActionButtons({
@@ -30,6 +31,7 @@ export function ActionButtons({
   onStop,
   onDock,
   language = 'en',
+  disabled = false,
 }: ActionButtonsProps) {
   const { t, getRoomCountTranslation } = useTranslation(language);
 
@@ -71,8 +73,8 @@ export function ActionButtons({
   // Idle/docked state - show clean and dock
   return (
     <div className="action-buttons">
-      <CleanButton onClick={onClean} text={cleanButtonText} />
-      <DockButton onClick={onDock} language={language} />
+      <CleanButton onClick={onClean} text={cleanButtonText} disabled={disabled} />
+      <DockButton onClick={onDock} language={language} disabled={disabled} />
     </div>
   );
 }
