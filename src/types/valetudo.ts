@@ -99,6 +99,9 @@ export interface RestrictionsState {
   selectedId: string | null;
   tool: RestrictionTool;
   dirty: boolean; // unsaved changes
+  /** Last-saved snapshot; persists after exiting edit mode so the canvas can
+   *  optimistically show the correct walls/zones while mapData is still stale. */
+  savedDisplay: { walls: VirtualWall[]; zones: RestrictedZone[] } | null;
 }
 
 /** Derives all Valetudo entity IDs from the vacuum entity ID */

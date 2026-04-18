@@ -310,6 +310,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
             zone={selectedMode === 'zone' ? selectedZone : null}
             onZoneChange={setSelectedZone}
             restrictions={isRestrictionsMode ? restrictions : undefined}
+            displayRestrictions={!isRestrictionsMode ? restrictions.savedDisplay : undefined}
             onRestrictionDrawn={isRestrictionsMode ? handleRestrictionDrawn : undefined}
             onRestrictionSelect={isRestrictionsMode ? selectItem : undefined}
             iterations={cleanIterations}

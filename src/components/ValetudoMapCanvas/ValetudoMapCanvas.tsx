@@ -82,6 +82,8 @@ interface ValetudoMapCanvasProps {
   onSegmentClick?: (segmentId: number) => void;
   // Restrictions editing
   restrictions?: RestrictionsState;
+  /** Optimistic display after save: show saved walls/zones while mapData is still stale */
+  displayRestrictions?: { walls: VirtualWall[]; zones: RestrictedZone[] } | null;
   onRestrictionDrawn?: (type: 'wall' | 'zone', p1: { x: number; y: number }, p2: { x: number; y: number }) => void;
   onRestrictionSelect?: (id: string | null) => void;
   // Iterations cycling
@@ -104,6 +106,7 @@ export function ValetudoMapCanvas({
   onZoneChange,
   onSegmentClick,
   restrictions,
+  displayRestrictions,
   onRestrictionDrawn,
   onRestrictionSelect,
   iterations = 1,
@@ -115,6 +118,9 @@ export function ValetudoMapCanvas({
   const containerRef = useRef<HTMLDivElement>(null);
   const geoRef = useRef<MapGeometry>({ bb: { minX: 0, minY: 0 }, pixelSize: 50 });
   const segLookupRef = useRef<Map<string, number>>(new Map());
+  // Stores the current overlay draw fn; called at the end of the main effect to
+  // re-apply the restrictions overlay whenever mapData causes the canvas to be cleared.
+  const drawRestrictionsOverlayRef = useRef<(() => void) | null>(null);
 
   // ─── Zoom/Pan state ────────────────────────────────────────────────────────
   const [zoom, setZoom] = useState(1);
@@ -383,119 +389,165 @@ export function ValetudoMapCanvas({
       ctx.setLineDash([]);
     }
 
-    // ─── Virtual restrictions (always rendered, prominent in restrictions mode) ─
-    for (const entity of mapData.entities) {
-      if (entity.type === 'virtual_wall' && entity.points.length >= 4) {
-        const x1 = (entity.points[0] / pixelSize - bb.minX) * SCALE;
-        const y1 = (entity.points[1] / pixelSize - bb.minY) * SCALE;
-        const x2 = (entity.points[2] / pixelSize - bb.minX) * SCALE;
-        const y2 = (entity.points[3] / pixelSize - bb.minY) * SCALE;
-        const alpha = mode === 'restrictions' ? 1.0 : 0.6;
-        const width = mode === 'restrictions' ? SCALE * 2 : SCALE * 1.2;
+    // ─── Virtual restrictions ─────────────────────────────────────────────────
+    // Use displayRestrictions (optimistic) if available so that saved walls are
+    // visible while mapData is still stale after save.  Fall back to mapData.entities.
+    if (displayRestrictions) {
+      const toC = (mmX: number, mmY: number) => ({
+        x: (mmX / pixelSize - bb.minX) * SCALE,
+        y: (mmY / pixelSize - bb.minY) * SCALE,
+      });
+      for (const w of displayRestrictions.walls) {
+        const p1 = toC(w.pA.x, w.pA.y);
+        const p2 = toC(w.pB.x, w.pB.y);
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = `rgba(244, 67, 54, ${alpha})`;
-        ctx.lineWidth = width;
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = 'rgba(244, 67, 54, 0.6)';
+        ctx.lineWidth = SCALE * 1.2;
         ctx.setLineDash([]);
         ctx.lineCap = 'round';
         ctx.stroke();
         ctx.lineCap = 'butt';
-        // Endpoint dots
-        if (mode === 'restrictions') {
-          for (const [ex, ey] of [
-            [x1, y1],
-            [x2, y2],
-          ] as [number, number][]) {
-            ctx.beginPath();
-            ctx.arc(ex, ey, SCALE * 1.5, 0, 2 * Math.PI);
-            ctx.fillStyle = 'rgba(244, 67, 54, 0.9)';
-            ctx.fill();
-          }
-        }
       }
-      if ((entity.type === 'no_go_area' || entity.type === 'no_mop_area') && entity.points.length >= 8) {
-        const alpha = mode === 'restrictions' ? 0.9 : 0.5;
-        const isMop = entity.type === 'no_mop_area';
-        const fillColor = isMop
-          ? `rgba(33, 150, 243, ${mode === 'restrictions' ? 0.2 : 0.1})`
-          : `rgba(244, 67, 54, ${mode === 'restrictions' ? 0.2 : 0.1})`;
-        const strokeColor = isMop ? `rgba(33, 150, 243, ${alpha})` : `rgba(244, 67, 54, ${alpha})`;
+      for (const z of displayRestrictions.zones) {
+        const pts = [z.pA, z.pB, z.pC, z.pD].map((p) => toC(p.x, p.y));
         ctx.beginPath();
-        for (let i = 0; i < entity.points.length; i += 2) {
-          const px = (entity.points[i] / pixelSize - bb.minX) * SCALE;
-          const py = (entity.points[i + 1] / pixelSize - bb.minY) * SCALE;
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
         ctx.closePath();
-        ctx.fillStyle = fillColor;
+        const isMop = z.type === 'mop';
+        ctx.fillStyle = isMop ? 'rgba(33,150,243,0.1)' : 'rgba(244,67,54,0.1)';
         ctx.fill();
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = mode === 'restrictions' ? SCALE * 1.5 : SCALE;
+        ctx.strokeStyle = isMop ? 'rgba(33,150,243,0.5)' : 'rgba(244,67,54,0.5)';
+        ctx.lineWidth = SCALE;
         ctx.setLineDash([5, 3]);
         ctx.stroke();
         ctx.setLineDash([]);
       }
+    } else {
+      for (const entity of mapData.entities) {
+        if (entity.type === 'virtual_wall' && entity.points.length >= 4) {
+          const x1 = (entity.points[0] / pixelSize - bb.minX) * SCALE;
+          const y1 = (entity.points[1] / pixelSize - bb.minY) * SCALE;
+          const x2 = (entity.points[2] / pixelSize - bb.minX) * SCALE;
+          const y2 = (entity.points[3] / pixelSize - bb.minY) * SCALE;
+          const alpha = mode === 'restrictions' ? 1.0 : 0.6;
+          const width = mode === 'restrictions' ? SCALE * 2 : SCALE * 1.2;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = `rgba(244, 67, 54, ${alpha})`;
+          ctx.lineWidth = width;
+          ctx.setLineDash([]);
+          ctx.lineCap = 'round';
+          ctx.stroke();
+          ctx.lineCap = 'butt';
+          // Endpoint dots
+          if (mode === 'restrictions') {
+            for (const [ex, ey] of [
+              [x1, y1],
+              [x2, y2],
+            ] as [number, number][]) {
+              ctx.beginPath();
+              ctx.arc(ex, ey, SCALE * 1.5, 0, 2 * Math.PI);
+              ctx.fillStyle = 'rgba(244, 67, 54, 0.9)';
+              ctx.fill();
+            }
+          }
+        }
+        if ((entity.type === 'no_go_area' || entity.type === 'no_mop_area') && entity.points.length >= 8) {
+          const alpha = mode === 'restrictions' ? 0.9 : 0.5;
+          const isMop = entity.type === 'no_mop_area';
+          const fillColor = isMop
+            ? `rgba(33, 150, 243, ${mode === 'restrictions' ? 0.2 : 0.1})`
+            : `rgba(244, 67, 54, ${mode === 'restrictions' ? 0.2 : 0.1})`;
+          const strokeColor = isMop ? `rgba(33, 150, 243, ${alpha})` : `rgba(244, 67, 54, ${alpha})`;
+          ctx.beginPath();
+          for (let i = 0; i < entity.points.length; i += 2) {
+            const px = (entity.points[i] / pixelSize - bb.minX) * SCALE;
+            const py = (entity.points[i + 1] / pixelSize - bb.minY) * SCALE;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fillStyle = fillColor;
+          ctx.fill();
+          ctx.strokeStyle = strokeColor;
+          ctx.lineWidth = mode === 'restrictions' ? SCALE * 1.5 : SCALE;
+          ctx.setLineDash([5, 3]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
     }
-  }, [mapData, selectedRooms, zone, mode, mmToCanvas, isTouchDevice]);
+    // Re-apply restrictions editor overlay after the base canvas is redrawn.
+    // This prevents pending walls from disappearing on every mapData poll.
+    drawRestrictionsOverlayRef.current?.();
+  }, [mapData, selectedRooms, zone, mode, mmToCanvas, isTouchDevice, displayRestrictions]);
 
   // ─── Draw restrictions editor overlay (pending walls/zones, selection) ─────
+  // The draw function is stored in a ref so the main effect can re-apply it
+  // after every canvas clear triggered by a mapData poll.
   useEffect(() => {
-    if (mode !== 'restrictions' || !restrictions) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const { bb, pixelSize } = geoRef.current;
-    const toC = (mmX: number, mmY: number) => ({
-      x: (mmX / pixelSize - bb.minX) * SCALE,
-      y: (mmY / pixelSize - bb.minY) * SCALE,
-    });
+    const fn = () => {
+      if (mode !== 'restrictions' || !restrictions) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const { bb, pixelSize } = geoRef.current;
+      const toC = (mmX: number, mmY: number) => ({
+        x: (mmX / pixelSize - bb.minX) * SCALE,
+        y: (mmY / pixelSize - bb.minY) * SCALE,
+      });
 
-    const drawWall = (w: VirtualWall, selected: boolean) => {
-      const p1 = toC(w.pA.x, w.pA.y);
-      const p2 = toC(w.pB.x, w.pB.y);
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.strokeStyle = selected ? '#ff9800' : 'rgba(244,67,54,1)';
-      ctx.lineWidth = selected ? SCALE * 3 : SCALE * 2;
-      ctx.setLineDash([]);
-      ctx.lineCap = 'round';
-      ctx.stroke();
-      ctx.lineCap = 'butt';
-      for (const p of [p1, p2]) {
+      const drawWall = (w: VirtualWall, selected: boolean) => {
+        const p1 = toC(w.pA.x, w.pA.y);
+        const p2 = toC(w.pB.x, w.pB.y);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, selected ? SCALE * 2.5 : SCALE * 1.5, 0, 2 * Math.PI);
-        ctx.fillStyle = selected ? '#ff9800' : 'rgba(244,67,54,0.9)';
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = selected ? '#ff9800' : 'rgba(244,67,54,1)';
+        ctx.lineWidth = selected ? SCALE * 3 : SCALE * 2;
+        ctx.setLineDash([]);
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        ctx.lineCap = 'butt';
+        for (const p of [p1, p2]) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, selected ? SCALE * 2.5 : SCALE * 1.5, 0, 2 * Math.PI);
+          ctx.fillStyle = selected ? '#ff9800' : 'rgba(244,67,54,0.9)';
+          ctx.fill();
+        }
+      };
+
+      const drawZone = (z: RestrictedZone, selected: boolean) => {
+        const pts = [z.pA, z.pB, z.pC, z.pD].map((p) => toC(p.x, p.y));
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+        const isMop = z.type === 'mop';
+        if (selected) {
+          ctx.fillStyle = 'rgba(255,152,0,0.25)';
+          ctx.strokeStyle = '#ff9800';
+        } else {
+          ctx.fillStyle = isMop ? 'rgba(33,150,243,0.2)' : 'rgba(244,67,54,0.2)';
+          ctx.strokeStyle = isMop ? 'rgba(33,150,243,0.9)' : 'rgba(244,67,54,0.9)';
+        }
         ctx.fill();
-      }
-    };
+        ctx.lineWidth = selected ? SCALE * 2 : SCALE * 1.5;
+        ctx.setLineDash([5, 3]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      };
 
-    const drawZone = (z: RestrictedZone, selected: boolean) => {
-      const pts = [z.pA, z.pB, z.pC, z.pD].map((p) => toC(p.x, p.y));
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-      ctx.closePath();
-      const isMop = z.type === 'mop';
-      if (selected) {
-        ctx.fillStyle = 'rgba(255,152,0,0.25)';
-        ctx.strokeStyle = '#ff9800';
-      } else {
-        ctx.fillStyle = isMop ? 'rgba(33,150,243,0.2)' : 'rgba(244,67,54,0.2)';
-        ctx.strokeStyle = isMop ? 'rgba(33,150,243,0.9)' : 'rgba(244,67,54,0.9)';
-      }
-      ctx.fill();
-      ctx.lineWidth = selected ? SCALE * 2 : SCALE * 1.5;
-      ctx.setLineDash([5, 3]);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      for (const w of restrictions.walls) drawWall(w, w.id === restrictions.selectedId);
+      for (const z of restrictions.zones) drawZone(z, z.id === restrictions.selectedId);
     };
-
-    for (const w of restrictions.walls) drawWall(w, w.id === restrictions.selectedId);
-    for (const z of restrictions.zones) drawZone(z, z.id === restrictions.selectedId);
+    drawRestrictionsOverlayRef.current = fn;
+    fn();
   }, [restrictions, mode]);
 
   // ─── Zoom: wheel ────────────────────────────────────────────────────────────
