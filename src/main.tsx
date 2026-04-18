@@ -140,7 +140,7 @@ class ValetudoVacuumMapCard extends HTMLElement {
 
   setConfig(config: ValetudoHassConfig) {
     if (!config.entity) {
-      throw new Error('valetudo-vacuum-map-card: you need to define an entity (vacuum.*)');
+      throw new Error('valetudo-react-map-card: you need to define an entity (vacuum.*)');
     }
     this._config = config;
     this.render();
@@ -189,7 +189,7 @@ class ValetudoVacuumMapCard extends HTMLElement {
 
   static getStubConfig() {
     return {
-      type: 'custom:valetudo-vacuum-map-card',
+      type: 'custom:valetudo-react-map-card',
       entity: 'vacuum.valetudo_yourrobot',
     };
   }
@@ -288,12 +288,12 @@ class ValetudoVacuumMapCard extends HTMLElement {
   }
 }
 
-customElements.define('valetudo-vacuum-map-card', ValetudoVacuumMapCard);
+customElements.define('valetudo-react-map-card', ValetudoVacuumMapCard);
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'valetudo-vacuum-map-card',
-  name: 'Valetudo Vacuum Map Card',
+  type: 'valetudo-react-map-card',
+  name: 'Valetudo React Map Card',
   description: 'Beautiful map card for Valetudo-flashed vacuum cleaners',
 });
 

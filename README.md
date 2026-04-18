@@ -1,4 +1,4 @@
-# Valetudo Vacuum Card
+# Valetudo React Map Card
 
 A Home Assistant Lovelace card for Valetudo-flashed robot vacuums. Works **fully local** — no cloud, no Xiaomi/Dreame account required. Built with React, TypeScript, and SCSS.
 
@@ -26,7 +26,7 @@ A Home Assistant Lovelace card for Valetudo-flashed robot vacuums. Works **fully
 ### Via [HACS](https://hacs.xyz/) (Custom Repository)
 
 1. In HACS → Custom repositories → add `malordin/valetudo-vacuum-card` (type: Dashboard)
-2. Install **Valetudo Vacuum Card**
+2. Install **Valetudo React Map Card**
 3. Clear browser cache and reload HA
 
 Or use the button below (after adding the custom repo):
@@ -35,10 +35,10 @@ Or use the button below (after adding the custom repo):
 
 ### Manual
 
-1. Download `dreame-vacuum-map-card.js` from the [Releases](../../releases) page
-2. Copy to `/config/www/valetudo-vacuum-map-card/valetudo-vacuum-map-card.js`
+1. Download `valetudo-react-map-card.js` from the [Releases](../../releases) page
+2. Copy to `/config/www/valetudo-react-map-card/valetudo-react-map-card.js`
 3. In HA → Settings → Dashboards → Resources → Add:
-   - URL: `/local/valetudo-vacuum-map-card/valetudo-vacuum-map-card.js`
+   - URL: `/local/valetudo-react-map-card/valetudo-react-map-card.js`
    - Type: JavaScript Module
 
 ## Usage
@@ -46,7 +46,7 @@ Or use the button below (after adding the custom repo):
 ### Add card to dashboard
 
 ```yaml
-type: custom:dreame-vacuum-map-card
+type: custom:valetudo-react-map-card
 entity: vacuum.valetudo_yourrobot
 valetudo_identifier: YourRobotIdentifier  # MQTT identifier (see Valetudo settings)
 valetudo_url: http://192.168.0.xxx        # Robot IP — required for virtual restrictions
@@ -271,7 +271,7 @@ Available properties: `cardBg`, `surfaceBg`, `surfaceSecondary`, `surfaceTertiar
 ```bash
 npm install
 npm run dev    # dev server at http://localhost:5173
-npm run build  # outputs dist/dreame-vacuum-map-card.js
+npm run build  # outputs dist/valetudo-react-map-card.js
 ```
 
 ## Credits

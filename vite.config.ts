@@ -39,8 +39,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/main.tsx',
-      name: 'DreameVacuumMapCard',
-      fileName: 'dreame-vacuum-map-card',
+      name: 'ValetudoReactMapCard',
+      fileName: 'valetudo-react-map-card',
       formats: ['es']
     },
     rollupOptions: {
