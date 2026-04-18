@@ -13,7 +13,7 @@
       ]
     }],
     ["@semantic-release/git", {
-      "assets": ["package.json"],
+      "assets": ["package.json", "dist/valetudo-react-map-card.js"],
       "message": "chore(release): ${nextRelease.version} [skip ci]"
     }]
   ]
