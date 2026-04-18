@@ -187,10 +187,12 @@ class ValetudoVacuumMapCard extends HTMLElement {
     return 5;
   }
 
-  static getStubConfig() {
+  static getStubConfig(hass?: Hass) {
+    const entity =
+      (hass && Object.keys(hass.states).find((id) => id.startsWith('vacuum.valetudo_'))) || 'vacuum.valetudo_yourrobot';
     return {
       type: 'custom:valetudo-react-map-card',
-      entity: 'vacuum.valetudo_yourrobot',
+      entity,
     };
   }
 
@@ -281,9 +283,17 @@ class ValetudoVacuumMapCard extends HTMLElement {
       segments_entity: 'Segments entity (sensor.*)',
     };
 
+    const helpers: Record<string, string> = {
+      valetudo_identifier:
+        'Open Valetudo web UI → Robot Settings → Connectivity → MQTT → Identifier. Example: HarshSillyPigeon. Required for room and zone cleaning via MQTT.',
+      valetudo_url:
+        'Local IP of your robot, e.g. http://192.168.0.162. Needed for saving virtual restrictions (walls/no-go zones) and starting mapping. If left empty, the card falls back to rest_command: valetudo_set_restrictions in configuration.yaml.',
+    };
+
     return {
       schema,
       computeLabel: (s: { name: string }) => labels[s.name] ?? s.name,
+      computeHelper: (s: { name: string }) => helpers[s.name],
     };
   }
 }
