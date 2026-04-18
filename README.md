@@ -6,11 +6,31 @@ A Home Assistant Lovelace card for Valetudo-flashed robot vacuums. Works **fully
 
 ## Screenshots
 
-| Light theme | Dark theme |
+### Main map view
+
+![Main map — All cleaning mode](screenshots/main-map.jpg)
+
+### Room selection
+
+![Room cleaning — 2 rooms selected](screenshots/room-cleaning.jpg)
+
+### Cleaning mode & settings
+
+| Vacuum only | Vacuum & Mop | Mop only |
+|---|---|---|
+| ![Cleaning mode — Vacuum only](screenshots/cleaning-mode-vacuum.jpg) | ![Cleaning mode — Vacuum & Mop](screenshots/cleaning-mode-vac-mop.jpg) | ![Cleaning mode — Mop only](screenshots/cleaning-mode-mop.jpg) |
+
+### Virtual restrictions editor
+
+| Drawing walls | No-mop zones |
 |---|---|
-| ![Main view (light)](screenshots/light-main.png) | ![Main view (dark)](screenshots/dark-main.png) |
-| ![Room cleaning (light)](screenshots/room-cleaning.png) | ![Zone cleaning (dark)](screenshots/dark-zone-cleaning.png) |
-| ![Settings (light)](screenshots/light-settings.png) | ![Settings (dark)](screenshots/dark-settings.png) |
+| ![Restrictions editor — walls](screenshots/restrictions-walls.jpg) | ![Restrictions editor — no-mop zones](screenshots/restrictions-no-mop.jpg) |
+
+### Settings panel
+
+| Device info & consumables | Consumables & statistics |
+|---|---|
+| ![Settings — device and consumables](screenshots/settings-device.jpg) | ![Settings — statistics](screenshots/settings-stats.jpg) |
 
 ## Features
 
