@@ -43,8 +43,8 @@ jobs:
       - name: TypeScript type check
         run: npx tsc --noEmit
 
-  build-and-validate:
-    name: Build & Validate HACS
+  build:
+    name: Build
     needs: lint
     runs-on: ubuntu-latest
     steps:
@@ -70,15 +70,9 @@ jobs:
           path: dist/valetudo-react-map-card.js
           retention-days: 7
 
-      - name: Validate HACS
-        uses: hacs/action@main
-        with:
-          category: plugin
-          ignore: issues topics
-
   release:
     name: Semantic Release
-    needs: build-and-validate
+    needs: [lint, build]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     permissions:
@@ -109,3 +103,17 @@ jobs:
           GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+  validate-hacs:
+    name: Validate HACS
+    needs: release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate HACS
+        uses: hacs/action@main
+        with:
+          category: plugin
+          ignore: issues topics
