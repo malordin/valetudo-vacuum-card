@@ -16131,7 +16131,7 @@ function V1({
         /* @__PURE__ */ r.jsxs("h2", { className: "header__title", children: [
           g,
           " ",
-          /* @__PURE__ */ r.jsx("span", { style: { fontSize: "0.6em", opacity: 0.45, fontWeight: 400 }, children: "v1.12.2" })
+          /* @__PURE__ */ r.jsx("span", { style: { fontSize: "0.6em", opacity: 0.45, fontWeight: 400 }, children: "v1.13.0" })
         ] }),
         /* @__PURE__ */ r.jsx("p", { className: "header__status", children: N })
       ] }),
@@ -16360,7 +16360,19 @@ function $1({
       for (const ye of h.walls) le(ye, ye.id === h.selectedId);
       for (const ye of h.zones) ce(ye, ye.id === h.selectedId);
     }
-  }, [o, s, u, c, Pe, ge, y, h, N, w, L]), R.useEffect(() => {
+  }, [
+    o,
+    s,
+    u,
+    c,
+    Pe,
+    ge,
+    y,
+    h,
+    N,
+    w,
+    L
+  ]), R.useEffect(() => {
     const k = I.current;
     if (!k) return;
     const B = ($) => {
