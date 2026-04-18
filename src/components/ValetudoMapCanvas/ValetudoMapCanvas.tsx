@@ -426,44 +426,28 @@ export function ValetudoMapCanvas({
         ctx.stroke();
         ctx.setLineDash([]);
       }
-    } else if (mode !== 'restrictions') {
+    } else {
+      // mode is 'room' | 'all' | 'zone' | undefined — draw server-side restrictions at reduced opacity
       for (const entity of mapData.entities) {
         if (entity.type === 'virtual_wall' && entity.points.length >= 4) {
           const x1 = (entity.points[0] / pixelSize - bb.minX) * SCALE;
           const y1 = (entity.points[1] / pixelSize - bb.minY) * SCALE;
           const x2 = (entity.points[2] / pixelSize - bb.minX) * SCALE;
           const y2 = (entity.points[3] / pixelSize - bb.minY) * SCALE;
-          const alpha = mode === 'restrictions' ? 1.0 : 0.6;
-          const width = mode === 'restrictions' ? SCALE * 2 : SCALE * 1.2;
           ctx.beginPath();
           ctx.moveTo(x1, y1);
           ctx.lineTo(x2, y2);
-          ctx.strokeStyle = `rgba(244, 67, 54, ${alpha})`;
-          ctx.lineWidth = width;
+          ctx.strokeStyle = 'rgba(244, 67, 54, 0.6)';
+          ctx.lineWidth = SCALE * 1.2;
           ctx.setLineDash([]);
           ctx.lineCap = 'round';
           ctx.stroke();
           ctx.lineCap = 'butt';
-          // Endpoint dots
-          if (mode === 'restrictions') {
-            for (const [ex, ey] of [
-              [x1, y1],
-              [x2, y2],
-            ] as [number, number][]) {
-              ctx.beginPath();
-              ctx.arc(ex, ey, SCALE * 1.5, 0, 2 * Math.PI);
-              ctx.fillStyle = 'rgba(244, 67, 54, 0.9)';
-              ctx.fill();
-            }
-          }
         }
         if ((entity.type === 'no_go_area' || entity.type === 'no_mop_area') && entity.points.length >= 8) {
-          const alpha = mode === 'restrictions' ? 0.9 : 0.5;
           const isMop = entity.type === 'no_mop_area';
-          const fillColor = isMop
-            ? `rgba(33, 150, 243, ${mode === 'restrictions' ? 0.2 : 0.1})`
-            : `rgba(244, 67, 54, ${mode === 'restrictions' ? 0.2 : 0.1})`;
-          const strokeColor = isMop ? `rgba(33, 150, 243, ${alpha})` : `rgba(244, 67, 54, ${alpha})`;
+          const fillColor = isMop ? 'rgba(33, 150, 243, 0.1)' : 'rgba(244, 67, 54, 0.1)';
+          const strokeColor = isMop ? 'rgba(33, 150, 243, 0.5)' : 'rgba(244, 67, 54, 0.5)';
           ctx.beginPath();
           for (let i = 0; i < entity.points.length; i += 2) {
             const px = (entity.points[i] / pixelSize - bb.minX) * SCALE;
@@ -475,7 +459,7 @@ export function ValetudoMapCanvas({
           ctx.fillStyle = fillColor;
           ctx.fill();
           ctx.strokeStyle = strokeColor;
-          ctx.lineWidth = mode === 'restrictions' ? SCALE * 1.5 : SCALE;
+          ctx.lineWidth = SCALE;
           ctx.setLineDash([5, 3]);
           ctx.stroke();
           ctx.setLineDash([]);

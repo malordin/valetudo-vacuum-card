@@ -254,7 +254,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
     } finally {
       setRestrictionsSaving(false);
     }
-  }, [config.valetudo_url, restrictions, hass, markSaved, showToast, refetchMap]);
+  }, [config.valetudo_url, restrictions, hass, markSaved, showToast, refetchMap, t]);
 
   if (!vacuumEntity) {
     return <div className="valetudo-vacuum-card__error">Entity not found: {entityIds.vacuum}</div>;
