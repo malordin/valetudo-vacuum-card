@@ -23,9 +23,18 @@ interface ValetudoVacuumCardProps {
   config: ValetudoHassConfig;
 }
 
+/** Check if a HA callService error is a "service not found" error.
+ * HA throws plain objects (not Error instances) with a `code` field. */
+function isHassNotFoundError(err: unknown): boolean {
+  if (!err || typeof err !== 'object') return false;
+  const e = err as Record<string, unknown>;
+  if (e.code === 'not_found') return true;
+  const msg = typeof e.message === 'string' ? e.message : '';
+  return msg.includes('not_found') || msg.includes('Service not found') || msg.includes('Service rest_command');
+}
+
 /**
  * Parses the segments sensor attributes into a RoomPosition list.
- * The sensor state attributes look like: { "1": "Спальня", "2": "Кабинет", ... }
  */
 function parseSegments(attributes: Record<string, unknown>): RoomPosition[] {
   return Object.entries(attributes)
@@ -120,12 +129,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
           await hass.callService('rest_command', 'valetudo_start_mapping', {});
           done = true;
         } catch (restErr: unknown) {
-          const msg = String(restErr);
-          if (
-            !msg.includes('not_found') &&
-            !msg.includes('Service not found') &&
-            !msg.includes('Service rest_command')
-          ) {
+          if (!isHassNotFoundError(restErr)) {
             throw restErr;
           }
         }
@@ -222,13 +226,11 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
           console.log('[valetudo] Saved via HA rest_command');
           saved = true;
         } catch (restCmdErr: unknown) {
-          const msg = String(restCmdErr);
-          console.warn('[valetudo] rest_command error:', msg);
-          if (msg.includes('not_found') || msg.includes('Service not found') || msg.includes('Service rest_command')) {
-            console.log('[valetudo] rest_command not configured, trying next method');
-          } else {
+          console.warn('[valetudo] rest_command error:', restCmdErr);
+          if (!isHassNotFoundError(restCmdErr)) {
             throw restCmdErr;
           }
+          console.log('[valetudo] rest_command not configured, trying next method');
         }
       }
 
