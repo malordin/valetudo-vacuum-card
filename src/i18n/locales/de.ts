@@ -239,7 +239,7 @@ export const de: Translation = {
       mapping_title: 'Kartierung — Konfiguration erforderlich',
       desc: 'Weder valetudo_url (Karten-Editor) noch rest_command ist konfiguriert. Wähle eine Option:',
       desc_blocked:
-        'Der Browser hat die direkte Verbindung zum Roboter blockiert (HTTPS→HTTP mixed content). Füge rest_command hinzu, um Anfragen über Home Assistant weiterzuleiten:',
+        'Der Browser hat die direkte Verbindung zum Roboter blockiert (HTTPS→HTTP mixed content). Füge rest_command zu configuration.yaml hinzu, lade Home Assistant neu und versuche es erneut:',
       option_url: 'Option 1 — empfohlen: Karten-Editor öffnen und Valetudo-URL eintragen (z. B. http://192.168.0.162).',
       option_rest_intro: 'Option 2 — in configuration.yaml eintragen und Home Assistant neu laden:',
       close: 'Schließen',

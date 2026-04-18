@@ -235,7 +235,7 @@ export const en = {
       mapping_title: 'Mapping — configuration needed',
       desc: 'Neither valetudo_url (card editor) nor rest_command is configured. Pick one option:',
       desc_blocked:
-        'Direct connection to the robot was blocked by the browser (HTTPS→HTTP mixed content). Add rest_command to proxy requests through Home Assistant:',
+        'Direct connection to the robot was blocked by the browser (HTTPS→HTTP mixed content). Add rest_command to configuration.yaml, reload Home Assistant, then try again:',
       option_url:
         'Option 1 — recommended: open the card editor and fill in the Valetudo URL field (e.g. http://192.168.0.162).',
       option_rest_intro: 'Option 2 — add to configuration.yaml and reload Home Assistant:',

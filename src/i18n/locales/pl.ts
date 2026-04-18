@@ -235,7 +235,7 @@ export const pl = {
       mapping_title: 'Mapowanie — wymagana konfiguracja',
       desc: 'Nie skonfigurowano ani valetudo_url (edytor karty), ani rest_command. Wybierz opcję:',
       desc_blocked:
-        'Przeglądarka zablokowała bezpoşrednie połączenie z robotem (HTTPS→HTTP niedozwolone). Dodaj rest_command, aby kierować żądania przez Home Assistant:',
+        'Przeglądarka zablokowała bezpoşrednie połączenie z robotem (HTTPS→HTTP niedozwolone). Dodaj rest_command do configuration.yaml, przeladuj Home Assistant i spróbuj ponownie:',
       option_url: 'Opcja 1 — zalecana: otwórz edytor karty i uzupełnij pole Valetudo URL (np. http://192.168.0.162).',
       option_rest_intro: 'Opcja 2 — dodaj do configuration.yaml i przeładuj Home Assistant:',
       close: 'Zamknij',
