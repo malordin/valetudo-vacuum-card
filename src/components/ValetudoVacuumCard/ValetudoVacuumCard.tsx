@@ -100,15 +100,16 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
 
   const wifiAttrs = wifiEntity?.attributes as Record<string, unknown> | undefined;
   const wifiIp = (wifiAttrs?.ips as string[] | undefined)?.[0];
-  // Used only to decide whether to show the Mapping button (not for direct fetch)
-  const hasRobotUrl = !!(config.valetudo_url || wifiIp);
+  // Resolved URL for direct REST calls: explicit config > wifi entity IP
+  const resolvedRobotUrl = config.valetudo_url?.replace(/\/$/, '') || (wifiIp ? `http://${wifiIp}` : null);
+  const hasRobotUrl = !!resolvedRobotUrl;
 
   const handleStartMapping = useCallback(async () => {
     try {
       let done = false;
 
       // 1. Direct REST via valetudo_url from config (works from HTTP pages / local network without HTTPS)
-      const directUrl = config.valetudo_url?.replace(/\/$/, '');
+      const directUrl = resolvedRobotUrl;
       if (directUrl) {
         try {
           const res = await fetch(`${directUrl}/api/v2/robot/capabilities/MappingPassCapability`, {
@@ -154,7 +155,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
       console.error('[valetudo] Mapping failed:', err);
       showToast(t('valetudo.toast.mapping_error'));
     }
-  }, [config.valetudo_url, hass, showToast, t]);
+  }, [resolvedRobotUrl, hass, showToast, t]);
 
   const { handlePause, handleStop, handleDock, handleResume, handleSetFanSpeed, handleSetWater, handleClean } =
     useValetudoServices({
@@ -205,7 +206,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
       let saved = false;
 
       // 1. Direct REST via valetudo_url from config (works from HTTP pages)
-      const robotUrl = config.valetudo_url?.replace(/\/$/, '');
+      const robotUrl = resolvedRobotUrl;
       if (robotUrl) {
         const res = await fetch(`${robotUrl}/api/v2/robot/capabilities/CombinedVirtualRestrictionsCapability`, {
           method: 'PUT',
@@ -257,7 +258,7 @@ export function ValetudoVacuumCard({ hass, config }: ValetudoVacuumCardProps) {
     } finally {
       setRestrictionsSaving(false);
     }
-  }, [config.valetudo_url, restrictions, hass, markSaved, showToast, refetchMap, t]);
+  }, [resolvedRobotUrl, restrictions, hass, markSaved, showToast, refetchMap, t]);
 
   if (!vacuumEntity) {
     return <div className="valetudo-vacuum-card__error">Entity not found: {entityIds.vacuum}</div>;

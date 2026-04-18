@@ -287,7 +287,7 @@ class ValetudoVacuumMapCard extends HTMLElement {
       valetudo_identifier:
         'Open Valetudo web UI → Robot Settings → Connectivity → MQTT → Identifier. Example: HarshSillyPigeon. Required for room and zone cleaning via MQTT.',
       valetudo_url:
-        'Local IP of your robot, e.g. http://192.168.0.162. Needed for saving virtual restrictions (walls/no-go zones) and starting mapping. If left empty, the card falls back to rest_command: valetudo_set_restrictions in configuration.yaml.',
+        'Optional. Override the robot URL for direct REST calls (restrictions, mapping). If left empty, the card auto-detects the IP from the Wi-Fi sensor entity. Set this only if auto-detection fails (e.g. the robot IP changes or the Wi-Fi entity is unavailable).',
     };
 
     return {
