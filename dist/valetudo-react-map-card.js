@@ -11026,7 +11026,7 @@ const Iv = [
       key: "1xq2db"
     }
   ]
-], Wv = be("zap", Iv), ng = /* @__PURE__ */ r.jsx(y0, {}), ig = /* @__PURE__ */ r.jsx(p0, {}), lg = /* @__PURE__ */ r.jsx(v0, {}), og = /* @__PURE__ */ r.jsx(_0, {}), Fv = /* @__PURE__ */ r.jsx($0, {}), Pv = /* @__PURE__ */ r.jsx(Kr, {}), e1 = /* @__PURE__ */ r.jsx(mv, {}), t1 = /* @__PURE__ */ r.jsx(dv, {}), a1 = /* @__PURE__ */ r.jsx(Lv, {}), n1 = /* @__PURE__ */ r.jsx(sv, {}), i1 = /* @__PURE__ */ r.jsx(rv, {}), l1 = /* @__PURE__ */ r.jsx(S0, {}), o1 = /* @__PURE__ */ r.jsx(O0, {}), Xr = /* @__PURE__ */ r.jsx(Zr, {}), s1 = /* @__PURE__ */ r.jsx(os, {}), Qr = /* @__PURE__ */ r.jsx(ls, {}), Oi = /* @__PURE__ */ r.jsxs(r.Fragment, { children: [
+], Wv = be("zap", Iv), ng = /* @__PURE__ */ r.jsx(y0, {}), ig = /* @__PURE__ */ r.jsx(p0, {}), lg = /* @__PURE__ */ r.jsx(v0, {}), og = /* @__PURE__ */ r.jsx(_0, {}), Fv = /* @__PURE__ */ r.jsx($0, {}), Pv = /* @__PURE__ */ r.jsx(Kr, {}), eb = /* @__PURE__ */ r.jsx(mv, {}), tb = /* @__PURE__ */ r.jsx(dv, {}), ab = /* @__PURE__ */ r.jsx(Lv, {}), nb = /* @__PURE__ */ r.jsx(sv, {}), ib = /* @__PURE__ */ r.jsx(rv, {}), lb = /* @__PURE__ */ r.jsx(S0, {}), ob = /* @__PURE__ */ r.jsx(O0, {}), Xr = /* @__PURE__ */ r.jsx(Zr, {}), sb = /* @__PURE__ */ r.jsx(os, {}), Qr = /* @__PURE__ */ r.jsx(ls, {}), Oi = /* @__PURE__ */ r.jsxs(r.Fragment, { children: [
   /* @__PURE__ */ r.jsx(Zr, {}),
   /* @__PURE__ */ r.jsx(gv, {}),
   /* @__PURE__ */ r.jsx(ls, {})
@@ -11034,7 +11034,7 @@ const Iv = [
   /* @__PURE__ */ r.jsx(Zr, {}),
   /* @__PURE__ */ r.jsx(d0, {}),
   /* @__PURE__ */ r.jsx(ls, {})
-] }), sg = /* @__PURE__ */ r.jsx(Cv, {}), cg = /* @__PURE__ */ r.jsx(Tv, {}), rg = /* @__PURE__ */ r.jsx(kv, {}), ug = /* @__PURE__ */ r.jsx(Rv, {}), c1 = /* @__PURE__ */ r.jsx(Kr, {}), r1 = /* @__PURE__ */ r.jsx(Hv, {}), u1 = /* @__PURE__ */ r.jsx(X0, {}), d1 = /* @__PURE__ */ r.jsx(Wv, {}), f1 = /* @__PURE__ */ r.jsx(hv, {}), m1 = /* @__PURE__ */ r.jsx(zv, {}), _1 = /* @__PURE__ */ r.jsx(Qv, {}), kl = {
+] }), sg = /* @__PURE__ */ r.jsx(Cv, {}), cg = /* @__PURE__ */ r.jsx(Tv, {}), rg = /* @__PURE__ */ r.jsx(kv, {}), ug = /* @__PURE__ */ r.jsx(Rv, {}), cb = /* @__PURE__ */ r.jsx(Kr, {}), rb = /* @__PURE__ */ r.jsx(Hv, {}), ub = /* @__PURE__ */ r.jsx(X0, {}), db = /* @__PURE__ */ r.jsx(Wv, {}), fb = /* @__PURE__ */ r.jsx(hv, {}), mb = /* @__PURE__ */ r.jsx(zv, {}), _b = /* @__PURE__ */ r.jsx(Qv, {}), kl = {
   WETNESS: {
     MIN: 1,
     MAX: 32
@@ -11119,13 +11119,13 @@ const Iv = [
   SLIGHTLY_DRY: "Slightly dry",
   MOIST: "Moist",
   WET: "Wet"
-}, g1 = {
+}, gb = {
   ALL: "all"
 }, Al = {
   CLEANGENIUS: "CleanGenius",
   CUSTOM: "Custom"
 }, kt = {
-  MODE: g1.ALL,
+  MODE: gb.ALL,
   CLEANING_MODE: qe.SWEEPING_AND_MOPPING,
   CLEANGENIUS_MODE: da.VACUUM_AND_MOP,
   SUCTION_LEVEL: Ut.STANDARD,
@@ -11205,7 +11205,7 @@ function Jr(o) {
     callService: c
   };
 }
-function p1(o) {
+function pb(o) {
   switch (o) {
     case qe.SWEEPING:
       return Kt.CLEANING_MODE.SWEEPING;
@@ -11221,7 +11221,7 @@ function p1(o) {
       return o;
   }
 }
-function h1(o) {
+function hb(o) {
   switch (o) {
     case da.VACUUM_AND_MOP:
       return Kt.CLEANGENIUS_MODE.VACUUM_AND_MOP;
@@ -11243,7 +11243,7 @@ function ts(o) {
       return o;
   }
 }
-function v1(o) {
+function vb(o) {
   switch (o) {
     case qn.BY_AREA:
       return Kt.SELF_CLEAN_FREQUENCY.BY_AREA;
@@ -11324,7 +11324,7 @@ function fg({ defaultMode: o = kt.MODE } = {}) {
     handleRoomToggle: S
   };
 }
-const b1 = {
+const bb = {
   // Room Selector
   room_selector: {
     title: "Select Rooms",
@@ -11634,7 +11634,7 @@ const b1 = {
       fill_light_desc: "Use fill light for better detection"
     }
   }
-}, y1 = {
+}, yb = {
   // Room Selector
   room_selector: {
     title: "Räume auswählen",
@@ -11944,7 +11944,7 @@ const b1 = {
       fill_light_desc: "Zusatzlicht für bessere Erkennung nutzen"
     }
   }
-}, x1 = {
+}, xb = {
   // Room Selector
   room_selector: {
     title: "Выбор комнат",
@@ -12254,7 +12254,7 @@ const b1 = {
       fill_light_desc: "Использовать подсветку для лучшего распознавания"
     }
   }
-}, S1 = {
+}, Sb = {
   // Room Selector (房间选择器)
   room_selector: {
     title: "选择房间",
@@ -12567,7 +12567,7 @@ const b1 = {
       fill_light_desc: "暗光环境下自动开启以提升识别率"
     }
   }
-}, w1 = {
+}, wb = {
   // Room Selector
   room_selector: {
     title: "Seleccionar Habitaciones",
@@ -12877,7 +12877,7 @@ const b1 = {
       fill_light_desc: "Usar luz de relleno para mejor detección"
     }
   }
-}, z1 = {
+}, zb = {
   // Kamer Kiezer
   room_selector: {
     title: "Kamers Selecteren",
@@ -13187,7 +13187,7 @@ const b1 = {
       fill_light_desc: "Bijverlichting gebruiken voor betere detectie"
     }
   }
-}, N1 = {
+}, Nb = {
   // Room Selector
   room_selector: {
     title: "Seleziona stanze",
@@ -13497,7 +13497,7 @@ const b1 = {
       fill_light_desc: "Usa la luce di riempimento per un rilevamento migliore"
     }
   }
-}, E1 = {
+}, Eb = {
   // Room Selector
   room_selector: {
     title: "Wybierz pokoje",
@@ -13808,39 +13808,39 @@ const b1 = {
     }
   }
 }, o_ = {
-  en: b1,
-  de: y1,
-  ru: x1,
-  zh: S1,
-  es: w1,
-  nl: z1,
-  it: N1,
-  pl: E1
+  en: bb,
+  de: yb,
+  ru: xb,
+  zh: Sb,
+  es: wb,
+  nl: zb,
+  it: Nb,
+  pl: Eb
 };
-function M1(o, c) {
+function Mb(o, c) {
   return c ? Object.entries(c).reduce((s, [u, g]) => s.replace(new RegExp(`{{${u}}}`, "g"), String(g)), o) : o;
 }
-function k1(o, c) {
+function kb(o, c) {
   return c.split(".").reduce((s, u) => {
     if (s && typeof s == "object" && u in s)
       return s[u];
   }, o);
 }
-function A1(o = "en") {
+function Ab(o = "en") {
   const c = o_[o] || o_.en;
   return function(u, g) {
-    const m = k1(c, u);
-    return typeof m != "string" ? (console.warn(`Translation key not found: ${u}`), u) : M1(m, g);
+    const m = kb(c, u);
+    return typeof m != "string" ? (console.warn(`Translation key not found: ${u}`), u) : Mb(m, g);
   };
 }
-function C1(o, c) {
+function Cb(o, c) {
   return c === 0 ? o("actions.select_rooms") : o(c === 1 ? "actions.clean_rooms" : "actions.clean_rooms_plural", { count: String(c) });
 }
 function Ke(o = "en") {
-  const c = O.useMemo(() => A1(o), [o]);
+  const c = O.useMemo(() => Ab(o), [o]);
   return {
     t: c,
-    getRoomCountTranslation: (s) => C1(c, s)
+    getRoomCountTranslation: (s) => Cb(c, s)
   };
 }
 function De(o, c) {
@@ -13855,18 +13855,18 @@ function ua(o) {
 function Wr(o) {
   return typeof o == "boolean";
 }
-function j1(o) {
+function jb(o) {
   return typeof o == "object" && o !== null;
 }
 function s_(o, c, s) {
   const u = s.scale || 1, g = s.padding || [0, 0, 0, 0], m = s.crop || [0, 0, 0, 0], h = s.left, b = s.top, v = s.height, f = s.grid_size, p = (o + m[0] - g[0]) / u * f + h, w = b + (v * f - 1) - (c + m[1] - g[1]) / u * f;
   return { x: Math.round(p), y: Math.round(w) };
 }
-function T1(o, c, s, u) {
-  const g = D1(c);
+function Tb(o, c, s, u) {
+  const g = Db(c);
   if (console.debug("[ZoneConverter] Input:", { uiZone: o, imageWidth: s, imageHeight: u, hasDimensions: !!g }), !g) {
-    const k = R1(c);
-    return console.debug("[ZoneConverter] Using calibration fallback, points:", k?.length ?? 0), O1(o, k, s, u);
+    const k = Rb(c);
+    return console.debug("[ZoneConverter] Using calibration fallback, points:", k?.length ?? 0), Ob(o, k, s, u);
   }
   console.debug("[ZoneConverter] Map dimensions:", g);
   const m = o.x1 / 100 * s, h = o.y1 / 100 * u, b = o.x2 / 100 * s, v = o.y2 / 100 * u;
@@ -13879,7 +13879,7 @@ function T1(o, c, s, u) {
   };
   return console.debug("[ZoneConverter] Output vacuum coords:", w), w;
 }
-function O1(o, c, s, u) {
+function Ob(o, c, s, u) {
   if (!c || c.length < 3)
     return {
       x1: Math.round(o.x1 / 100 * 12e3 - 6e3),
@@ -13895,7 +13895,7 @@ function O1(o, c, s, u) {
     y2: K
   };
 }
-function R1(o) {
+function Rb(o) {
   const c = o?.attributes?.calibration_points;
   return !c || !Array.isArray(c) || c.length < 3 ? null : c.map((s) => {
     const u = s;
@@ -13905,7 +13905,7 @@ function R1(o) {
     };
   });
 }
-function D1(o) {
+function Db(o) {
   const c = o?.attributes;
   if (!c)
     return null;
@@ -13925,7 +13925,7 @@ function D1(o) {
   }
   return null;
 }
-function U1({ hass: o, entityId: c, mapEntityId: s, onSuccess: u, language: g = "en" }) {
+function Ub({ hass: o, entityId: c, mapEntityId: s, onSuccess: u, language: g = "en" }) {
   const { t: m } = Ke(g), h = O.useCallback(() => {
     console.debug("[Vacuum] Start full clean", c), o.callService("vacuum", "start", { entity_id: c }), u?.(m("toast.starting_full_clean"));
   }, [o, c, u, m]), b = O.useCallback(() => {
@@ -13952,7 +13952,7 @@ function U1({ hass: o, entityId: c, mapEntityId: s, onSuccess: u, language: g = 
         mapEntityId: s,
         calibrationPoints: K?.attributes?.calibration_points
       });
-      const U = T1(N, K, S, D);
+      const U = Tb(N, K, S, D);
       console.debug("[Vacuum] Clean zone - converted:", U), o.callService("dreame_vacuum", "vacuum_clean_zone", {
         entity_id: c,
         zone: [U.x1, U.y1, U.x2, U.y2]
@@ -14097,19 +14097,19 @@ const Gr = {
     toggleActiveShadowColor: "rgba(88, 101, 242, 0.25)"
   }
 };
-function B1(o, c) {
+function Bb(o, c) {
   switch (o) {
     case "light":
       return Gr;
     case "dark":
       return gg;
     case "custom":
-      return L1(c || {});
+      return Lb(c || {});
     default:
       return Gr;
   }
 }
-function L1(o) {
+function Lb(o) {
   return {
     name: "custom",
     colors: {
@@ -14118,7 +14118,7 @@ function L1(o) {
     }
   };
 }
-function G1(o) {
+function Gb(o) {
   return {
     "--card-bg": o.cardBg,
     "--surface-bg": o.surfaceBg,
@@ -14155,23 +14155,23 @@ function G1(o) {
     "--toggle-active-shadow-color": o.toggleActiveShadowColor
   };
 }
-function H1(o, c) {
-  const s = G1(c.colors);
+function Hb(o, c) {
+  const s = Gb(c.colors);
   Object.entries(s).forEach(([u, g]) => {
     o.style.setProperty(u, g);
   });
 }
 function pg({ themeType: o = "light", customThemeConfig: c, containerRef: s }) {
-  const u = O.useMemo(() => B1(o, c), [o, c]);
+  const u = O.useMemo(() => Bb(o, c), [o, c]);
   return O.useEffect(() => {
-    s?.current && H1(s.current, u);
+    s?.current && Hb(s.current, u);
   }, [u, s]), u;
 }
-let V1 = 0;
+let Vb = 0;
 function ns() {
-  return `r${++V1}`;
+  return `r${++Vb}`;
 }
-function q1(o) {
+function qb(o) {
   const c = [], s = [];
   for (const u of o.entities)
     u.type === "virtual_wall" && u.points.length >= 4 ? c.push({
@@ -14188,7 +14188,7 @@ function q1(o) {
     });
   return { walls: c, zones: s };
 }
-function Y1(o, c) {
+function Yb(o, c) {
   return {
     virtualWalls: o.map((s) => ({
       __class: "ValetudoVirtualWall",
@@ -14201,7 +14201,7 @@ function Y1(o, c) {
     }))
   };
 }
-function Z1({ mapData: o, active: c }) {
+function Zb({ mapData: o, active: c }) {
   const s = O.useRef(null), [u, g] = O.useState({
     walls: [],
     zones: [],
@@ -14212,7 +14212,7 @@ function Z1({ mapData: o, active: c }) {
   });
   O.useEffect(() => {
     if (!c || !o) return;
-    const S = q1(o), D = s.current;
+    const S = qb(o), D = s.current;
     if (D) {
       if (!(S.walls.length === D.walls.length && D.walls.every(
         (U) => S.walls.some(
@@ -14335,7 +14335,7 @@ function Z1({ mapData: o, active: c }) {
     markSaved: N
   };
 }
-function K1(o, c) {
+function Kb(o, c) {
   if (c)
     switch (o) {
       case qe.SWEEPING_AND_MOPPING:
@@ -14366,7 +14366,7 @@ function K1(o, c) {
       return o;
   }
 }
-function X1(o, c) {
+function Xb(o, c) {
   if (c)
     switch (o) {
       case da.VACUUM_AND_MOP:
@@ -14385,10 +14385,10 @@ function X1(o, c) {
       return o;
   }
 }
-function Q1(o, c) {
+function Qb(o, c) {
   return c ? o === Ut.QUIET || o.includes("Quiet") ? c("suction_levels.quiet") : o === Ut.STANDARD || o.includes("Standard") ? c("suction_levels.standard") : o === Ut.STRONG || o.includes("Strong") ? c("suction_levels.strong") : o === Ut.TURBO || o.includes("Turbo") ? c("suction_levels.turbo") : o : o === Ut.QUIET || o.includes("Quiet") ? "Quiet" : o === Ut.STANDARD || o.includes("Standard") ? "Standard" : o === Ut.STRONG || o.includes("Strong") ? "Turbo" : o === Ut.TURBO || o.includes("Turbo") ? "Max" : o;
 }
-function $1(o) {
+function $b(o) {
   switch (o) {
     case qe.SWEEPING:
       return Xr;
@@ -14399,12 +14399,12 @@ function $1(o) {
     case qe.MOPPING_AFTER_SWEEPING:
       return $r;
     case qe.MAPPING:
-      return s1;
+      return sb;
     default:
       return "";
   }
 }
-function J1(o) {
+function Jb(o) {
   switch (o) {
     case da.VACUUM_AND_MOP:
       return Oi;
@@ -14414,7 +14414,7 @@ function J1(o) {
       return "";
   }
 }
-function I1(o) {
+function Ib(o) {
   switch (o) {
     case Ut.QUIET:
     case Ut.SILENT:
@@ -14427,31 +14427,31 @@ function I1(o) {
       return ug;
   }
 }
-function W1(o) {
+function Wb(o) {
   switch (o) {
     case Vn.QUICK:
-      return d1;
+      return db;
     case Vn.STANDARD:
-      return f1;
+      return fb;
     case Vn.INTENSIVE:
-      return m1;
+      return mb;
     case Vn.DEEP:
-      return _1;
+      return _b;
   }
 }
-function F1(o) {
+function Fb(o) {
   switch (o) {
     case qn.BY_AREA:
-      return c1;
+      return cb;
     case qn.BY_TIME:
-      return r1;
+      return rb;
     case qn.BY_ROOM:
-      return u1;
+      return ub;
     default:
       return "⚙️";
   }
 }
-function P1(o, c) {
+function Pb(o, c) {
   if (!o)
     return null;
   const s = o.attributes?.friendly_name || c.title || "Dreame Vacuum", u = c.map_entity || `camera.${c.entity.split(".")[1]}_map`, g = o.attributes?.rooms?.[o.attributes?.selected_map || ""], m = g ? g.map((h) => ({
@@ -14467,7 +14467,7 @@ function P1(o, c) {
     rooms: m
   };
 }
-function eb(o, c) {
+function e1(o, c) {
   const s = De(o.attributes.status, ""), u = o.attributes.segment_cleaning || !1, g = o.attributes.zone_cleaning || !1;
   if (o.attributes.started) {
     if (u || s.toLowerCase().includes("room"))
@@ -14477,7 +14477,7 @@ function eb(o, c) {
   }
   return c;
 }
-function tb(o, c) {
+function t1(o, c) {
   const s = o.states[c];
   if (!s?.attributes?.rooms)
     return console.debug("[RoomParser] No rooms found in camera entity:", c), [];
@@ -14506,13 +14506,13 @@ function $o(o, c, s, u, g) {
   const m = s[0], h = s[1], b = s[2], v = (h.map.x - m.map.x) / (h.vacuum.x - m.vacuum.x || 1), f = (b.map.y - m.map.y) / (b.vacuum.y - m.vacuum.y || 1), p = m.map.x + (o - m.vacuum.x) * v, w = m.map.y + (c - m.vacuum.y) * f;
   return { x: p, y: w };
 }
-function ab(o, c, s, u) {
+function a1(o, c, s, u) {
   if (o.x0 === void 0 || o.y0 === void 0 || o.x1 === void 0 || o.y1 === void 0)
     return console.warn("Room missing coordinates:", o), "";
   const g = $o(o.x0, o.y0, c, s, u), m = $o(o.x1, o.y0, c, s, u), h = $o(o.x1, o.y1, c, s, u), b = $o(o.x0, o.y1, c, s, u);
   return `M ${g.x} ${g.y} L ${m.x} ${m.y} L ${h.x} ${h.y} L ${b.x} ${b.y} Z`;
 }
-function nb({ entity: o, deviceName: c, onSettingsClick: s, language: u }) {
+function n1({ entity: o, deviceName: c, onSettingsClick: s, language: u }) {
   const { t: g } = Ke(u), m = De(o.attributes.status, o.state), h = De(o.attributes.cleaned_area, 0), b = De(o.attributes.cleaning_time, 0), v = De(o.attributes.battery, 0), f = () => {
     const k = o.attributes.battery;
     return ua(k) ? k >= 80 ? og : k >= 60 ? lg : k >= 20 ? ig : ng : null;
@@ -14554,7 +14554,7 @@ function nb({ entity: o, deviceName: c, onSettingsClick: s, language: u }) {
     ] })
   ] });
 }
-function ib({
+function i1({
   cleaningMode: o,
   cleanGeniusMode: c,
   cleangenius: s,
@@ -14592,12 +14592,12 @@ function ib({
         onClick: k,
         title: b("cleaning_mode_button.view_shortcuts"),
         disabled: m,
-        children: l1
+        children: lb
       }
     )
   ] });
 }
-function lb({ zone: o, onZoneChange: c, clearZoneLabel: s, isStarted: u = !1 }) {
+function l1({ zone: o, onZoneChange: c, clearZoneLabel: s, isStarted: u = !1 }) {
   const [g, m] = O.useState(null), [h, b] = O.useState(null), v = (S, D) => {
     S.stopPropagation(), o && (m(D), b(o));
   }, f = (S) => "touches" in S && S.touches.length > 0 ? { clientX: S.touches[0].clientX, clientY: S.touches[0].clientY } : { clientX: S.clientX, clientY: S.clientY }, p = (S, D) => {
@@ -14682,7 +14682,7 @@ function lb({ zone: o, onZoneChange: c, clearZoneLabel: s, isStarted: u = !1 }) 
     )
   };
 }
-function ob({
+function o1({
   rooms: o,
   selectedRooms: c,
   onRoomToggle: s,
@@ -14693,7 +14693,7 @@ function ob({
 }) {
   const b = O.useMemo(() => o.filter((f) => f.visibility !== "Hidden").map((f) => ({
     room: f,
-    path: ab(f, u, g, m)
+    path: a1(f, u, g, m)
   })), [o, u, g, m]), v = (f, p) => {
     s(f, p);
   };
@@ -14740,11 +14740,11 @@ function ob({
     }
   );
 }
-function sb({ viewMode: o, onToggle: c, mapLabel: s, listLabel: u }) {
+function s1({ viewMode: o, onToggle: c, mapLabel: s, listLabel: u }) {
   const g = o === "map", m = g ? u : s, h = g ? P0 : os;
   return /* @__PURE__ */ r.jsx("button", { className: "view-toggle-button", onClick: c, "aria-label": m, title: m, children: /* @__PURE__ */ r.jsx(h, { size: 18 }) });
 }
-function cb({ rooms: o, selectedRooms: c, onRoomToggle: s, language: u }) {
+function c1({ rooms: o, selectedRooms: c, onRoomToggle: s, language: u }) {
   const { t: g } = Ke(u);
   return o.length === 0 ? /* @__PURE__ */ r.jsx("div", { className: "room-list-view", children: /* @__PURE__ */ r.jsx("div", { className: "room-list-view__empty", children: g("vacuum_map.no_rooms") }) }) : /* @__PURE__ */ r.jsxs("div", { className: "room-list-view", children: [
     /* @__PURE__ */ r.jsx("div", { className: "room-list-view__header", children: g("vacuum_map.room_list_overlay") }),
@@ -14765,7 +14765,7 @@ function cb({ rooms: o, selectedRooms: c, onRoomToggle: s, language: u }) {
     }) })
   ] });
 }
-function rb({
+function r1({
   hass: o,
   mapEntityId: c,
   selectedMode: s,
@@ -14782,7 +14782,7 @@ function rb({
   O.useEffect(() => {
     s !== "room" && Z(p);
   }, [s, p]);
-  const L = tb(o, c), ae = k?.attributes?.calibration_points ?? [], V = lb({
+  const L = t1(o, c), ae = k?.attributes?.calibration_points ?? [], V = l1({
     zone: m,
     onZoneChange: h,
     clearZoneLabel: w("vacuum_map.clear_zone"),
@@ -14834,7 +14834,7 @@ function rb({
         ] }),
         s === "room" && /* @__PURE__ */ r.jsxs(r.Fragment, { children: [
           /* @__PURE__ */ r.jsx(
-            sb,
+            s1,
             {
               viewMode: $,
               onToggle: () => Z((le) => le === "map" ? "list" : "map"),
@@ -14845,7 +14845,7 @@ function rb({
           $ === "map" ? /* @__PURE__ */ r.jsxs(r.Fragment, { children: [
             !f && /* @__PURE__ */ r.jsx("div", { className: "vacuum-map__overlay", children: w("vacuum_map.room_overlay") }),
             !f && K.width > 0 && K.height > 0 && /* @__PURE__ */ r.jsx(
-              ob,
+              o1,
               {
                 rooms: L,
                 selectedRooms: u,
@@ -14857,7 +14857,7 @@ function rb({
               }
             )
           ] }) : /* @__PURE__ */ r.jsx(
-            cb,
+            c1,
             {
               rooms: L,
               selectedRooms: u,
@@ -14894,37 +14894,37 @@ function hg({ selectedMode: o, onModeChange: c, disabled: s = !1, language: u = 
     h.value
   )) });
 }
-function ub({ onClick: o, text: c, disabled: s }) {
+function u1({ onClick: o, text: c, disabled: s }) {
   return /* @__PURE__ */ r.jsxs("button", { onClick: o, className: "action-buttons__clean", disabled: s, children: [
-    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: e1 }),
+    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: eb }),
     /* @__PURE__ */ r.jsx("span", { children: c })
   ] });
 }
-function db({ onClick: o, language: c = "en" }) {
+function d1({ onClick: o, language: c = "en" }) {
   const { t: s } = Ke(c);
   return /* @__PURE__ */ r.jsxs("button", { onClick: o, className: "action-buttons__pause", children: [
-    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: t1 }),
+    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: tb }),
     /* @__PURE__ */ r.jsx("span", { children: s("actions.pause") })
   ] });
 }
-function fb({ onClick: o, language: c = "en" }) {
+function f1({ onClick: o, language: c = "en" }) {
   const { t: s } = Ke(c);
   return /* @__PURE__ */ r.jsxs("button", { onClick: o, className: "action-buttons__resume", children: [
-    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: a1 }),
+    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: ab }),
     /* @__PURE__ */ r.jsx("span", { children: s("actions.resume") })
   ] });
 }
 function c_({ onClick: o, language: c = "en" }) {
   const { t: s } = Ke(c);
   return /* @__PURE__ */ r.jsxs("button", { onClick: o, className: "action-buttons__stop", children: [
-    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: n1 }),
+    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: nb }),
     /* @__PURE__ */ r.jsx("span", { children: s("actions.stop") })
   ] });
 }
-function mb({ onClick: o, language: c = "en", disabled: s }) {
+function m1({ onClick: o, language: c = "en", disabled: s }) {
   const { t: u } = Ke(c);
   return /* @__PURE__ */ r.jsxs("button", { onClick: o, className: "action-buttons__dock", disabled: s, children: [
-    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: i1 }),
+    /* @__PURE__ */ r.jsx("span", { className: "action-buttons__icon", children: ib }),
     /* @__PURE__ */ r.jsx("span", { children: u("actions.dock") })
   ] });
 }
@@ -14955,14 +14955,14 @@ function vg({
     }
   })();
   return s && !u && !g ? /* @__PURE__ */ r.jsxs("div", { className: "action-buttons", children: [
-    /* @__PURE__ */ r.jsx(db, { onClick: h, language: p }),
+    /* @__PURE__ */ r.jsx(d1, { onClick: h, language: p }),
     /* @__PURE__ */ r.jsx(c_, { onClick: v, language: p })
   ] }) : u ? /* @__PURE__ */ r.jsxs("div", { className: "action-buttons", children: [
-    /* @__PURE__ */ r.jsx(fb, { onClick: b, language: p }),
+    /* @__PURE__ */ r.jsx(f1, { onClick: b, language: p }),
     /* @__PURE__ */ r.jsx(c_, { onClick: v, language: p })
   ] }) : /* @__PURE__ */ r.jsxs("div", { className: "action-buttons", children: [
-    /* @__PURE__ */ r.jsx(ub, { onClick: m, text: D, disabled: w }),
-    /* @__PURE__ */ r.jsx(mb, { onClick: f, language: p, disabled: w })
+    /* @__PURE__ */ r.jsx(u1, { onClick: m, text: D, disabled: w }),
+    /* @__PURE__ */ r.jsx(m1, { onClick: f, language: p, disabled: w })
   ] });
 }
 function Zt({ title: o, icon: c, defaultOpen: s = !1, children: u }) {
@@ -15025,7 +15025,7 @@ function Di({ opened: o, onClose: c, children: s }) {
     ] })
   ] }) : null;
 }
-function _b({ options: o, value: c, onChange: s }) {
+function _1({ options: o, value: c, onChange: s }) {
   return /* @__PURE__ */ r.jsx("div", { className: "segmented-control", children: o.map((u) => /* @__PURE__ */ r.jsx(
     "button",
     {
@@ -15042,7 +15042,7 @@ function bg({ message: o, onClose: c }) {
     /* @__PURE__ */ r.jsx("button", { className: "toast__close", onClick: c, "aria-label": "Close", children: "×" })
   ] });
 }
-function gb({
+function g1({
   cleangeniusMode: o,
   cleangeniusModeList: c,
   cleangenius: s,
@@ -15068,17 +15068,17 @@ function gb({
           "div",
           {
             className: `cleaning-mode-modal__mode-card ${p === o ? "cleaning-mode-modal__mode-card--selected" : ""}`,
-            onClick: () => h(v.cleangeniusMode, h1(k)),
+            onClick: () => h(v.cleangeniusMode, hb(k)),
             style: { cursor: "pointer" },
             children: [
               /* @__PURE__ */ r.jsx(
                 "div",
                 {
                   className: `cleaning-mode-modal__mode-icon cleaning-mode-modal__mode-icon--${N ? "vac-mop" : "mop-after"}`,
-                  children: J1(k)
+                  children: Jb(k)
                 }
               ),
-              /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__mode-label", children: X1(k, b) }),
+              /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__mode-label", children: Xb(k, b) }),
               p === o && /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-modal__mode-checkmark", children: /* @__PURE__ */ r.jsx("span", { children: "✓" }) })
             ]
           },
@@ -15092,7 +15092,7 @@ function gb({
     ] })
   ] });
 }
-function pb({
+function p1({
   cleaningMode: o,
   cleaningModeList: c,
   onSelect: s,
@@ -15105,14 +15105,14 @@ function pb({
       {
         size: "small",
         selected: m === o,
-        onClick: () => s(u, p1(m)),
-        icon: $1(m)
+        onClick: () => s(u, pb(m)),
+        icon: $b(m)
       }
     ),
-    /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__mode-option-label", children: K1(m, g) })
+    /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__mode-option-label", children: Kb(m, g) })
   ] }, h)) });
 }
-function hb({
+function h1({
   suctionLevel: o,
   suctionLevelList: c,
   maxSuctionPower: s,
@@ -15131,10 +15131,10 @@ function hb({
           size: "small",
           selected: f === o,
           onClick: () => u(m, as(f)),
-          icon: I1(f)
+          icon: Ib(f)
         }
       ),
-      /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__power-label", children: Q1(f, v) })
+      /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__power-label", children: Qb(f, v) })
     ] }, p)) }),
     /* @__PURE__ */ r.jsxs("div", { className: "cleaning-mode-modal__max-plus", children: [
       /* @__PURE__ */ r.jsxs("div", { className: "cleaning-mode-modal__max-plus-header", children: [
@@ -15151,7 +15151,7 @@ function hb({
     ] })
   ] });
 }
-function vb({
+function v1({
   wetnessLevel: o,
   mopPadHumidity: c,
   onChangeWetness: s,
@@ -15219,7 +15219,7 @@ function vb({
     ] })
   ] });
 }
-function bb(o, c) {
+function b1(o, c) {
   if (!c) return o;
   switch (o) {
     case "By room":
@@ -15232,7 +15232,7 @@ function bb(o, c) {
       return o;
   }
 }
-function yb({
+function y1({
   selfCleanFrequency: o,
   selfCleanFrequencyList: c,
   selfCleanArea: s,
@@ -15262,11 +15262,11 @@ function yb({
         {
           size: "small",
           selected: ge === o,
-          onClick: () => v(w, v1(ge)),
-          icon: F1(ge)
+          onClick: () => v(w, vb(ge)),
+          icon: Fb(ge)
         }
       ),
-      /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__mode-option-label", children: bb(ge, S) })
+      /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__mode-option-label", children: b1(ge, S) })
     ] }, Ne)) }),
     (o === "By area" || o === "By time") && /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-modal__slider-container", style: { marginTop: "1rem" }, children: /* @__PURE__ */ r.jsxs("div", { className: "cleaning-mode-modal__slider-wrapper", children: [
       /* @__PURE__ */ r.jsx(
@@ -15298,7 +15298,7 @@ function yb({
     ] }) })
   ] });
 }
-function xb({ cleaningRoute: o, cleaningRouteList: c, onSelect: s, entityId: u }) {
+function x1({ cleaningRoute: o, cleaningRouteList: c, onSelect: s, entityId: u }) {
   return /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-modal__route-grid", children: c.map((g, m) => /* @__PURE__ */ r.jsxs("div", { className: "cleaning-mode-modal__route-option", children: [
     /* @__PURE__ */ r.jsx(
       Ri,
@@ -15306,13 +15306,13 @@ function xb({ cleaningRoute: o, cleaningRouteList: c, onSelect: s, entityId: u }
         size: "small",
         selected: g === o,
         onClick: () => s(u, as(g)),
-        icon: W1(g)
+        icon: Wb(g)
       }
     ),
     /* @__PURE__ */ r.jsx("span", { className: "cleaning-mode-modal__route-label", children: g })
   ] }, m)) });
 }
-function Sb({
+function S1({
   cleaningMode: o,
   cleaningModeList: c,
   suctionLevel: s,
@@ -15339,7 +15339,7 @@ function Sb({
     /* @__PURE__ */ r.jsxs("section", { className: "cleaning-mode-modal__section", children: [
       /* @__PURE__ */ r.jsx("h3", { className: "cleaning-mode-modal__section-title", children: J("custom_mode.cleaning_mode_title") }),
       /* @__PURE__ */ r.jsx(
-        pb,
+        p1,
         {
           cleaningMode: o,
           cleaningModeList: c,
@@ -15352,7 +15352,7 @@ function Sb({
     o !== qe.MAPPING && /* @__PURE__ */ r.jsxs("section", { className: "cleaning-mode-modal__section", children: [
       /* @__PURE__ */ r.jsx("h3", { className: "cleaning-mode-modal__section-title", children: J("custom_mode.suction_power_title") }),
       /* @__PURE__ */ r.jsx(
-        hb,
+        h1,
         {
           suctionLevel: s,
           suctionLevelList: u,
@@ -15369,7 +15369,7 @@ function Sb({
     o !== qe.SWEEPING && o !== qe.MAPPING && /* @__PURE__ */ r.jsxs("section", { className: "cleaning-mode-modal__section", children: [
       /* @__PURE__ */ r.jsx("h3", { className: "cleaning-mode-modal__section-title", children: J("custom_mode.wetness_title") }),
       /* @__PURE__ */ r.jsx(
-        vb,
+        v1,
         {
           wetnessLevel: g,
           mopPadHumidity: m,
@@ -15384,7 +15384,7 @@ function Sb({
     o !== qe.MAPPING && /* @__PURE__ */ r.jsxs("section", { className: "cleaning-mode-modal__section", children: [
       /* @__PURE__ */ r.jsx("h3", { className: "cleaning-mode-modal__section-title", children: J("custom_mode.mop_washing_frequency_title") }),
       /* @__PURE__ */ r.jsx(
-        yb,
+        y1,
         {
           selfCleanFrequency: p,
           selfCleanFrequencyList: w,
@@ -15407,7 +15407,7 @@ function Sb({
     o !== qe.MAPPING && /* @__PURE__ */ r.jsxs("section", { className: "cleaning-mode-modal__section", children: [
       /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-modal__section-header", children: /* @__PURE__ */ r.jsx("h3", { className: "cleaning-mode-modal__section-title", children: J("custom_mode.route_title") }) }),
       /* @__PURE__ */ r.jsx(
-        xb,
+        x1,
         {
           cleaningRoute: h,
           cleaningRouteList: b,
@@ -15418,7 +15418,7 @@ function Sb({
     ] })
   ] });
 }
-function wb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
+function w1({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
   const { t: m } = Ke(g), h = dg(s.entity_id), { setSelectOption: b, setSwitch: v } = Jr(u), f = Ir(h), p = (ve, Ee) => {
     const x = s.attributes[ve];
     return Array.isArray(x) ? x : Ee;
@@ -15445,7 +15445,7 @@ function wb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
   };
   return /* @__PURE__ */ r.jsx(Di, { opened: o, onClose: c, children: /* @__PURE__ */ r.jsxs("div", { className: "cleaning-mode-modal", children: [
     /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-modal__header", children: /* @__PURE__ */ r.jsx(
-      _b,
+      _1,
       {
         value: k ? Al.CLEANGENIUS : Al.CUSTOM,
         onChange: F,
@@ -15453,7 +15453,7 @@ function wb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
       }
     ) }),
     /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-modal__content-wrapper", children: k ? /* @__PURE__ */ r.jsx(
-      gb,
+      g1,
       {
         cleangeniusMode: D,
         cleangeniusModeList: Se,
@@ -15463,7 +15463,7 @@ function wb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
         language: g
       }
     ) : /* @__PURE__ */ r.jsx(
-      Sb,
+      S1,
       {
         cleaningMode: S,
         cleaningModeList: Ce,
@@ -15489,7 +15489,7 @@ function wb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
     ) })
   ] }) });
 }
-function zb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
+function z1({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
   const { t: m } = Ke(g), h = s.attributes.shortcuts || {}, b = Object.entries(h).map(([f, p]) => ({
     id: parseInt(f),
     ...p
@@ -15510,7 +15510,7 @@ function zb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
         className: "shortcuts-modal__item",
         onClick: () => v(f.id),
         children: [
-          /* @__PURE__ */ r.jsx("span", { className: "shortcuts-modal__item-icon", children: o1 }),
+          /* @__PURE__ */ r.jsx("span", { className: "shortcuts-modal__item-icon", children: ob }),
           /* @__PURE__ */ r.jsx("span", { className: "shortcuts-modal__item-name", children: f.name })
         ]
       },
@@ -15518,7 +15518,7 @@ function zb({ opened: o, onClose: c, entity: s, hass: u, language: g }) {
     )) })
   ] }) });
 }
-const Nb = [
+const N1 = [
   {
     key: "obstacle_avoidance",
     labelKey: "settings.ai_detection.obstacle_avoidance",
@@ -15590,7 +15590,7 @@ const Nb = [
     switchEntitySuffix: "fill_light"
   }
 ];
-function Eb({ hass: o, entity: c, language: s }) {
+function E1({ hass: o, entity: c, language: s }) {
   const { t: u } = Ke(s), g = c.attributes, m = c.entity_id.split(".")[1] ?? "", h = O.useCallback(
     (v, f) => {
       const p = `switch.${m}_${v}`;
@@ -15603,7 +15603,7 @@ function Eb({ hass: o, entity: c, language: s }) {
     const f = g[v];
     return Wr(f) ? f : ua(f) ? f > 0 : !1;
   };
-  return /* @__PURE__ */ r.jsx("div", { className: "ai-detection-section", children: Nb.map((v) => /* @__PURE__ */ r.jsxs("div", { className: "ai-detection-section__item", children: [
+  return /* @__PURE__ */ r.jsx("div", { className: "ai-detection-section", children: N1.map((v) => /* @__PURE__ */ r.jsxs("div", { className: "ai-detection-section__item", children: [
     /* @__PURE__ */ r.jsxs("div", { className: "ai-detection-section__info", children: [
       /* @__PURE__ */ r.jsx("span", { className: "ai-detection-section__label", children: u(v.labelKey) }),
       /* @__PURE__ */ r.jsx("span", { className: "ai-detection-section__description", children: u(v.descriptionKey) })
@@ -15617,7 +15617,7 @@ function Eb({ hass: o, entity: c, language: s }) {
     )
   ] }, v.key)) });
 }
-const Mb = [
+const M1 = [
   {
     key: "carpet_boost",
     labelKey: "settings.carpet.carpet_boost",
@@ -15639,8 +15639,8 @@ const Mb = [
     attributeKey: "carpet_avoidance",
     switchEntitySuffix: "carpet_avoidance"
   }
-], kb = ["low", "medium", "high"];
-function Ab({ hass: o, entity: c, language: s }) {
+], k1 = ["low", "medium", "high"];
+function A1({ hass: o, entity: c, language: s }) {
   const { t: u } = Ke(s), g = c.attributes, m = c.entity_id.split(".")[1] ?? "", h = O.useCallback(
     (w, k) => {
       const N = `switch.${m}_${w}`;
@@ -15663,7 +15663,7 @@ function Ab({ hass: o, entity: c, language: s }) {
     return Wr(k) ? k : ua(k) ? k > 0 : !1;
   }, f = De(g.carpet_sensitivity, "medium"), p = mg(f) ? f.toLowerCase() : "medium";
   return /* @__PURE__ */ r.jsxs("div", { className: "carpet-settings-section", children: [
-    Mb.map((w) => /* @__PURE__ */ r.jsxs("div", { className: "carpet-settings-section__item", children: [
+    M1.map((w) => /* @__PURE__ */ r.jsxs("div", { className: "carpet-settings-section__item", children: [
       /* @__PURE__ */ r.jsxs("div", { className: "carpet-settings-section__info", children: [
         /* @__PURE__ */ r.jsx("span", { className: "carpet-settings-section__label", children: u(w.labelKey) }),
         /* @__PURE__ */ r.jsx("span", { className: "carpet-settings-section__description", children: u(w.descriptionKey) })
@@ -15687,13 +15687,13 @@ function Ab({ hass: o, entity: c, language: s }) {
           className: "carpet-settings-section__select",
           value: p,
           onChange: (w) => b(w.target.value),
-          children: kb.map((w) => /* @__PURE__ */ r.jsx("option", { value: w, children: u(`settings.carpet.sensitivity_${w}`) }, w))
+          children: k1.map((w) => /* @__PURE__ */ r.jsx("option", { value: w, children: u(`settings.carpet.sensitivity_${w}`) }, w))
         }
       )
     ] })
   ] });
 }
-const Cb = [
+const C1 = [
   {
     key: "main_brush",
     labelKey: "settings.consumables.main_brush",
@@ -15723,7 +15723,7 @@ const Cb = [
     resetCommand: "reset_sensor"
   }
 ];
-function jb({ hass: o, entity: c, language: s }) {
+function j1({ hass: o, entity: c, language: s }) {
   const { t: u } = Ke(s), g = c.attributes, m = O.useCallback(
     (b) => {
       o.callService("dreame_vacuum", b, {
@@ -15732,7 +15732,7 @@ function jb({ hass: o, entity: c, language: s }) {
     },
     [o, c.entity_id]
   ), h = (b) => b >= 50 ? "var(--consumable-good, #34c759)" : b >= 20 ? "var(--consumable-warning, #ff9500)" : "var(--consumable-critical, #ff3b30)";
-  return /* @__PURE__ */ r.jsx("div", { className: "consumables-section", children: Cb.map((b) => {
+  return /* @__PURE__ */ r.jsx("div", { className: "consumables-section", children: C1.map((b) => {
     const v = De(g[b.percentKey], 0), f = De(g[b.hoursKey], 0), p = h(v);
     return /* @__PURE__ */ r.jsxs("div", { className: "consumables-section__item", children: [
       /* @__PURE__ */ r.jsxs("div", { className: "consumables-section__info", children: [
@@ -15767,7 +15767,7 @@ function jb({ hass: o, entity: c, language: s }) {
     ] }, b.key);
   }) });
 }
-function Tb({ entity: o, language: c }) {
+function T1({ entity: o, language: c }) {
   const { t: s } = Ke(c), u = o.attributes, g = u.firmware_version, m = mg(g) || ua(g) ? g : "-", h = De(u.total_cleaned_area, 0), b = De(u.total_cleaning_time, 0), v = De(u.cleaning_count, 0), f = u.ap, p = f?.ssid ?? "-", w = f?.rssi ?? "-", k = f?.ip ?? "-", N = [
     { labelKey: "settings.device_info.firmware", value: m },
     { labelKey: "settings.device_info.total_area", value: h, unitKey: "units.square_meters" },
@@ -15785,7 +15785,7 @@ function Tb({ entity: o, language: c }) {
     ] })
   ] }, S.labelKey)) });
 }
-function Ob({ hass: o, entity: c, config: s, language: u }) {
+function O1({ hass: o, entity: c, config: s, language: u }) {
   const { t: g } = Ke(u), m = c.attributes, h = O.useMemo(() => m.maps ?? [], [m.maps]), b = m.selected_map_id ?? m.selected_map, f = `select.${s.entity?.split(".")[1] ?? ""}_selected_map`, p = O.useCallback(
     (w) => {
       const k = h.find((N) => N.id === w);
@@ -15810,7 +15810,7 @@ function Ob({ hass: o, entity: c, config: s, language: u }) {
     )) })
   ] });
 }
-const Rb = [
+const R1 = [
   {
     key: "child_lock",
     labelKey: "settings.quick_settings.child_lock",
@@ -15847,7 +15847,7 @@ const Rb = [
     switchEntitySuffix: "auto_drying"
   }
 ];
-function Db({ hass: o, entity: c, language: s }) {
+function D1({ hass: o, entity: c, language: s }) {
   const { t: u } = Ke(s), g = c.attributes, m = c.entity_id.split(".")[1] ?? "", h = O.useCallback(
     (v, f) => {
       const p = `switch.${m}_${v}`;
@@ -15858,9 +15858,9 @@ function Db({ hass: o, entity: c, language: s }) {
     [o, m]
   ), b = (v) => {
     const f = g[v];
-    return Wr(f) ? f : ua(f) ? f > 0 : j1(f) ? f.enabled ?? !1 : !1;
+    return Wr(f) ? f : ua(f) ? f > 0 : jb(f) ? f.enabled ?? !1 : !1;
   };
-  return /* @__PURE__ */ r.jsx("div", { className: "quick-settings-section", children: Rb.map((v) => /* @__PURE__ */ r.jsxs("div", { className: "quick-settings-section__item", children: [
+  return /* @__PURE__ */ r.jsx("div", { className: "quick-settings-section", children: R1.map((v) => /* @__PURE__ */ r.jsxs("div", { className: "quick-settings-section__item", children: [
     /* @__PURE__ */ r.jsxs("div", { className: "quick-settings-section__info", children: [
       /* @__PURE__ */ r.jsx("span", { className: "quick-settings-section__label", children: u(v.labelKey) }),
       /* @__PURE__ */ r.jsx("span", { className: "quick-settings-section__description", children: u(v.descriptionKey) })
@@ -15875,7 +15875,7 @@ function Db({ hass: o, entity: c, language: s }) {
   ] }, v.key)) });
 }
 const kr = 0, r_ = 100;
-function Ub({ hass: o, entity: c, language: s }) {
+function U1({ hass: o, entity: c, language: s }) {
   const { t: u } = Ke(s), g = c.entity_id.split(".")[1] ?? "", m = De(c.attributes.volume, 50), [h, b] = O.useState(m), v = (h - kr) / (r_ - kr) * 100, f = 20, p = `calc(${v}% + ${f / 2 - v * f / 100}px)`, w = (D) => {
     b(parseInt(D.target.value));
   }, k = O.useCallback(() => {
@@ -15920,22 +15920,22 @@ function Ub({ hass: o, entity: c, language: s }) {
     ] })
   ] });
 }
-function Bb({ opened: o, onClose: c, hass: s, entity: u, config: g, language: m }) {
+function B1({ opened: o, onClose: c, hass: s, entity: u, config: g, language: m }) {
   const { t: h } = Ke(m);
   return /* @__PURE__ */ r.jsx(Di, { opened: o, onClose: c, children: /* @__PURE__ */ r.jsxs("div", { className: "settings-panel", children: [
     /* @__PURE__ */ r.jsx("h2", { className: "settings-panel__title", children: h("settings.title") }),
     /* @__PURE__ */ r.jsx("div", { className: "settings-panel__scroll-wrapper", children: /* @__PURE__ */ r.jsxs("div", { className: "settings-panel__sections", children: [
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.consumables.title"), icon: /* @__PURE__ */ r.jsx(Y0, {}), defaultOpen: !0, children: /* @__PURE__ */ r.jsx(jb, { hass: s, entity: u, language: m }) }),
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.device_info.title"), icon: /* @__PURE__ */ r.jsx(F_, {}), children: /* @__PURE__ */ r.jsx(Tb, { entity: u, language: m }) }),
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.map_management.title"), icon: /* @__PURE__ */ r.jsx(os, {}), children: /* @__PURE__ */ r.jsx(Ob, { hass: s, entity: u, config: g, language: m }) }),
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.volume.title"), icon: /* @__PURE__ */ r.jsx(ag, {}), children: /* @__PURE__ */ r.jsx(Ub, { hass: s, entity: u, language: m }) }),
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.quick_settings.title"), icon: /* @__PURE__ */ r.jsx(eg, {}), children: /* @__PURE__ */ r.jsx(Db, { hass: s, entity: u, language: m }) }),
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.carpet.title"), icon: /* @__PURE__ */ r.jsx(W0, {}), children: /* @__PURE__ */ r.jsx(Ab, { hass: s, entity: u, language: m }) }),
-      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.ai_detection.title"), icon: /* @__PURE__ */ r.jsx(z0, {}), children: /* @__PURE__ */ r.jsx(Eb, { hass: s, entity: u, language: m }) })
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.consumables.title"), icon: /* @__PURE__ */ r.jsx(Y0, {}), defaultOpen: !0, children: /* @__PURE__ */ r.jsx(j1, { hass: s, entity: u, language: m }) }),
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.device_info.title"), icon: /* @__PURE__ */ r.jsx(F_, {}), children: /* @__PURE__ */ r.jsx(T1, { entity: u, language: m }) }),
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.map_management.title"), icon: /* @__PURE__ */ r.jsx(os, {}), children: /* @__PURE__ */ r.jsx(O1, { hass: s, entity: u, config: g, language: m }) }),
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.volume.title"), icon: /* @__PURE__ */ r.jsx(ag, {}), children: /* @__PURE__ */ r.jsx(U1, { hass: s, entity: u, language: m }) }),
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.quick_settings.title"), icon: /* @__PURE__ */ r.jsx(eg, {}), children: /* @__PURE__ */ r.jsx(D1, { hass: s, entity: u, language: m }) }),
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.carpet.title"), icon: /* @__PURE__ */ r.jsx(W0, {}), children: /* @__PURE__ */ r.jsx(A1, { hass: s, entity: u, language: m }) }),
+      /* @__PURE__ */ r.jsx(Zt, { title: h("settings.ai_detection.title"), icon: /* @__PURE__ */ r.jsx(z0, {}), children: /* @__PURE__ */ r.jsx(E1, { hass: s, entity: u, language: m }) })
     ] }) })
   ] }) });
 }
-function Lb({ selectedRooms: o, language: c }) {
+function L1({ selectedRooms: o, language: c }) {
   const { t: s } = Ke(c);
   if (o.size === 0)
     return null;
@@ -15945,7 +15945,7 @@ function Lb({ selectedRooms: o, language: c }) {
     /* @__PURE__ */ r.jsx("span", { className: "room-selection-display__rooms", children: u })
   ] });
 }
-function Gb({ hass: o, config: c }) {
+function G1({ hass: o, config: c }) {
   const s = o.states[c.entity], u = c.theme || "light", g = c.language || "en", { t: m } = Ke(g), h = O.useRef(null), b = pg({
     themeType: u,
     customThemeConfig: c.custom_theme,
@@ -15963,7 +15963,7 @@ function Gb({ hass: o, config: c }) {
     setSettingsPanelOpened: Z,
     handleModeChange: L,
     handleRoomToggle: ae
-  } = fg({ defaultMode: c.default_mode }), { toast: V, showToast: Y, hideToast: J } = _g(), { handlePause: le, handleStop: I, handleDock: se, handleClean: ge } = U1({
+  } = fg({ defaultMode: c.default_mode }), { toast: V, showToast: Y, hideToast: J } = _g(), { handlePause: le, handleStop: I, handleDock: se, handleClean: ge } = Ub({
     hass: o,
     entityId: c.entity,
     mapEntityId: c.map_entity || `camera.${c.entity.split(".")[1]}_map`,
@@ -15981,14 +15981,14 @@ function Gb({ hass: o, config: c }) {
   };
   if (!s)
     return /* @__PURE__ */ r.jsx("div", { className: "dreame-vacuum-card__error", children: m("errors.entity_not_found", { entity: c.entity }) });
-  const R = P1(s, c);
+  const R = Pb(s, c);
   if (!R)
     return /* @__PURE__ */ r.jsx("div", { className: "dreame-vacuum-card__error", children: m("errors.failed_to_load") });
-  const { deviceName: ee, mapEntityId: F, rooms: ve } = R, Ee = eb(s, p);
+  const { deviceName: ee, mapEntityId: F, rooms: ve } = R, Ee = e1(s, p);
   return /* @__PURE__ */ r.jsxs("div", { ref: h, className: `dreame-vacuum-card dreame-vacuum-card--${b.name}`, children: [
     /* @__PURE__ */ r.jsxs("div", { className: "dreame-vacuum-card__container", children: [
       /* @__PURE__ */ r.jsx(
-        nb,
+        n1,
         {
           entity: s,
           deviceName: ee,
@@ -15997,7 +15997,7 @@ function Gb({ hass: o, config: c }) {
         }
       ),
       /* @__PURE__ */ r.jsx(
-        rb,
+        r1,
         {
           hass: o,
           mapEntityId: F,
@@ -16014,7 +16014,7 @@ function Gb({ hass: o, config: c }) {
         }
       ),
       /* @__PURE__ */ r.jsx(
-        ib,
+        i1,
         {
           cleanGeniusMode: De(s.attributes.cleangenius_mode, ""),
           cleaningMode: De(s.attributes.cleaning_mode, "Sweeping and mopping"),
@@ -16026,7 +16026,7 @@ function Gb({ hass: o, config: c }) {
         }
       ),
       /* @__PURE__ */ r.jsxs("div", { className: "dreame-vacuum-card__controls", children: [
-        p === "room" && /* @__PURE__ */ r.jsx(Lb, { selectedRooms: w, language: g }),
+        p === "room" && /* @__PURE__ */ r.jsx(L1, { selectedRooms: w, language: g }),
         /* @__PURE__ */ r.jsx(
           hg,
           {
@@ -16055,7 +16055,7 @@ function Gb({ hass: o, config: c }) {
       ] })
     ] }),
     /* @__PURE__ */ r.jsx(
-      wb,
+      w1,
       {
         opened: N,
         onClose: () => U(!1),
@@ -16065,7 +16065,7 @@ function Gb({ hass: o, config: c }) {
       }
     ),
     /* @__PURE__ */ r.jsx(
-      zb,
+      z1,
       {
         opened: S,
         onClose: () => $(!1),
@@ -16075,7 +16075,7 @@ function Gb({ hass: o, config: c }) {
       }
     ),
     /* @__PURE__ */ r.jsx(
-      Bb,
+      B1,
       {
         opened: D,
         onClose: () => Z(!1),
@@ -16088,11 +16088,11 @@ function Gb({ hass: o, config: c }) {
     V && /* @__PURE__ */ r.jsx(bg, { message: V, onClose: J })
   ] });
 }
-function Hb(o) {
+function H1(o) {
   const c = o / 1e4;
   return `${c < 10 ? c.toFixed(1) : Math.round(c)} м²`;
 }
-function Vb({
+function V1({
   vacuumEntity: o,
   batteryEntity: c,
   currentStatsAreaEntity: s,
@@ -16131,7 +16131,7 @@ function Vb({
         /* @__PURE__ */ r.jsxs("h2", { className: "header__title", children: [
           g,
           " ",
-          /* @__PURE__ */ r.jsx("span", { style: { fontSize: "0.6em", opacity: 0.45, fontWeight: 400 }, children: "v1.11.1" })
+          /* @__PURE__ */ r.jsx("span", { style: { fontSize: "0.6em", opacity: 0.45, fontWeight: 400 }, children: "v1.12.0" })
         ] }),
         /* @__PURE__ */ r.jsx("p", { className: "header__status", children: N })
       ] }),
@@ -16148,7 +16148,7 @@ function Vb({
       U && /* @__PURE__ */ r.jsxs(r.Fragment, { children: [
         /* @__PURE__ */ r.jsxs("div", { className: "header__stat", children: [
           /* @__PURE__ */ r.jsx("span", { className: "header__stat-icon header__stat-icon--area", children: /* @__PURE__ */ r.jsx(Kr, { size: 16 }) }),
-          /* @__PURE__ */ r.jsx("span", { className: "header__stat-value", children: Hb(D) })
+          /* @__PURE__ */ r.jsx("span", { className: "header__stat-value", children: H1(D) })
         ] }),
         /* @__PURE__ */ r.jsxs("div", { className: "header__stat", children: [
           /* @__PURE__ */ r.jsx("span", { className: "header__stat-icon header__stat-icon--cleaning-time", children: /* @__PURE__ */ r.jsx(D0, { size: 16 }) }),
@@ -16165,8 +16165,8 @@ const u_ = [
   "rgba(220, 100, 100, 0.85)",
   "rgba(170, 120, 210, 0.85)",
   "rgba( 80, 185, 185, 0.85)"
-], Ar = "rgba(120, 164, 193, 0.6)", qb = "rgba( 50,  50,  50, 1)", Yb = "rgba(255, 255, 255, 0.85)", Zb = "#4CAF50", Kb = "#2196F3", _e = 3;
-function Xb(o) {
+], Ar = "rgba(120, 164, 193, 0.6)", q1 = "rgba( 50,  50,  50, 1)", Y1 = "rgba(255, 255, 255, 0.85)", Z1 = "#4CAF50", K1 = "#2196F3", _e = 3;
+function X1(o) {
   let c = 1 / 0, s = 1 / 0, u = -1 / 0, g = -1 / 0;
   for (const m of o.layers)
     for (let h = 0; h < m.pixels.length; h += 2) {
@@ -16180,14 +16180,14 @@ function Cr(o, c, s, u, g) {
   for (let m = 0; m < c.pixels.length; m += 2)
     o.fillRect((c.pixels[m] - u) * _e, (c.pixels[m + 1] - g) * _e, _e, _e);
 }
-function Qb(o) {
+function Q1(o) {
   const c = /* @__PURE__ */ new Map();
   let s = 0;
   for (const u of o)
     u.type === "segment" && u.metaData.segmentId && (c.has(u.metaData.segmentId) || (c.set(u.metaData.segmentId, u_[s % u_.length]), s++));
   return c;
 }
-function $b({
+function $1({
   mapData: o,
   mode: c,
   selectedRooms: s,
@@ -16247,7 +16247,7 @@ function $b({
   }, [Se, ne, g]), O.useEffect(() => {
     const j = S.current;
     if (!j) return;
-    const G = Xb(o), W = o.pixelSize || 50;
+    const G = X1(o), W = o.pixelSize || 50;
     K.current = { bb: G, pixelSize: W };
     const ie = /* @__PURE__ */ new Map();
     for (const te of o.layers)
@@ -16262,7 +16262,7 @@ function $b({
     const M = j.getContext("2d");
     if (!M) return;
     M.clearRect(0, 0, ue, ze);
-    const tt = Qb(o.layers), yt = (te) => parseInt(te, 10);
+    const tt = Q1(o.layers), yt = (te) => parseInt(te, 10);
     for (const te of o.layers)
       te.type === "floor" && Cr(M, te, Ar, G.minX, G.minY);
     for (const te of o.layers)
@@ -16271,10 +16271,10 @@ function $b({
         Cr(M, te, pe, G.minX, G.minY);
       }
     for (const te of o.layers)
-      te.type === "wall" && Cr(M, te, qb, G.minX, G.minY);
+      te.type === "wall" && Cr(M, te, q1, G.minX, G.minY);
     for (const te of o.entities)
       if (!(te.type !== "path" && te.type !== "predicted_path")) {
-        M.beginPath(), M.strokeStyle = te.type === "predicted_path" ? "rgba(255,255,255,0.4)" : Yb, M.lineWidth = _e * 1.5, M.lineCap = "round", M.lineJoin = "round", M.setLineDash(te.type === "predicted_path" ? [4, 3] : []);
+        M.beginPath(), M.strokeStyle = te.type === "predicted_path" ? "rgba(255,255,255,0.4)" : Y1, M.lineWidth = _e * 1.5, M.lineCap = "round", M.lineJoin = "round", M.setLineDash(te.type === "predicted_path" ? [4, 3] : []);
         for (let oe = 0; oe < te.points.length; oe += 2) {
           const de = (te.points[oe] / W - G.minX) * _e, ce = (te.points[oe + 1] / W - G.minY) * _e;
           oe === 0 ? M.moveTo(de, ce) : M.lineTo(de, ce);
@@ -16284,12 +16284,12 @@ function $b({
     for (const te of o.entities) {
       if (te.type !== "charger_location" || te.points.length < 2) continue;
       const oe = (te.points[0] / W - G.minX) * _e, de = (te.points[1] / W - G.minY) * _e, ce = _e * 4;
-      M.save(), M.shadowColor = "rgba(0,0,0,0.5)", M.shadowBlur = _e * 2, M.beginPath(), M.arc(oe, de, ce, 0, 2 * Math.PI), M.fillStyle = Zb, M.fill(), M.shadowColor = "transparent", M.shadowBlur = 0, M.strokeStyle = "#fff", M.lineWidth = _e * 0.7, M.stroke(), M.beginPath(), M.moveTo(oe + ce * 0.15, de - ce * 0.65), M.lineTo(oe - ce * 0.2, de + ce * 0.05), M.lineTo(oe + ce * 0.05, de + ce * 0.05), M.lineTo(oe - ce * 0.15, de + ce * 0.65), M.lineTo(oe + ce * 0.2, de - ce * 0.05), M.lineTo(oe - ce * 0.05, de - ce * 0.05), M.closePath(), M.fillStyle = "#fff", M.fill(), M.restore();
+      M.save(), M.shadowColor = "rgba(0,0,0,0.5)", M.shadowBlur = _e * 2, M.beginPath(), M.arc(oe, de, ce, 0, 2 * Math.PI), M.fillStyle = Z1, M.fill(), M.shadowColor = "transparent", M.shadowBlur = 0, M.strokeStyle = "#fff", M.lineWidth = _e * 0.7, M.stroke(), M.beginPath(), M.moveTo(oe + ce * 0.15, de - ce * 0.65), M.lineTo(oe - ce * 0.2, de + ce * 0.05), M.lineTo(oe + ce * 0.05, de + ce * 0.05), M.lineTo(oe - ce * 0.15, de + ce * 0.65), M.lineTo(oe + ce * 0.2, de - ce * 0.05), M.lineTo(oe - ce * 0.05, de - ce * 0.05), M.closePath(), M.fillStyle = "#fff", M.fill(), M.restore();
     }
     for (const te of o.entities) {
       if (te.type !== "robot_position" || te.points.length < 2) continue;
       const oe = (te.points[0] / W - G.minX) * _e, de = (te.points[1] / W - G.minY) * _e, ce = (te.metaData.angle ?? 0) * (Math.PI / 180), pe = _e * 6;
-      M.save(), M.translate(oe, de), M.rotate(ce), M.shadowColor = "rgba(0,0,0,0.6)", M.shadowBlur = _e * 4, M.beginPath(), M.arc(0, 0, pe, 0, 2 * Math.PI), M.fillStyle = Kb, M.fill(), M.shadowColor = "transparent", M.shadowBlur = 0, M.strokeStyle = "#fff", M.lineWidth = _e * 0.9, M.stroke(), M.beginPath(), M.moveTo(0, -pe * 0.62), M.lineTo(pe * 0.38, pe * 0.42), M.lineTo(0, pe * 0.18), M.lineTo(-pe * 0.38, pe * 0.42), M.closePath(), M.fillStyle = "#fff", M.fill(), M.restore();
+      M.save(), M.translate(oe, de), M.rotate(ce), M.shadowColor = "rgba(0,0,0,0.6)", M.shadowBlur = _e * 4, M.beginPath(), M.arc(0, 0, pe, 0, 2 * Math.PI), M.fillStyle = K1, M.fill(), M.shadowColor = "transparent", M.shadowBlur = 0, M.strokeStyle = "#fff", M.lineWidth = _e * 0.9, M.stroke(), M.beginPath(), M.moveTo(0, -pe * 0.62), M.lineTo(pe * 0.38, pe * 0.42), M.lineTo(0, pe * 0.18), M.lineTo(-pe * 0.38, pe * 0.42), M.closePath(), M.fillStyle = "#fff", M.fill(), M.restore();
     }
     for (const te of o.entities)
       if (!(te.type !== "active_zone" || te.points.length < 8)) {
@@ -16998,7 +16998,7 @@ const d_ = [sg, cg, rg, ug], f_ = [/* @__PURE__ */ r.jsx(ls, { size: 20 }), /* @
 function m_(o) {
   return o.charAt(0).toUpperCase() + o.slice(1);
 }
-function Jb({
+function J1({
   opened: o,
   onClose: c,
   fanEntity: s,
@@ -17108,7 +17108,7 @@ function Jb({
     ] })
   ] }) }) }) });
 }
-const Ib = {
+const I1 = {
   mainBrush: 18e3,
   // 300 h
   rightBrush: 12e3,
@@ -17118,7 +17118,7 @@ const Ib = {
   sensorCleaning: 1800
   // 30 h
 };
-function Wb(o) {
+function W1(o) {
   if (o <= 0) return "Заменить";
   const c = Math.floor(o / 60), s = o % 60;
   return c >= 10 ? `${c} ч` : c > 0 ? `${c} ч ${s} м` : `${s} м`;
@@ -17132,7 +17132,7 @@ function g_(o) {
   return `${c < 10 ? c.toFixed(1) : Math.round(c)} m²`;
 }
 function Jo({ label: o, entity: c, maxKey: s, onReset: u, t: g }) {
-  const m = c?.state, h = m && !["unavailable", "unknown"].includes(m) ? Number(m) : null, b = Ib[s] ?? 1, v = h !== null ? Math.max(0, Math.min(100, Math.round(h / b * 100))) : null, f = h !== null && h <= 0, p = v === null || v > 50 ? "var(--accent-color, #007aff)" : v > 20 ? "var(--warning-color, #ff9500)" : "var(--error-color, #ff3b30)", w = h === null ? "" : f ? g("valetudo.panel.needs_replacement") : g("valetudo.panel.remaining", { time: Wb(h) });
+  const m = c?.state, h = m && !["unavailable", "unknown"].includes(m) ? Number(m) : null, b = I1[s] ?? 1, v = h !== null ? Math.max(0, Math.min(100, Math.round(h / b * 100))) : null, f = h !== null && h <= 0, p = v === null || v > 50 ? "var(--accent-color, #007aff)" : v > 20 ? "var(--warning-color, #ff9500)" : "var(--error-color, #ff3b30)", w = h === null ? "" : f ? g("valetudo.panel.needs_replacement") : g("valetudo.panel.remaining", { time: W1(h) });
   return /* @__PURE__ */ r.jsxs("div", { className: "consumable-row", children: [
     /* @__PURE__ */ r.jsxs("div", { className: "consumable-row__header", children: [
       /* @__PURE__ */ r.jsx("span", { className: "consumable-row__label", children: o }),
@@ -17159,7 +17159,7 @@ function Jo({ label: o, entity: c, maxKey: s, onReset: u, t: g }) {
     v !== null && /* @__PURE__ */ r.jsx("div", { className: "consumable-progress", children: /* @__PURE__ */ r.jsx("div", { className: "consumable-progress__fill", style: { width: `${v}%`, background: p } }) })
   ] });
 }
-function Fb({
+function F1({
   opened: o,
   onClose: c,
   hass: s,
@@ -17323,7 +17323,7 @@ function Fb({
     ] })
   ] }) });
 }
-function Pb({
+function P1({
   restrictions: o,
   onToolChange: c,
   onDeleteSelected: s,
@@ -18756,7 +18756,7 @@ rest_command:
   O.useEffect(() => {
     (Qt === "docked" || Qt === "idle") && (ee("all"), R(null));
   }, [Qt]);
-  const dt = Ne === "restrictions", { restrictions: et, setTool: yn, addWall: ht, addZone: Xa, selectItem: Qa, deleteSelected: xn, markSaved: Sn } = Z1({
+  const dt = Ne === "restrictions", { restrictions: et, setTool: yn, addWall: ht, addZone: Xa, selectItem: Qa, deleteSelected: xn, markSaved: Sn } = Zb({
     mapData: xa,
     active: dt
   }), [j, G] = O.useState(!1), W = O.useCallback(
@@ -18770,7 +18770,7 @@ rest_command:
     },
     [ht, Xa, et.tool]
   ), ie = O.useCallback(async () => {
-    const ke = Y1(et.walls, et.zones);
+    const ke = Yb(et.walls, et.zones);
     console.log("[valetudo] Saving restrictions payload:", JSON.stringify(ke)), G(!0);
     try {
       let Oe = !1;
@@ -18838,7 +18838,7 @@ rest_command:
   return /* @__PURE__ */ r.jsxs("div", { ref: Y, className: `dreame-vacuum-card dreame-vacuum-card--${J.name} valetudo-vacuum-card`, children: [
     /* @__PURE__ */ r.jsxs("div", { className: "dreame-vacuum-card__container", children: [
       /* @__PURE__ */ r.jsx(
-        Vb,
+        V1,
         {
           vacuumEntity: h,
           batteryEntity: p,
@@ -18852,7 +18852,7 @@ rest_command:
         }
       ),
       xa ? /* @__PURE__ */ r.jsx(
-        $b,
+        $1,
         {
           mapData: xa,
           mode: Ne,
@@ -18873,7 +18873,7 @@ rest_command:
         }
       ) : /* @__PURE__ */ r.jsx("div", { className: "valetudo-vacuum-card__map-placeholder", children: Sa ? g("valetudo.map.error", { message: Sa }) : g("valetudo.map.loading") }),
       /* @__PURE__ */ r.jsx("div", { className: "cleaning-mode-button-wrapper", children: dt ? /* @__PURE__ */ r.jsx(
-        Pb,
+        P1,
         {
           restrictions: et,
           onToolChange: yn,
@@ -18935,7 +18935,7 @@ rest_command:
       ] })
     ] }),
     /* @__PURE__ */ r.jsx(
-      Jb,
+      J1,
       {
         opened: se,
         onClose: () => ge(!1),
@@ -18949,7 +18949,7 @@ rest_command:
       }
     ),
     /* @__PURE__ */ r.jsx(
-      Fb,
+      F1,
       {
         opened: le,
         onClose: () => I(!1),
@@ -19018,7 +19018,7 @@ class S2 extends HTMLElement {
     if (!this._hass || !this._config || !this.shadowRoot) return;
     let c = this.shadowRoot.querySelector("#react-root");
     c || (c = document.createElement("div"), c.id = "react-root", this.shadowRoot.appendChild(c)), this._root || (this._root = J_.createRoot(c)), this._root.render(
-      /* @__PURE__ */ r.jsx($_.StrictMode, { children: /* @__PURE__ */ r.jsx(Gb, { hass: this._hass, config: this._config }) })
+      /* @__PURE__ */ r.jsx($_.StrictMode, { children: /* @__PURE__ */ r.jsx(G1, { hass: this._hass, config: this._config }) })
     );
   }
   getCardSize() {
