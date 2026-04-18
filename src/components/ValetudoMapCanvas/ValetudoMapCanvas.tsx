@@ -141,17 +141,21 @@ export function ValetudoMapCanvas({
   } | null>(null);
 
   // ─── Mobile pending restriction widget (tap-to-place) ─────────────────────
-  const [pendingRestriction, setPendingRestriction] = useState<{
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-    type: 'wall' | 'no_go' | 'no_mop';
-  } | null>(null);
+  // Wall: two independent draggable endpoints; Zone: movable/resizable rect
+  const [pendingRestriction, setPendingRestriction] = useState<
+    | { kind: 'wall'; pA: { x: number; y: number }; pB: { x: number; y: number } }
+    | { kind: 'zone'; x: number; y: number; w: number; h: number; type: 'no_go' | 'no_mop' }
+    | null
+  >(null);
   const pendingDragRef = useRef<{
     mode: 'move' | 'resize';
     startPtr: { x: number; y: number };
     startItem: { x: number; y: number; w: number; h: number };
+  } | null>(null);
+  const wallEndpointDragRef = useRef<{
+    endpoint: 'pA' | 'pB';
+    startPtr: { x: number; y: number };
+    startPoint: { x: number; y: number };
   } | null>(null);
   const tapStartRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -662,15 +666,26 @@ export function ValetudoMapCanvas({
           const canvas = canvasRef.current;
           if (canvas) {
             const pt = screenToCanvas(e.clientX, e.clientY);
-            const defaultW = canvas.width * 0.25;
-            const defaultH = canvas.height * 0.15;
-            setPendingRestriction({
-              x: Math.max(0, Math.min(canvas.width - defaultW, pt.x - defaultW / 2)),
-              y: Math.max(0, Math.min(canvas.height - defaultH, pt.y - defaultH / 2)),
-              w: defaultW,
-              h: defaultH,
-              type: restrictions.tool as 'wall' | 'no_go' | 'no_mop',
-            });
+            if (restrictions.tool === 'wall') {
+              // Place a horizontal line centred on the tap point
+              const lineLen = canvas.width * 0.3;
+              setPendingRestriction({
+                kind: 'wall',
+                pA: { x: Math.max(0, pt.x - lineLen / 2), y: pt.y },
+                pB: { x: Math.min(canvas.width, pt.x + lineLen / 2), y: pt.y },
+              });
+            } else {
+              const defaultW = canvas.width * 0.25;
+              const defaultH = canvas.height * 0.15;
+              setPendingRestriction({
+                kind: 'zone',
+                x: Math.max(0, Math.min(canvas.width - defaultW, pt.x - defaultW / 2)),
+                y: Math.max(0, Math.min(canvas.height - defaultH, pt.y - defaultH / 2)),
+                w: defaultW,
+                h: defaultH,
+                type: restrictions.tool as 'no_go' | 'no_mop',
+              });
+            }
           }
         }
       }
@@ -753,14 +768,31 @@ export function ValetudoMapCanvas({
     };
   }, [widgetZone]);
 
-  const pendingRestrictionStyle = useMemo(() => {
-    if (!pendingRestriction || !canvasRef.current) return null;
+  const pendingZoneStyle = useMemo(() => {
+    if (!pendingRestriction || pendingRestriction.kind !== 'zone' || !canvasRef.current) return null;
     const canvas = canvasRef.current;
     return {
       left: `${(pendingRestriction.x / canvas.width) * 100}%`,
       top: `${(pendingRestriction.y / canvas.height) * 100}%`,
       width: `${(pendingRestriction.w / canvas.width) * 100}%`,
       height: `${(pendingRestriction.h / canvas.height) * 100}%`,
+    };
+  }, [pendingRestriction]);
+
+  const pendingWallLayout = useMemo(() => {
+    if (!pendingRestriction || pendingRestriction.kind !== 'wall' || !canvasRef.current) return null;
+    const canvas = canvasRef.current;
+    const { pA, pB } = pendingRestriction;
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const mx = (pA.x + pB.x) / 2;
+    const my = (pA.y + pB.y) / 2;
+    return {
+      cw,
+      ch,
+      pAStyle: { left: `${(pA.x / cw) * 100}%`, top: `${(pA.y / ch) * 100}%` },
+      pBStyle: { left: `${(pB.x / cw) * 100}%`, top: `${(pB.y / ch) * 100}%` },
+      midStyle: { left: `${(mx / cw) * 100}%`, top: `${(my / ch) * 100}%` },
     };
   }, [pendingRestriction]);
 
@@ -823,11 +855,23 @@ export function ValetudoMapCanvas({
   // ─── Pending restriction widget handlers ───────────────────────────────────
   const confirmPendingRestriction = useCallback(() => {
     if (!pendingRestriction || !onRestrictionDrawn) return;
-    const mm1 = canvasToMm(pendingRestriction.x, pendingRestriction.y);
-    const mm2 = canvasToMm(pendingRestriction.x + pendingRestriction.w, pendingRestriction.y + pendingRestriction.h);
-    const p1 = { x: Math.round(mm1.x), y: Math.round(mm1.y) };
-    const p2 = { x: Math.round(mm2.x), y: Math.round(mm2.y) };
-    onRestrictionDrawn(pendingRestriction.type === 'wall' ? 'wall' : 'zone', p1, p2);
+    if (pendingRestriction.kind === 'wall') {
+      const mmA = canvasToMm(pendingRestriction.pA.x, pendingRestriction.pA.y);
+      const mmB = canvasToMm(pendingRestriction.pB.x, pendingRestriction.pB.y);
+      onRestrictionDrawn(
+        'wall',
+        { x: Math.round(mmA.x), y: Math.round(mmA.y) },
+        { x: Math.round(mmB.x), y: Math.round(mmB.y) }
+      );
+    } else {
+      const mm1 = canvasToMm(pendingRestriction.x, pendingRestriction.y);
+      const mm2 = canvasToMm(pendingRestriction.x + pendingRestriction.w, pendingRestriction.y + pendingRestriction.h);
+      onRestrictionDrawn(
+        'zone',
+        { x: Math.round(mm1.x), y: Math.round(mm1.y) },
+        { x: Math.round(mm2.x), y: Math.round(mm2.y) }
+      );
+    }
     setPendingRestriction(null);
   }, [pendingRestriction, canvasToMm, onRestrictionDrawn]);
 
@@ -835,11 +879,16 @@ export function ValetudoMapCanvas({
     (dragMode: 'move' | 'resize', e: React.PointerEvent<HTMLDivElement>) => {
       e.stopPropagation();
       e.currentTarget.setPointerCapture(e.pointerId);
-      if (!pendingRestriction) return;
+      if (!pendingRestriction || pendingRestriction.kind !== 'zone') return;
       pendingDragRef.current = {
         mode: dragMode,
         startPtr: { x: e.clientX, y: e.clientY },
-        startItem: { ...pendingRestriction },
+        startItem: {
+          x: pendingRestriction.x,
+          y: pendingRestriction.y,
+          w: pendingRestriction.w,
+          h: pendingRestriction.h,
+        },
       };
     },
     [pendingRestriction]
@@ -858,7 +907,7 @@ export function ValetudoMapCanvas({
       const dx = (e.clientX - startPtr.x) * cssToLogical;
       const dy = (e.clientY - startPtr.y) * cssToLogical;
       setPendingRestriction((prev) => {
-        if (!prev) return prev;
+        if (!prev || prev.kind !== 'zone') return prev;
         const cw = canvas.width;
         const ch = canvas.height;
         if (dm === 'move') {
@@ -882,6 +931,52 @@ export function ValetudoMapCanvas({
   const handlePendingPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     pendingDragRef.current = null;
+  }, []);
+
+  // ─── Wall endpoint drag handlers ──────────────────────────────────────────
+  const handleWallEndpointPointerDown = useCallback(
+    (endpoint: 'pA' | 'pB', e: React.PointerEvent<HTMLDivElement>) => {
+      e.stopPropagation();
+      e.currentTarget.setPointerCapture(e.pointerId);
+      if (!pendingRestriction || pendingRestriction.kind !== 'wall') return;
+      wallEndpointDragRef.current = {
+        endpoint,
+        startPtr: { x: e.clientX, y: e.clientY },
+        startPoint: { ...pendingRestriction[endpoint] },
+      };
+    },
+    [pendingRestriction]
+  );
+
+  const handleWallEndpointPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!wallEndpointDragRef.current || !canvasRef.current) return;
+      e.stopPropagation();
+      const { endpoint, startPtr, startPoint } = wallEndpointDragRef.current;
+      const canvas = canvasRef.current;
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const cssToLogical = canvas.width / rect.width / zoom;
+      const dx = (e.clientX - startPtr.x) * cssToLogical;
+      const dy = (e.clientY - startPtr.y) * cssToLogical;
+      setPendingRestriction((prev) => {
+        if (!prev || prev.kind !== 'wall') return prev;
+        return {
+          ...prev,
+          [endpoint]: {
+            x: Math.max(0, Math.min(canvas.width, startPoint.x + dx)),
+            y: Math.max(0, Math.min(canvas.height, startPoint.y + dy)),
+          },
+        };
+      });
+    },
+    [zoom]
+  );
+
+  const handleWallEndpointPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    wallEndpointDragRef.current = null;
   }, []);
 
   // ─── Desktop drag rect (% of canvas CSS area) ─────────────────────────────
@@ -1014,11 +1109,11 @@ export function ValetudoMapCanvas({
           </div>
         )}
 
-        {/* Mobile pending restriction widget (tap-to-place) */}
-        {isRestrictionsMode && isTouchDevice && pendingRestriction && pendingRestrictionStyle && (
+        {/* Mobile pending zone widget (no_go / no_mop, tap-to-place) */}
+        {isRestrictionsMode && isTouchDevice && pendingRestriction?.kind === 'zone' && pendingZoneStyle && (
           <div
             className={`valetudo-map-canvas__pending-restriction valetudo-map-canvas__pending-restriction--${pendingRestriction.type}`}
-            style={pendingRestrictionStyle}
+            style={pendingZoneStyle}
           >
             {/* Move handle — center */}
             <div
@@ -1060,28 +1155,89 @@ export function ValetudoMapCanvas({
             >
               ✓
             </button>
-            {/* Wall: show horizontal line indicator */}
-            {pendingRestriction.type === 'wall' && (
-              <svg
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-              >
-                <line
-                  x1="5"
-                  y1="50"
-                  x2="95"
-                  y2="50"
-                  stroke="rgba(244,67,54,0.9)"
-                  strokeWidth="5"
-                  strokeLinecap="round"
-                />
-                <circle cx="5" cy="50" r="4" fill="rgba(244,67,54,0.9)" />
-                <circle cx="95" cy="50" r="4" fill="rgba(244,67,54,0.9)" />
-              </svg>
-            )}
           </div>
         )}
+
+        {/* Mobile pending wall widget — two independently draggable endpoints */}
+        {isRestrictionsMode &&
+          isTouchDevice &&
+          pendingRestriction?.kind === 'wall' &&
+          pendingWallLayout &&
+          (() => {
+            const wall = pendingRestriction;
+            const layout = pendingWallLayout;
+            return (
+              <>
+                {/* Line SVG (pointer-events disabled) */}
+                <svg
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    width: '100%',
+                    height: '100%',
+                    pointerEvents: 'none',
+                    overflow: 'visible',
+                  }}
+                  viewBox={`0 0 ${layout.cw} ${layout.ch}`}
+                  preserveAspectRatio="none"
+                >
+                  <line
+                    x1={wall.pA.x}
+                    y1={wall.pA.y}
+                    x2={wall.pB.x}
+                    y2={wall.pB.y}
+                    stroke="rgba(244,67,54,0.9)"
+                    strokeWidth={SCALE * 2}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                {/* Endpoint A handle */}
+                <div
+                  className="valetudo-map-canvas__wall-endpoint"
+                  style={{ position: 'absolute', ...layout.pAStyle, transform: 'translate(-50%, -50%)' }}
+                  onPointerDown={(e) => handleWallEndpointPointerDown('pA', e)}
+                  onPointerMove={handleWallEndpointPointerMove}
+                  onPointerUp={handleWallEndpointPointerUp}
+                  onPointerCancel={handleWallEndpointPointerUp}
+                />
+                {/* Endpoint B handle */}
+                <div
+                  className="valetudo-map-canvas__wall-endpoint"
+                  style={{ position: 'absolute', ...layout.pBStyle, transform: 'translate(-50%, -50%)' }}
+                  onPointerDown={(e) => handleWallEndpointPointerDown('pB', e)}
+                  onPointerMove={handleWallEndpointPointerMove}
+                  onPointerUp={handleWallEndpointPointerUp}
+                  onPointerCancel={handleWallEndpointPointerUp}
+                />
+                {/* Delete button above midpoint */}
+                <button
+                  className="valetudo-map-canvas__wall-action-btn valetudo-map-canvas__wall-action-btn--delete"
+                  style={{ position: 'absolute', ...layout.midStyle, transform: 'translate(-50%, -160%)' }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPendingRestriction(null);
+                  }}
+                  type="button"
+                >
+                  ×
+                </button>
+                {/* Confirm button below midpoint */}
+                <button
+                  className="valetudo-map-canvas__wall-action-btn valetudo-map-canvas__wall-action-btn--confirm"
+                  style={{ position: 'absolute', ...layout.midStyle, transform: 'translate(-50%, 60%)' }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    confirmPendingRestriction();
+                  }}
+                  type="button"
+                >
+                  ✓
+                </button>
+              </>
+            );
+          })()}
       </div>
 
       {/* Bottom-right controls: iterations + zoom */}
